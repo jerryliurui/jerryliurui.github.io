@@ -1,0 +1,19 @@
+[
+	
+		{
+		  "title"      : "Today Widget 使用UserDefault导致主程序在iOS6下崩溃",
+		  "category"   : "iOS Programming",
+		  "url"        : "http://localhost:4000/ios%20programming/Today%20Widget-UserDefault-Crash-in-iOS6",
+		  "date"       : "2014-12-03 00:00:00 -0500",
+		  "shortdate"  : "December 03, 2014"
+		} ,
+	
+		{
+		  "title"      : "iOS8 TodayWidget 中使用透明按钮",
+		  "category"   : "iOS Programming",
+		  "url"        : "http://localhost:4000/ios%20programming/iOS8%20TodayWidget",
+		  "date"       : "2014-11-30 00:00:00 -0500",
+		  "shortdate"  : "November 30, 2014"
+		} 
+	
+]

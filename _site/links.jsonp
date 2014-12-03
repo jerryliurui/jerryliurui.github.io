@@ -1,0 +1,13 @@
+callback([
+
+  {
+    "text": "iOS8 TodayWidget 中使用透明按钮",
+    "href": "http://localhost:4000/ios%20programming/iOS8%20TodayWidget"
+  } ,
+
+  {
+    "text": "Today Widget 使用UserDefault导致主程序在iOS6下崩溃",
+    "href": "http://localhost:4000/ios%20programming/Today%20Widget-UserDefault-Crash-in-iOS6"
+  } 
+
+])

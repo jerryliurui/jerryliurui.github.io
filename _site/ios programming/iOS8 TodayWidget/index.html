@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html>
+<!--
+====================================================
+    __  ____  ______________  _______ ___    __ 
+   / / / /  |/  / ____/   \ \/ / ___//   |  / / 
+  / /_/ / /|_/ / /_  / /| |\  /\__ \/ /| | / /  
+ / __  / /  / / __/ / ___ |/ /___/ / ___ |/ /___
+/_/ /_/_/  /_/_/   /_/  |_/_//____/_/  |_/_____/
+                                                     
+====================================================
+Owner Name: Hossain Mohammad Faysal
+Profile: https://www.facebook.com/hmfaysal
+Version: 1.1
+Description: Awesome dude, awesome life
+====================================================
+-->
+<head>
+<meta charset="utf-8">
+<title>iOS8 TodayWidget 中使用透明按钮 &#8211; 小瑞的Blog</title>
+<meta name="description" content="VibrancyButton in TodayWidget">
+<meta name="keywords" content="iOS8, TodayWidget">
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:4000/images/picture-11.jpg">
+
+<meta name="twitter:title" content="iOS8 TodayWidget 中使用透明按钮">
+<meta name="twitter:description" content="VibrancyButton in TodayWidget">
+<meta name="twitter:creator" content="@https://twitter.com/Jerry_R_Liu">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS8 TodayWidget 中使用透明按钮">
+<meta property="og:description" content="VibrancyButton in TodayWidget">
+<meta property="og:url" content="http://localhost:4000/ios%20programming/iOS8%20TodayWidget">
+<meta property="og:site_name" content="小瑞的Blog">
+<meta property="og:image" content="http://localhost:4000/images/picture-11.jpg">
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/ios%20programming/iOS8%20TodayWidget">
+<link href="http://localhost:4000/feed.xml" type="application/atom+xml" rel="alternate" title="小瑞的Blog Feed">
+
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    <link rel="stylesheet" type="text/css" href="http://localhost:4000/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="http://localhost:4000/assets/css/style.css" />
+
+<div class="search-wrapper">
+    <div class="search-form">
+        <input type="text" class="search-field" placeholder="Search...">
+        <i class="icon-remove-sign"></i>
+        <ul class="search-results post-list"></ul><!-- /.search-results -->
+    </div><!-- /.search-form -->
+</div><!-- ./search-wrapper -->
+
+
+
+
+<!-- Icons -->
+<!-- 16x16 -->
+<link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+<!-- 32x32 -->
+<link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+<!-- 57x57 (precomposed) for iPhone 3GS, pre-2011 iPod Touch and older Android devices -->
+<link rel="apple-touch-icon-precomposed" href="http://localhost:4000/images/apple-touch-icon-precomposed.png">
+<!-- 72x72 (precomposed) for 1st generation iPad, iPad 2 and iPad mini -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://localhost:4000/images/apple-touch-icon-72x72-precomposed.png">
+<!-- 114x114 (precomposed) for iPhone 4, 4S, 5 and post-2011 iPod Touch -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://localhost:4000/images/apple-touch-icon-114x114-precomposed.png">
+<!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://localhost:4000/images/apple-touch-icon-144x144-precomposed.png">
+
+</head>
+<body class="post-template" itemscope itemtype="http://schema.org/WebPage">  
+<div id="fade"></div>
+<a id="slide" class="animated fade"></a>
+<aside id="sidebar">
+    <nav id="navigation">
+    <h2>MENU</h2>
+    <hr>
+
+            <li>
+                    <a href="http://localhost:4000/">主页Home</a>
+                 </li>
+
+            <li>
+                    <a href="http://localhost:4000/categories">分类Categories</a>
+                 </li>
+
+            <li>
+                    <a href="http://localhost:4000/tags">标签Tags</a>
+                 </li>
+
+            <li>
+                    <a href="http://localhost:4000/Jerry_Liu">关于我About Me</a>
+                 </li>
+            
+           <li><a href="http://localhost:4000/feed.xml" title="Atom/RSS feed"><i class="icon-rss"></i> Feed</a></li>
+    </nav>
+    
+    
+</aside>
+<header id="masthead" class="blog-background overlay align-center align-middle animated from-bottom"  style="background-image: url(http://localhost:4000/images/picture-11.jpg)" itemscope itemtype="http://schema.org/Organization">
+
+
+    <button class="menu-button animated fade dosearch">
+        <i class="icon-search"></i>
+    </button>
+
+
+    <div class="inner">
+        <div class="container">
+            <a class="brand" href="http://localhost:4000" role="banner" itemprop="url">
+
+                <img itemprop="logo" src="http://localhost:4000/images/Jerry_Profile.JPG" alt="小瑞的Blog Logo" />
+
+            <h1 class="blog-title light" itemprop="name">
+                小瑞的Blog
+            </h1>
+                
+            </a>
+        </div>
+    </div>
+    
+    
+    <div class="decor-wrapper">
+        <svg id="header-decor" class="decor bottom" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path class="large left" d="M0 0 L50 50 L0 100" fill="rgba(255,255,255, .1)"></path>
+            <path class="large right" d="M100 0 L50 50 L100 100" fill="rgba(255,255,255, .1)"></path>
+
+            <path class="medium left" d="M0 100 L50 50 L0 33.3" fill="rgba(255,255,255, .3)"></path>
+            <path class="medium right" d="M100 100 L50 50 L100 33.3" fill="rgba(255,255,255, .3)"></path>
+
+            <path class="small left" d="M0 100 L50 50 L0 66.6" fill="rgba(255,255,255, .5)"></path>
+            <path class="small right" d="M100 100 L50 50 L100 66.6" fill="rgba(255,255,255, .5)"></path>
+
+            <path d="M0 99.9 L50 49.9 L100 99.9 L0 99.9" fill="rgba(255,255,255, 1)"></path>
+
+            <path d="M48 52 L50 49 L52 52 L48 52" fill="rgba(255,255,255, 1)"></path>
+
+        </svg>
+    </div>
+    
+</header>
+<div id="main" class="content" role="main" itemprop="mainContentOfPage" itemscope itemtype="http://schema.org/Blog">
+    <div class="container">
+        <div class="row">
+            <article class="post col-md-8 col-md-offset-2 hentry" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+            
+            
+            
+            
+            
+                    <header class="post-header entry-header">
+                    
+                        
+                        <h1 class="post-title text-center hyper lighter bordered-bottom entry-title" itemprop="headline">iOS8 TodayWidget 中使用透明按钮</h1>
+                        
+                        <div class="cursive" style="color: #000; font-style:italic;">VibrancyButton in TodayWidget</div>
+                        <div class="post-info text-center small">
+                            <span class="entry-date date published"><time datetime="2014-11-30T00:00:00-05:00" class="post-time" itemprop="datePublished">30 Nov 2014</time><span> and <code>last modified on <span class="entry-date date updated"><time datetime="2014-12-01" itemprop="dateModified">01 Dec 2014</time></code></span>
+                            in <span class="post-tags"><a href="http://localhost:4000/categories/index.html#ios programming" data-toggle="tooltip" title="Other posts from the Ios programming category" rel="tag">Ios programming</a></span>&nbsp;<span class="post-tags"><i class="icon-time"></i>&nbsp;<span class="time">1.665</span> minutes read</span>
+                        </div>
+                    </header>
+                    <div class="post-body bordered-bottom" itemprop="description">
+                        
+                        <p>本文通过使用iOS8中新加入的类，实现了通知中心中透明按钮，使得栏目按钮的风格样式和通知中心的相似。</p>
+
+<h3 id="section"><strong>需求背景</strong></h3>
+<p><code>iOS8</code> 中新加入了TodayWidget的功能，开发者可以在通知中心的Today中加入自己程序的扩展程序，丰富自己的软件，将最重要的部分及时的呈现在用户的眼前，由于通知中心的特殊性，比如背景，是统一的，那种暗暗的背景，类似于毛玻璃的那种感觉，因此在视图的UI设计上应该尽可能的贴近通知中心的风格，目前看到的许多Widget 中，只有Clear这个软件（额..至少我用到的是这个样子）使用了透明的文字来更新它要展示的一句名言警句。看上去非常的好看，因此想到了在自己的软件中实现这种透明按钮的想法。</p>
+
+<h3 id="section-1"><strong>前期调研</strong></h3>
+<p>iOS8中新加入了 <code>UIBlurEffect</code> 这个新的类，用来实现一些模糊透明的效果，之前想要实现的话挺费劲的，这次苹果自己提供了这个类，也是造福了一下开发者吧。</p>
+
+<div class="highlight"><pre><code class="language-css" data-lang="css"><span class="nt">typedef</span> <span class="nt">NS_ENUM</span><span class="o">(</span><span class="nt">NSInteger</span><span class="o">,</span> <span class="nt">UIBlurEffectStyle</span><span class="o">)</span> <span class="p">{</span>
+    <span class="n">UIBlurEffectStyleExtraLight</span><span class="o">,</span>
+    <span class="n">UIBlurEffectStyleLight</span><span class="o">,</span>
+    <span class="n">UIBlurEffectStyleDark</span>
+<span class="p">}</span> <span class="nt">NS_ENUM_AVAILABLE_IOS</span><span class="o">(</span><span class="nt">8_0</span><span class="o">);</span></code></pre></div>
+
+<p><code>UIBlurEffect</code>   提供了三个基本的效果，一开始使用的时候我没有打算使用这三个中的任何一个，因为尝试的时候发现这三个效果在today中显示的非常突兀，有点像强行加上的一个画板上弄出来一些View 不是很好看，经过查看文档又发现这个 <code>NCWidgetProviding</code> 协议中有一个 <code>@interface UIVibrancyEffect (NotificationCenter)</code> 这个接口单独给<code>NotificationCenter</code>使用，类方法：<code>+ (UIVibrancyEffect *)notificationCenterVibrancyEffect;</code></p>
+
+<p>可以生成一个通知中心风格的透明效果，于是我第一次的时候是尝试的这个，效果确实符合了通知中心的样子，但是文字的效果很差，在用户界面是很暗的时候，文字几乎就很难看见，具体的实现效果如下。如果使用这个实现出来的按钮很影响交互，因此这个方案也就没有采用。PS:这里要注意添加子视图的顺序。 </p>
+
+<div class="highlight"><pre><code class="language-css" data-lang="css"><span class="nt">UIVisualEffectView</span> <span class="o">*</span><span class="nt">effectView</span> <span class="o">=</span> <span class="o">[[</span><span class="nt">UIVisualEffectView</span> <span class="nt">alloc</span><span class="o">]</span> <span class="nt">initWithEffect</span><span class="o">:[</span><span class="nt">UIVibrancyEffect</span> <span class="nt">notificationCenterVibrancyEffect</span><span class="o">]];</span>
+<span class="nt">effectView</span><span class="nc">.frame</span> <span class="o">=</span> <span class="nt">self</span><span class="nc">.view.frame</span><span class="o">;</span>
+<span class="nt">for</span> <span class="o">(</span><span class="nt">UIButton</span> <span class="o">*</span><span class="nt">topciButton</span> <span class="nt">in</span> <span class="nt">_buttonArrays</span><span class="o">)</span> <span class="p">{</span>
+    <span class="p">[</span><span class="n">effectView</span><span class="o">.</span><span class="n">contentView</span> <span class="n">addSubview</span><span class="o">:</span><span class="n">topciButton</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="o">[</span><span class="nt">effectView</span><span class="nc">.contentView</span> <span class="nt">addSubview</span><span class="nd">:_tableView</span><span class="o">];</span>
+<span class="o">[</span><span class="nt">self</span><span class="nc">.view</span> <span class="nt">addSubview</span><span class="nd">:effectView</span><span class="o">];</span></code></pre></div>
+
+<figure>
+        <a href="http://localhost:4000/images/notificationview.png"><img src="http://localhost:4000/images/notificationview.png" /></a>
+</figure>
+
+<p>当用户使用的是比较暗的背景的时候，就会出现文字看不清的情况。。。</p>
+
+<figure>
+        <a href="http://localhost:4000/images/canntseeclear.png"><img src="http://localhost:4000/images/canntseeclear.png" /></a>
+</figure>
+
+<h3 id="section-2">具体代码设计</h3>
+<p>最后的最后我决定自己去封装一个按钮，写了一个UIView 的子类，我预想的UI布局是四个椭圆形的按钮并排排列的样子，既然前边 <strong>UIBlurEffect</strong> 提供的三种方案会有一个明显的背部面板，于是我决定采用第一种<strong>UIBlurEffectStyleExtraLight</strong> 这个效果来作为我的子类的上的第一个View。索性就把背部的这个面板当做按钮的可变的“状态”。</p>
+
+<blockquote>
+  <p>这里需要注意的是苹果官方给的建议是，如果采用了这种实现模糊背景的方法，那么需要把所有的子视图都放在<strong>UIVisualEffectView</strong> 上，这样子才会有透明毛玻璃的效果。</p>
+</blockquote>
+
+<p>接着上边说，我的需求是尽量让文字清晰，按钮背景是毛玻璃，于是我的思路是，<strong>button</strong>上就加一个<strong>UIVisualEffectView</strong> 然后<strong>button</strong>上再加一个<strong>label</strong>用来盛放按钮的title。按钮的点击状态和没有点击的状态，通过设置<strong>UIVisualEffectView</strong> 的Alpha值来定义，模拟出来一个按钮的状态。下边是头文件的定义，在生成按钮的时候定义按钮的状态，通过state属性来响应的变化按钮的状态，通过代理来实现按钮的实际的操作任务。</p>
+
+<div class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
+    <span class="n">TodayWidgetVibrantButtonSelected</span><span class="p">,</span>
+    <span class="n">TodayWidgetVibrantButtonUnselected</span>
+<span class="p">}</span> <span class="n">TodayWidgetVibrantButtonState</span><span class="p">;</span>
+
+<span class="err">@</span><span class="k">class</span> <span class="nc">NTESNBTWVibrantButton</span><span class="p">;</span>
+<span class="err">@</span><span class="n">protocol</span> <span class="n">NTESNBTWVibrantButtonDelegate</span> <span class="o">&lt;</span><span class="n">NSObject</span><span class="o">&gt;</span>
+
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">didNTESNBTWVibrantButton</span><span class="p">:(</span><span class="n">NTESNBTWVibrantButton</span> <span class="o">*</span><span class="p">)</span><span class="n">vibrantButton</span> <span class="nl">atIndex</span><span class="p">:(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">index</span><span class="p">;</span>
+
+<span class="err">@</span><span class="n">end</span>
+
+<span class="err">@</span><span class="n">interface</span> <span class="nl">NTESNBTWVibrantButton</span> <span class="p">:</span> <span class="n">UIView</span>
+
+<span class="err">@</span><span class="n">property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">TodayWidgetVibrantButtonState</span> <span class="n">state</span><span class="p">;</span>
+
+<span class="err">@</span><span class="n">property</span> <span class="p">(</span><span class="n">nonatomic</span> <span class="p">,</span> <span class="n">copy</span><span class="p">)</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">text</span><span class="p">;</span>
+
+<span class="err">@</span><span class="n">property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">weak</span><span class="p">)</span> <span class="n">id</span> <span class="o">&lt;</span><span class="n">NTESNBTWVibrantButtonDelegate</span><span class="o">&gt;</span> <span class="n">delegate</span><span class="p">;</span>
+
+<span class="err">@</span><span class="n">property</span> <span class="p">(</span><span class="n">nonatomic</span> <span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">UIFont</span> <span class="o">*</span><span class="n">font</span><span class="p">;</span>
+
+<span class="o">-</span><span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nl">initWithFrame</span><span class="p">:(</span><span class="n">CGRect</span><span class="p">)</span><span class="n">frame</span> <span class="nl">withTitle</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">title</span> <span class="nl">state</span><span class="p">:(</span><span class="n">TodayWidgetVibrantButtonState</span><span class="p">)</span><span class="n">state</span><span class="p">;</span>
+
+<span class="err">@</span><span class="n">end</span></code></pre></div>
+
+<p>下边是具体的实现代码，难度不大，大家应该可以看得很明白，就是通过设置按钮的不同的状态来切换<code>_visualEffectView</code>的透明度 以及label 文字的颜色，用来区分按钮不同的状态，为了切换时候的美观，按钮状态改变加了一个小小的动画，显得切换的时候不是那么突兀。</p>
+
+<div class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="err">@</span><span class="n">implementation</span> <span class="n">NTESNBTWVibrantButton</span>
+<span class="p">{</span>
+    <span class="n">UIVisualEffectView</span>            <span class="o">*</span><span class="n">_visualEffectView</span><span class="p">;</span>
+    <span class="n">UILabel</span>                       <span class="o">*</span><span class="n">_titleLabel</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="o">-</span><span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nl">initWithFrame</span><span class="p">:(</span><span class="n">CGRect</span><span class="p">)</span><span class="n">frame</span> <span class="nl">withTitle</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">title</span> <span class="nl">state</span><span class="p">:(</span><span class="n">TodayWidgetVibrantButtonState</span><span class="p">)</span><span class="n">state</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">frame</span><span class="p">])</span> <span class="p">{</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">title</span><span class="p">;</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">state</span><span class="p">;</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">clearColor</span><span class="p">];</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">exclusiveTouch</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+        <span class="p">[</span><span class="n">self</span> <span class="n">addGesture</span><span class="p">];</span>
+        <span class="p">[</span><span class="n">self</span> <span class="n">initSubViews</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">setText</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">text</span>
+<span class="p">{</span>
+    <span class="n">_text</span> <span class="o">=</span> <span class="n">text</span><span class="p">;</span>
+    <span class="n">_titleLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">setState</span><span class="p">:(</span><span class="n">TodayWidgetVibrantButtonState</span><span class="p">)</span><span class="n">state</span>
+<span class="p">{</span>
+    <span class="n">_state</span> <span class="o">=</span> <span class="n">state</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">TodayWidgetVibrantButtonSelected</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">void</span><span class="p">(</span><span class="o">^</span><span class="n">buttonTap</span><span class="p">)(</span><span class="kt">void</span><span class="p">)</span> <span class="o">=</span> <span class="o">^</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">_titleLabel</span><span class="p">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">blackColor</span><span class="p">];</span>
+            <span class="n">_visualEffectView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">;</span>
+        <span class="p">};</span>
+        <span class="p">[</span><span class="n">UIView</span> <span class="nl">animateWithDuration</span><span class="p">:</span><span class="mf">0.3</span> <span class="nl">animations</span><span class="p">:</span><span class="n">buttonTap</span><span class="p">];</span>
+        
+    <span class="p">}</span><span class="k">else</span>
+    <span class="p">{</span>
+        <span class="kt">void</span><span class="p">(</span><span class="o">^</span><span class="n">buttonTap</span><span class="p">)(</span><span class="kt">void</span><span class="p">)</span> <span class="o">=</span> <span class="o">^</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">_titleLabel</span><span class="p">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">];</span>
+            <span class="n">_visualEffectView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">;</span>
+        <span class="p">};</span>
+        <span class="p">[</span><span class="n">UIView</span> <span class="nl">animateWithDuration</span><span class="p">:</span><span class="mf">0.3</span> <span class="nl">animations</span><span class="p">:</span><span class="n">buttonTap</span><span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">initSubViews</span>
+<span class="p">{</span>
+    <span class="n">_visualEffectView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIVisualEffectView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithEffect</span><span class="p">:[</span><span class="n">UIBlurEffect</span> <span class="nl">effectWithStyle</span><span class="p">:</span><span class="n">UIBlurEffectStyleExtraLight</span><span class="p">]];</span>
+    <span class="p">[</span><span class="n">self</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">_visualEffectView</span><span class="p">];</span>
+    <span class="n">_titleLabel</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UILabel</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+    <span class="p">[</span><span class="n">self</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">_titleLabel</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">layoutSubviews</span>
+<span class="p">{</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">cornerRadius</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">masksToBounds</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+    <span class="n">_visualEffectView</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
+    <span class="n">_titleLabel</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="o">*</span><span class="mf">0.08</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="o">*</span><span class="mf">0.8</span><span class="p">);</span>
+    <span class="n">_titleLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">text</span><span class="p">;</span>
+    <span class="n">_titleLabel</span><span class="p">.</span><span class="n">font</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">font</span><span class="p">;</span>
+    <span class="n">_titleLabel</span><span class="p">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="n">NSTextAlignmentCenter</span><span class="p">;</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="n">_state</span> <span class="o">==</span> <span class="n">TodayWidgetVibrantButtonSelected</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">_titleLabel</span><span class="p">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">blackColor</span><span class="p">];</span>
+        <span class="n">_visualEffectView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">;</span>
+    <span class="p">}</span><span class="k">else</span>
+    <span class="p">{</span>
+        <span class="n">_titleLabel</span><span class="p">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">];</span>
+        <span class="n">_visualEffectView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">//添加手势动作</span>
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">addGesture</span>
+<span class="p">{</span>
+    <span class="n">UITapGestureRecognizer</span> <span class="o">*</span><span class="n">tap</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UITapGestureRecognizer</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTarget</span><span class="p">:</span><span class="n">self</span> <span class="nl">action</span><span class="p">:</span><span class="err">@</span><span class="n">selector</span><span class="p">(</span><span class="nl">didNTESNBTWTopicButton</span><span class="p">:)];</span>
+    <span class="p">[</span><span class="n">self</span> <span class="nl">addGestureRecognizer</span><span class="p">:</span><span class="n">tap</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="c1">//delegate方法</span>
+<span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">didNTESNBTWTopicButton</span><span class="p">:</span> <span class="p">(</span><span class="n">UITapGestureRecognizer</span> <span class="o">*</span><span class="p">)</span><span class="n">tap</span>
+<span class="p">{</span>
+    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">delegate</span> <span class="nl">didNTESNBTWVibrantButton</span><span class="p">:</span><span class="n">self</span> <span class="nl">atIndex</span><span class="p">:</span><span class="n">self</span><span class="p">.</span><span class="n">tag</span><span class="p">];</span>
+<span class="p">}</span></code></pre></div>
+
+<p>最终的显示效果，满足了自己的使用需求。</p>
+<figure>
+        <a href="http://localhost:4000/images/finalbutton.png"><img src="http://localhost:4000/images/finalbutton.png" /></a>
+</figure>
+
+
+                        <br>
+                    
+                    
+                    <div class="entry-tags text-center">
+                    
+                        <i class="icon-tags"></i>&nbsp;Tagged with <a href="http://localhost:4000/tags/index.html#iOS8" data-toggle="tooltip" title="Posts tagged with iOS8" rel="tag">iOS8</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/index.html#TodayWidget" data-toggle="tooltip" title="Posts tagged with TodayWidget" rel="tag">TodayWidget</a>
+                    
+                    </div>
+                    
+                    </div>
+        </div>
+                    <footer class="post-footer entry-meta">
+                        <div class="post-share text-center">
+    <p class="light small">
+        Share this post
+    </p>
+    <ul class="social-mini">
+        <li>
+            <a href="https://twitter.com/intent/tweet?text=&quot;iOS8 TodayWidget 中使用透明按钮&quot;%20http://localhost:4000/ios%20programming/iOS8%20TodayWidget%20via%20&#64;https://twitter.com/Jerry_R_Liu"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;" data-toggle="tooltip" title="Share on Twitter" itemprop="Twitter">
+                <i class="icon-twitter"></i>
+            </a>
+        </li>
+        <li>
+            <a  href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/ios%20programming/iOS8%20TodayWidget"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;" data-toggle="tooltip" title="Share on Facebook" itemprop="Facebook">
+                <i class="icon-facebook"></i>
+            </a>
+        </li>
+        <li>
+            <a href="https://plus.google.com/share?url=http://localhost:4000/ios%20programming/iOS8%20TodayWidget"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;" data-toggle="tooltip" title="Share on Google plus" itemprop="GooglePlus">
+                <i class="icon-google-plus"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                        <div class="post-author text-center">                       
+	        <img src="http://localhost:4000/images/Jerry_Profile.JPG" alt="JerryLiu's photo" itemprop="image" class="post-avatar img-circle img-responsive"/>    
+	    <h4 class="bordered-bottom vcard author" itemprop="author" itemscope itemtype="http://schema.org/Person">By <span itemprop="name" class="fn"><a href="http://localhost:4000/about" title="About JerryLiu" itemprop="url">JerryLiu</a></span></h4>
+	    <p>1990年出生在大连旅顺，巨蟹座，主业踢足球、副业打篮球，喜欢科比、湖人，也喜欢西班牙国家队，硕士在读，实习中，主要方向是iOS开发。喜欢摄影和科技产品，不剁手不舒服斯基那种，会出新产品的开箱与使用体验。目前性取向依然正常。</p>
+</div> 
+                        <div id="disqus_thread"></div><!-- /#disqus_thread -->
+                    </footer>
+            </article>
+    </div>
+</div>
+
+<footer id="footer"  class="blog-background overlay text-center align-middle animated from-top" style="background-image: url(http://localhost:4000/images/picture-11.jpg)" >
+
+
+    <div class="inner">
+        <div class="container">
+
+            <ul class="social-icons">
+            <li>
+                <a href="http://twitter.com/https://twitter.com/Jerry_R_Liu" data-toggle="tooltip" title="JerryLiu on Twitter" target="_blank">
+                    <i class="icon-twitter"></i>
+                </a>
+            </li>
+            <li>
+                <a href="http://facebook.com/https://www.facebook.com/people/刘瑞/100006495068467" data-toggle="tooltip" title="JerryLiu on Facebook" target="_blank">
+                    <i class="icon-facebook"></i>
+                </a>
+            </li>
+            
+            
+            
+            
+            
+            <li>
+                <a href="http://github.com/https://github.com/jerryliurui" data-toggle="tooltip" title="JerryLiu on Github" target="_blank">
+                    <i class="icon-github"></i>
+                </a>
+            </li>
+        </ul>
+            <div>
+                <a href="http://localhost:4000/about/">JerryLiu</a> &copy; 2014 &bull; All rights reserved.
+            </div>
+            <ul class="menu-items">
+            
+            <li>
+                
+                    <a href="http://localhost:4000/"><i class="icon-home"></i></a>&nbsp;&bull;
+                 
+            </li>
+            
+            <li>
+                
+                    <a href="http://localhost:4000/categories">分类Categories</a>&nbsp;&bull;
+                 
+            </li>
+            
+            <li>
+                
+                    <a href="http://localhost:4000/tags">标签Tags</a>&nbsp;&bull;
+                 
+            </li>
+            
+            <li>
+                
+                    <a href="http://localhost:4000/Jerry_Liu">关于我About Me</a>&nbsp;&bull;
+                 
+            </li>
+            
+            <li><a href="http://localhost:4000/feed.xml" title="Atom/RSS feed"><i class="icon-rss"></i> Feed</a></li>
+        </ul>
+        </div>
+    </div>
+    
+        <div class="decor-wrapper">
+            <svg id="footer-decor" class="decor top" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100" preserveAspectRatio="none">
+
+                <path class="large left" d="M0 0 L50 50 L0 100" fill="rgba(255,255,255, .1)"></path>
+                <path class="large right" d="M100 0 L50 50 L100 100" fill="rgba(255,255,255, .1)"></path>
+
+                <path class="medium left" d="M0 0 L50 50 L0 66.6" fill="rgba(255,255,255, .3)"></path>
+                <path class="medium right" d="M100 0 L50 50 L100 66.6" fill="rgba(255,255,255, .3)"></path>
+
+                <path class="small left" d="M0 0 L50 50 L0 33.3" fill="rgba(255,255,255, .5)"></path>
+                <path class="small right" d="M100 0 L50 50 L100 33.3" fill="rgba(255,255,255, .5)"></path>
+
+                <path d="M0 0 L50 50 L100 0 L0 0" fill="rgba(255,255,255, 1)"></path>
+
+                <path d="M48 48 L50 51 L52 48 L48 48" fill="rgba(255,255,255, 1)"></path>
+
+            </svg>
+        </div>
+    
+</footer>
+
+    
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="http://localhost:4000/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="http://localhost:4000/assets/js/scripts.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/assets/js/waypoints.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/assets/js/script.js"></script>
+<script type='text/javascript'>console.log("HMFaysal Omega Theme Version 2.0");</script>
+<script type='text/javascript'>console.log("https://alum.mit.edu/www/hmfaysal");</script>
+<script type='text/javascript'>$(document).ready(function(){$(".time").text(function(a,b){return Math.round(parseFloat(b))})});</script>
+
+<script type="text/javascript">
+
+/*      Slides       */
+
+$("a#slide").click(function(){
+    $("#sidebar,body,a#slide,#fade").addClass("slide")
+});
+
+$("#fade,#header,#posts-container").click(function(){
+    $("#sidebar,body,a#slide,#fade").removeClass("slide")
+});
+
+$("a#click-filter").click(function(){
+    $("#slide-filter").slideToggle("medium");
+    $("#slide-pages").slideOut("medium");
+});
+
+$("a#click-pages").click(function(){
+    $("#slide-pages").slideToggle("medium");
+    $("#slide-filter").slideOut("medium");
+});
+
+/*      End-Slides      */
+
+</script>
+
+
+<!-- Jekyll Simple Search option -->
+<script>
+  $(document).ready(function() {
+      $('.search-field').simpleJekyllSearch({
+          jsonFile : 'http://localhost:4000/search.json',
+          searchResults : '.search-results',
+          template : '<li><article><a href="{url}">{title} <span class="entry-date"><time datetime="{date}">{shortdate}</time></span></a></article></li>',
+          noResults: '<p>Nothing found.</p>'
+        });
+  });
+
+  (function( $, window, undefined ) {
+    
+     var bs = {
+          close: $(".icon-remove-sign"),
+          searchform: $(".search-form"),
+          canvas: $("body"),
+          dothis: $('.dosearch')
+      };
+    
+    bs.dothis.on('click', function() {
+      $('.search-wrapper').css({ display: "block" });
+      bs.searchform.toggleClass('active');
+      bs.searchform.find('input').focus();
+      bs.canvas.toggleClass('search-overlay');
+    });
+    
+      bs.close.on('click', function() {
+        $('.search-wrapper').removeAttr( 'style' );
+        bs.searchform.toggleClass('active');
+        bs.canvas.removeClass('search-overlay');
+    });
+  })( jQuery, window );
+</script>
+
+
+<!-- Asynchronous Google Analytics snippet -->
+<script>
+  var _gaq = _gaq || [];
+  var pluginUrl = 
+ '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
+  _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
+  _gaq.push(['_setAccount', 'UA-39365944-7']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'JerryLiu'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript> 
+</body>
+</html>
