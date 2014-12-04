@@ -1,7 +1,7 @@
 title:            小瑞的Blog
 description:      "刘小崽儿的窝儿"
 logo:             Jerry_Profile.jpg
-disqus_shortname: jerryliublog
+disqus_shortname: JerryLiu
 # Assign a default image for your site's header and footer
 default_bg:       blog_bg2.jpg
 search:           true
