@@ -1,11 +1,11 @@
 ---
 layout: post
-title: “安静的制造了线上Bug之后的思考”
+title: 安静的制造了线上Bug之后的思考
 description: “Creativity is allowing yourself to make mistakes.Art is knowing which ones to keep”
 category: Programming Life
 tags: [反思]
 modified: 2014-12-05
-imagefeature: blog_bg_3.jpg
+imagefeature: blog_bg_1.jpg
 comments: true
 share: true
 ---
