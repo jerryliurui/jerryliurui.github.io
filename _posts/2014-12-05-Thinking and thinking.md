@@ -9,9 +9,10 @@ imagefeature: blog_bg_1.jpg
 comments: true
 share: true
 ---
-
-    > "Creativity is allowing yourself to make mistakes.Art is knowing which ones to keep"
-    > <small><cite title="Scott Adams">Person</cite></small>
+>&quot;Creativity is allowing yourself to make mistakes.Art is knowing which ones to keep.&quot;
+><small><cite title="Albert Einstein">Albert Einstein</cite></small>
+    >  "Creativity is allowing yourself to make mistakes.Art is knowing which ones to keep"
+    >  <small><cite title="Scott Adams">Person</cite></small>
 
 **这次版本**上线之后，发生了之前我所说过的那个大bug，由于之前没有经历过，当第一次发生之后还是觉得原来一行代码可以带来这么“毁灭性”的打击，周三晚上没忍住去了`APP Store`上看了一下评论，产品可能自从有了就没有到过现在这种三星的情况吧，给一星差评的特别多，几乎每翻一页都会有人抱怨客户端闪退的问题。熟人报喜不报忧，陌生人好事当做理所应当，坏事可以传千里。
 
