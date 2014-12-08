@@ -12,6 +12,16 @@ share: true
 
 **苹果在最近发布了WatchKit，也相应的放出了Xcode 6.2 来让我们练练手啥的，虽然手表应该要等到明年。。。不过这个毕竟是个新鲜的东西，公司也需要调研一下这块儿可以做什么，怎么做，因此通读一边苹果的开发文档显得很有必要了。借着这个机会，总结一下，就按照官方给的顺序和步骤来吧，大致分两到三篇。这篇主要是领会一下官方文档中的总览这一章节的精神。**[官方文档AppleWatch总览](https://developer.apple.com/library/prerelease/ios/documentation/General/Conceptual/WatchKitProgrammingGuide/index.html#//apple_ref/doc/uid/TP40014969-CH8-SW1)
 
+<section id="table-of-contents" class="toc">
+  <header>
+    <h1>Features</h1>
+  </header>
+<div id="drawer" markdown="1">
+*  Auto generated table of contents
+{:toc}
+</div>
+</section><!-- /#table-of-contents -->
+
 ## 一: Apple Watch 开发总览 ##
 `Apple Watch requires the presence of an iPhone to run third-party apps.` 也就是说**Apple Watch**需要和一台**iPhone**搭配来使用。
 
@@ -41,7 +51,6 @@ share: true
 
 <figure>
 <img src="{{ site.url }}/images/applewatch/creatapplewatch.png" alt="Creat Apple Watch App">
-<figcaption>Creat Apple Watch App</figcaption>
 </figure>
 <figure>
 <img src="{{ site.url }}/images/applewatch/creatapplewatch2.jpg" alt="Creat Apple Watch App">
