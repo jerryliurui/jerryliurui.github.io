@@ -23,7 +23,7 @@ image:
 >
 >喜欢制作视频（Final Cut Pro）
 >
->会一点儿PS
+>会一点儿PS,Lightroom
 >
 >曾经拥有六块儿腹肌
 >
