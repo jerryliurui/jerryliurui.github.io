@@ -58,6 +58,7 @@ share: true
 </figure>
 
 完成之后Xcode会自动的把这些的bundle ID 给配置好，需要记住的就是在主程序的bundle ID换掉之后，不要忘记把这几个也给改掉，这个地方就和today widget 很像了也可以说和Extension那些很类似了。
+
 > If you change your iOS app’s bundle ID, you must update the other bundle IDs accordingly
 
 下面这个图简单的介绍了一下主程序、中介扩展、watchApp三者之间的一个关系：
