@@ -29,6 +29,7 @@ Xcode 会提供一个故事板供我们创建界面，实现UI部分，创建Wat
 
 ### 1.Interface Controllers 是如何工作的
 每一个控制器通过outlet去管理和定义故事板中的动作操作，在控制器中使用`initWithContext:` `willActivate`方法去配置界面，在这些方法之中，我们可以做的事情如下：
+
 > 抓取想要显示的数据；
 > 初始化UI中标签、图像、其他控件儿的值；
 > 隐藏好不想显示的内容，只显示我们想显示的内容；
@@ -49,6 +50,7 @@ WatchKit也提供精确的布局，大小、位置都可以通过设置属性去
 
 ### 3.运行时更新界面
 在程序运行的时候，控制器可以决定如下改变：
+
 > 1.数据(DATA)的设置和更新 
 > 2.可见界面元素的样子的变化
 > 3.一个界面元素大小的改变
@@ -63,7 +65,8 @@ WatchKit也提供精确的布局，大小、位置都可以通过设置属性去
 技术方面使用之前iOS 程序和Mac OS X程序的方法就可以了。使用` NSLocalizedString`` NSNumberFormatter`` NSDateFormatter`去装载字符串，格式化数字，格式化日期格式等等。
 
 ## 二.Interface导航(Interface Navigation) ##
-每一个watch app当要呈现更多的内容的时候必须采用导航模式，二选一，也就是支持如下两种，他俩是互相排斥的。
+每一个watch app当要呈现更多的内容的时候必须采用导航模式，二选一，也就是支持如下两种，他俩是互相排斥的：
+
 > Hierarchical  层级
 > Page-based 分页
 
@@ -78,6 +81,7 @@ WatchKit也提供精确的布局，大小、位置都可以通过设置属性去
 
 ### 3.模态视图
 在以上两种显示的方式中，都可以随时的显示模态视图来呈现一个特定的内容，默认左上角会出现一个按钮，用来使模态视图消失，默认是cancel，也可以自定义。想要使用模态视图的话调用下边这两个方法：
+
 > presentControllerWithName:context:呈现一个模态视图控制器
 > presentControllerWithNames:contexts:呈现多个模态视图控制器
 
@@ -202,6 +206,7 @@ let smallCapFont = UIFont(descriptor: fontDescriptor, size: fontSize)
 
 ### 3.1 表格概述
 表格用来显示一些列的数据，WatchKit只支持单列的表格，在表格中显示数据需要预先设置好布局，以及动态的填充数据。一般来说，我们需要做的是如下几点：
+
 > 1.在故事板中，拖进来一个table表格，然后连接一个Outlet在controller中
 > 2.配置一种或者多种row类型
 > 3.在代码中定义好每一种row的类型
@@ -218,6 +223,7 @@ Row的类型是指如何体现表格中的一行，不同类型我们需要定�
 为了管理Row中的内容，我们需要去创建`Row controller class`，大多数的这个类都含有很少的代码或者是不含有代码，主要是去管理界面中的一些outlet,除了我们需要在row上增加一些按钮什么的需要交互的东西，我们要相应的增加Action的代码。
 
 定义一个`Row controller class`步骤大致是这样的：
+
 > 1.在WatchKit Extension中新建一个类
 > 2.继承自NSObject
 > 3.为每一个在Row上的元素创建属性声明，和故事板中的元素建立关联
@@ -234,6 +240,7 @@ Row的类型是指如何体现表格中的一行，不同类型我们需要定�
 {% endhighlight %}
 
 这些做好之后还需要在故事板中配置Row 的类型，和内部的属性的连接。步骤如下：
+
 > 1.在故事板中选择Row controller 这个对象
 > 2.设置它的identifier 成一个唯一标识, 例如Main Row Type
 > 3.把这个类设置成自定义的类(MainRowType)
@@ -274,6 +281,7 @@ Row的类型是指如何体现表格中的一行，不同类型我们需要定�
 
 ### 3.4 处理表格单击事件
 当用户点击了表格中的一个按钮之后，WatchKit就会调用相应的合适的代码，我们可以在两个地方响应对应的操作
+
 > 1.table:didSelectRowAtIndex: controller中实现这个方法
 
 > 2.自定义一个方法来实现响应的操作
