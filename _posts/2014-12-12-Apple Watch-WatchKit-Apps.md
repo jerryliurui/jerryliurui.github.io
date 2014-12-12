@@ -67,8 +67,8 @@ WatchKit也提供精确的布局，大小、位置都可以通过设置属性去
 ## 二.Interface导航(Interface Navigation) ##
 每一个watch app当要呈现更多的内容的时候必须采用导航模式，二选一，也就是支持如下两种，他俩是互相排斥的：
 
-> `Hierarchical`  层级
-> `Page-based` 分页
+> 1.`Hierarchical`  层级
+> 2.`Page-based` 分页
 
 ### 1.实现层级结构
 层级结构是量身为了用户点击一个元素，推出更多信息打造的，层级结构往往由一个单一的根控制器开始，用户点击了一个按钮或者表格的一行的时候，调用`pushControllerWithName:context:`这个方法推出一个新的控制器来呈现相应的内容，逐级的显示。
