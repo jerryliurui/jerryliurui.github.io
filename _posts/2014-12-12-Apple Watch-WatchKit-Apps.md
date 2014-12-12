@@ -4,7 +4,7 @@ title: "Apple Watch 开发调研二：WatchKit Apps"
 description: "Developing for Apple Watch"
 category: iOS Programming
 tags: [AppleWatch]
-modified: 2014-12-11
+modified: 2014-12-12
 imagefeature: blog_bg_applewatch.png
 comments: true
 share: true
@@ -31,7 +31,9 @@ Xcode 会提供一个故事板供我们创建界面，实现UI部分，创建Wat
 每一个控制器通过outlet去管理和定义故事板中的动作操作，在控制器中使用`initWithContext:` `willActivate`方法去配置界面，在这些方法之中，我们可以做的事情如下：
 
 > 抓取想要显示的数据；
+
 > 初始化UI中标签、图像、其他控件儿的值；
+
 > 隐藏好不想显示的内容，只显示我们想显示的内容；
 
 当然了控制器(controller)的数量是没有限制的，但是苹果也说了太多的控制器会使得程序复杂，越少越好`fewer is better`。`Navigation styles`决定了控制器和控制器之间是如何转换的，详情见下文。
@@ -52,9 +54,13 @@ WatchKit也提供精确的布局，大小、位置都可以通过设置属性去
 在程序运行的时候，控制器可以决定如下改变：
 
 > 1.数据(DATA)的设置和更新 
+
 > 2.可见界面元素的样子的变化
+
 > 3.一个界面元素大小的改变
+
 > 4.一个界面元素透明度的改变
+
 > 5.隐藏和显示一个界面元素
 
 需要注意的就是：不能够增加新的界面元素以及改变存在的对象的顺序。也不能删除某一个存在的对象，但是可以隐藏掉他们，将他们从布局中暂时的移除掉了，当一个元素隐藏掉之后，其他的元素就会替补它，填充掉空出来的部分。不需要担心这个地方会一片空白。
@@ -67,8 +73,9 @@ WatchKit也提供精确的布局，大小、位置都可以通过设置属性去
 ## 二.Interface导航(Interface Navigation) ##
 每一个watch app当要呈现更多的内容的时候必须采用导航模式，二选一，也就是支持如下两种，他俩是互相排斥的：
 
-> Hierarchical  层级
-> Page-based 分页
+> `Hierarchical`  层级
+
+> `Page-based` 分页
 
 ### 1.实现层级结构
 层级结构是量身为了用户点击一个元素，推出更多信息打造的，层级结构往往由一个单一的根控制器开始，用户点击了一个按钮或者表格的一行的时候，调用`pushControllerWithName:context:`这个方法推出一个新的控制器来呈现相应的内容，逐级的显示。
@@ -83,6 +90,7 @@ WatchKit也提供精确的布局，大小、位置都可以通过设置属性去
 在以上两种显示的方式中，都可以随时的显示模态视图来呈现一个特定的内容，默认左上角会出现一个按钮，用来使模态视图消失，默认是cancel，也可以自定义。想要使用模态视图的话调用下边这两个方法：
 
 > presentControllerWithName:context:呈现一个模态视图控制器
+
 > presentControllerWithNames:contexts:呈现多个模态视图控制器
 
 ## 三.界面对象(Interface Objects) ##
@@ -158,7 +166,9 @@ WatchKit也提供精确的布局，大小、位置都可以通过设置属性去
 
 ### 1.1 使用自定义的文字
 除了使用默认的风格之外，可以使用自定义的文字风格，需要做到如下两点：
+
 > 在`WatchKit App` 和`WatchKit extension`中都要包含自定义文字的文件 
+
 > 在`WatchApp` 的 `info.plist` 文件中增加 `UIAppFonts` 这个Key，并且指定到我们增加的那个自定义的文字文件
 
 以下代码是创建一个自定义字体的过程:
@@ -193,7 +203,9 @@ let smallCapFont = UIFont(descriptor: fontDescriptor, size: fontSize)
 创建图片素材集的时候使用PNG格式，使用`setWidth:``setHeight:`使得图片能够显示在一个合适的地方。
 
 ### 2.2 使用Named Images 来提高性能
+
 > 使用`setImageNamed:``setBackgroundImageNamed:`分配图片资源，如果资源已经存在在Watch App中或者存在在设备的缓存中。
+
 > 使用`setImage:`` setImageData:`` setBackgroundImage:``setBackgroundImageData:`将图片数据从Watch extension传到Apple Watch中去。
 
 使用imagenamed好处在于图片就在apple watch中，不需要传输，只需要将名字发送给watch app，这个要花费更少的时间和更少的电量。如果是在extension中创建，图片资源是在iPhone中的，需要发送给apple watch。。。
@@ -202,15 +214,20 @@ let smallCapFont = UIFont(descriptor: fontDescriptor, size: fontSize)
 对于一些在WatchKit extension中创建的又使用的很频繁的图片资源，缓存这些图片在设备上然后通过名字关联上他们。我们必须在使用它们的之前一定要先缓存图片，通过使用`addCachedImage:name:`` addCachedImageWithData:name:`方法。
 
 >  如果是一个`WKInterfaceImage`对象，使用`imagenamed`方法指定到缓存了的图片
+
 >  如果是`group`或者是`button`之类的，使用`setbackgroundImagedNamed`方法去指明
 
 ### 3.1 表格概述
 表格用来显示一些列的数据，WatchKit只支持单列的表格，在表格中显示数据需要预先设置好布局，以及动态的填充数据。一般来说，我们需要做的是如下几点：
 
 > 1.在故事板中，拖进来一个table表格，然后连接一个Outlet在controller中
+
 > 2.配置一种或者多种row类型
+
 > 3.在代码中定义好每一种row的类型
+
 > 4.初始的时候，在表格中插入row
+
 > 5.处理用户的row 选择事件
 
 我们需要定义几种row的类型和表现形式，然后依据具体情况列出来我们想要展示的row以及他们排列的顺序。
@@ -225,7 +242,9 @@ Row的类型是指如何体现表格中的一行，不同类型我们需要定�
 定义一个`Row controller class`步骤大致是这样的：
 
 > 1.在WatchKit Extension中新建一个类
+
 > 2.继承自NSObject
+
 > 3.为每一个在Row上的元素创建属性声明，和故事板中的元素建立关联
 
 如下是一个简单的例子：
@@ -242,8 +261,11 @@ Row的类型是指如何体现表格中的一行，不同类型我们需要定�
 这些做好之后还需要在故事板中配置Row 的类型，和内部的属性的连接。步骤如下：
 
 > 1.在故事板中选择Row controller 这个对象
+
 > 2.设置它的identifier 成一个唯一标识, 例如Main Row Type
+
 > 3.把这个类设置成自定义的类(MainRowType)
+
 > 4.然后拖进来一个image、一个label，最后关联上
 
 如下图所示：
