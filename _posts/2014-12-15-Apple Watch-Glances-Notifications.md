@@ -334,7 +334,7 @@ NSString* invitationNotesKey = @"note";
 
 可以看到最后调用的是`WKUserNotificationInterfaceTypeCustom`这个实例，如果采用` WKUserNotificationInterfaceTypeDefault`则会呈现静态的通知界面。
 
-自己简单的修改了一下默认的那个payload文件，尝试了一下动态的通知界面，调试的时候记得修改一下scheme，如图
+自己简单的修改了一下默认的那个payload文件，尝试了一下动态的通知界面，调试的时候记得修改一下scheme，记得要去选择那个Payload文件。如图：
 
 <figure>
 <img src="{{ site.url }}/images/applewatch/3notificationscheme.png" alt="Change Scheme">
@@ -353,6 +353,29 @@ NSString* invitationNotesKey = @"note";
     [self.newsTitle setTextColor:[UIColor yellowColor]];
     [self.newsDigets setTextColor:[UIColor blueColor]];
     completionHandler(WKUserNotificationInterfaceTypeCustom);
+}
+{% endhighlight %}
+
+`notificationpayload.json`中的代码如下：
+
+{% highlight css %}
+"aps": {
+"alert": "新闻",
+"title": "科比总得分超越乔丹",
+"digest": "科比:一直追赶乔丹的人",
+"category": "myCategory"
+},
+
+"WatchKit Simulator Actions": [
+{
+"title": "好棒！",
+"identifier": "firstButtonAction"
+},
+{
+"title": "什么鬼！",
+"identifier": "secondButtonAction"
+}
+],
 }
 {% endhighlight %}
 
