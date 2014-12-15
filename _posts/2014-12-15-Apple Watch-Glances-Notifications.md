@@ -1,4 +1,3 @@
-Apple Watch 开发调研三:Glances,Notifications
 ---
 layout: post
 title: "Apple Watch 开发调研三:Glances,Notifications"
