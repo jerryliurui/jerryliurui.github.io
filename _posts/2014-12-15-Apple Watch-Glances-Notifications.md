@@ -50,7 +50,7 @@ Glances 的生命周期和其他的控制器几乎是一样的，除了一点，
 最后记住一点就是一个App只有一个Glance，所以创建了它就要好好利用它，让它呈现最有用的信息。
 
 ## 二.管理Glances的界面 ##
-创建Watch App 的时候可以直接勾选上Glance，也可以在之后大开发中创建一个Glance 界面，如下：
+创建Watch App 的时候可以直接勾选上Glance，也可以在之后的开发中创建一个Glance 界面，如下：
 
 <figure>
 <img src="{{ site.url }}/images/applewatch/3glance.png" alt="Glance Interface">
@@ -125,6 +125,7 @@ Apps 不需要特殊处理通知，系统会提供一个默认的版本，当然
 长版本就可以滚动了，而且会显示通知的内容以及相关的按钮什么的，如果我们没有提供自定义的界面，系统就会显示一个默认的，默认的版本包括了软件名字、图标、通知信息，如果有自定义的就会呈现自定义的。
 
 Long-Look 版本提供了三个区域：
+
 > 1.`sash`区域显示软件名字和软件的图标，默认是透明的，当然也可以自定义颜色。
 > 2.`Content area`包括了通知的详细的内容，这片区域我们可以设置成在sash的下边也可以设置成从sash的底部开始内容
 > 3.底部是按钮区域，包含了一个`dismiss`按钮，以及其他的自定义的按钮，`Dismiss`按钮由系统提供并且经常存在。。。
@@ -202,7 +203,7 @@ func registerSettingsAndCategories() {
 ### 4.响应动作按钮的点击事件
 当一个用户点击了通知上的按钮，系统就会去寻找之前注册的通知中的这个类型的动作的具体的实现动作，分前台和后台动作，之间的区别如下：
 
-> 1.前台动作会发送给WatchKit App 并且交付button的ID给界面的控制器
+> 1.前台动作会发送给WatchKit App 并且交付button的ID给界面的控制器    
 > 2.后台动作会发送给主程序(Host App)的后台，动作会被交付给:
 
 {% highlight css %}
@@ -246,7 +247,7 @@ handleActionWithIdentifier:forLocalNotification:
 程序可能会包含很多个通知的类型，需要通过通知类型这个对象去识别，WatchKit使用这个对象去决定在运行时具体去显示哪一个通知界面。如果进来的通知没有类别可以识别，那么系统就会调用默认的通知。
 
 ### 1.配置一个自定义的通知界面
-每一个通知界面必须要指定一个通知的类型,如图指定，还可以设置sash 的颜色。
+每一个通知界面必须要指定一个通知的类型，如图指定，还可以设置sash 的颜色。
 
 <figure>
 <img src="{{ site.url }}/images/applewatch/3sash.png" alt="Sash"">
@@ -255,6 +256,7 @@ handleActionWithIdentifier:forLocalNotification:
 
 ### 2.配置静态的通知界面
 创建一个静态的通知界面的作用是为了无法显示动态的时候显示一下，有点像备胎的意思。。设计原则如下：
+
 > 1.所有的图片资源必须放在WatchKit App bundle中
 > 2.界面不要包含控制控件儿、表格、地图以及其他的可交互的元素
 > 3.notificationAlertLabel这个label必须要关联一个标签，用来显示通知信息用的
