@@ -250,7 +250,7 @@ handleActionWithIdentifier:forLocalNotification:
 每一个通知界面必须要指定一个通知的类型，如图指定，还可以设置sash 的颜色。
 
 <figure>
-<img src="{{ site.url }}/images/applewatch/3sash.png" alt="Sash"">
+<img src="{{ site.url }}/images/applewatch/3sash.png" alt="Sash">
 <figcaption>Sash</figcaption>
 </figure>
 
