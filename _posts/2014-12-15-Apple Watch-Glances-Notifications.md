@@ -65,7 +65,55 @@ Glances 的生命周期和其他的控制器几乎是一样的，除了一点，
 </figure>
 
 具体的代码如下：
-{% highlight css %}
+{% highlight objective-c %}
+- (void)awakeWithContext:(id)context {
+    // Load image from WatchKit Extension.
+    NSData *imageData;
+    
+    if ([[WKInterfaceDevice currentDevice] screenBounds].size.width > 136.0) {
+        imageData = UIImagePNGRepresentation([UIImage imageNamed:@"42mm-Walkway"]);
+    } else {
+        imageData = UIImagePNGRepresentation([UIImage imageNamed:@"38mm-Walkway"]);
+    }
+    
+    [self.glanceImage setImageData:imageData];
+    [self.glanceLabel setText:@"Hello World"];
+}
+{% endhighlight %}
+
+{% highlight java %}
+- (void)awakeWithContext:(id)context {
+    // Load image from WatchKit Extension.
+    NSData *imageData;
+    
+    if ([[WKInterfaceDevice currentDevice] screenBounds].size.width > 136.0) {
+        imageData = UIImagePNGRepresentation([UIImage imageNamed:@"42mm-Walkway"]);
+    } else {
+        imageData = UIImagePNGRepresentation([UIImage imageNamed:@"38mm-Walkway"]);
+    }
+    
+    [self.glanceImage setImageData:imageData];
+    [self.glanceLabel setText:@"Hello World"];
+}
+{% endhighlight %}
+
+{% highlight c++ %}
+- (void)awakeWithContext:(id)context {
+    // Load image from WatchKit Extension.
+    NSData *imageData;
+    
+    if ([[WKInterfaceDevice currentDevice] screenBounds].size.width > 136.0) {
+        imageData = UIImagePNGRepresentation([UIImage imageNamed:@"42mm-Walkway"]);
+    } else {
+        imageData = UIImagePNGRepresentation([UIImage imageNamed:@"38mm-Walkway"]);
+    }
+    
+    [self.glanceImage setImageData:imageData];
+    [self.glanceLabel setText:@"Hello World"];
+}
+{% endhighlight %}
+
+{% highlight c %}
 - (void)awakeWithContext:(id)context {
     // Load image from WatchKit Extension.
     NSData *imageData;
