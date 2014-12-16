@@ -81,58 +81,10 @@ Glances 的生命周期和其他的控制器几乎是一样的，除了一点，
 }
 {% endhighlight %}
 
-{% highlight java %}
-- (void)awakeWithContext:(id)context {
-    // Load image from WatchKit Extension.
-    NSData *imageData;
-    
-    if ([[WKInterfaceDevice currentDevice] screenBounds].size.width > 136.0) {
-        imageData = UIImagePNGRepresentation([UIImage imageNamed:@"42mm-Walkway"]);
-    } else {
-        imageData = UIImagePNGRepresentation([UIImage imageNamed:@"38mm-Walkway"]);
-    }
-    
-    [self.glanceImage setImageData:imageData];
-    [self.glanceLabel setText:@"Hello World"];
-}
-{% endhighlight %}
-
-{% highlight c++ %}
-- (void)awakeWithContext:(id)context {
-    // Load image from WatchKit Extension.
-    NSData *imageData;
-    
-    if ([[WKInterfaceDevice currentDevice] screenBounds].size.width > 136.0) {
-        imageData = UIImagePNGRepresentation([UIImage imageNamed:@"42mm-Walkway"]);
-    } else {
-        imageData = UIImagePNGRepresentation([UIImage imageNamed:@"38mm-Walkway"]);
-    }
-    
-    [self.glanceImage setImageData:imageData];
-    [self.glanceLabel setText:@"Hello World"];
-}
-{% endhighlight %}
-
-{% highlight c %}
-- (void)awakeWithContext:(id)context {
-    // Load image from WatchKit Extension.
-    NSData *imageData;
-    
-    if ([[WKInterfaceDevice currentDevice] screenBounds].size.width > 136.0) {
-        imageData = UIImagePNGRepresentation([UIImage imageNamed:@"42mm-Walkway"]);
-    } else {
-        imageData = UIImagePNGRepresentation([UIImage imageNamed:@"38mm-Walkway"]);
-    }
-    
-    [self.glanceImage setImageData:imageData];
-    [self.glanceLabel setText:@"Hello World"];
-}
-{% endhighlight %}
-
 一般来说，点击Glance 会进入到Watch App 的主界面中，但是也可以自定义的，` updateUserActivity:userInfo: `调用这个方法即可。调用这个方法之后，会在登陆watch app 的登陆序列中去寻找`actionForUserActivity:context:`这个方法去找到具体是哪一个controller去显示内容，会根据这个控制器唯一的名字去找，然后呈现。
 主界面要实现的代码如下：
 
-{% highlight css %}
+{% highlight objective-c %}
 - (NSString *)actionForUserActivity:(NSDictionary *)userActivity context:(id *)context {
     // Set the context to meaningful data that may be in userActivity. You can also set it to data you derive from userActivity.
     *context = userActivity[@"detailInfo"];
@@ -144,7 +96,7 @@ Glances 的生命周期和其他的控制器几乎是一样的，除了一点，
 
 Glances 中要去做的代码如下：
 
-{% highlight css %}
+{% highlight objective-c %}
     // Use Handoff to route the wearer to the image detail controller when the Glance is tapped.
     [self updateUserActivity:@"com.example.apple-samplecode.WatchKit-Catalog" userInfo:@{
         @"controllerName": @"imageDetailController",
@@ -195,13 +147,13 @@ Long-Look 版本提供了三个区域：
 再就是Xcode 6.2 Beta2 当中WatchKit加入了一个新的方法，是直接和iOS App 通信的，但是那个也是后台的行为。
 Host App 中调用这个方法：
 
-{% highlight css %}
+{% highlight objective-c %}
 - (void)application:(UIApplication *)application handleWatchKitExtensionRequest:(NSDictionary *)userInfo reply:(void(^)(NSDictionary *replyInfo))reply NS_AVAILABLE_IOS(8_2);
 {% endhighlight %}
 
 WatchKit 中调用这个方法
 
-{% highlight css %}
+{% highlight objective-c %}
 + (BOOL)openParentApplication:(NSDictionary *)userInfo reply:(void(^)(NSDictionary *replyInfo, NSError *error)) reply;    // launches containing iOS application on the phone
 {% endhighlight %}
 
@@ -217,7 +169,7 @@ iOS8 之后我们可以在主程序中使用`UIUserNotificationSetting`这个类
 
 以下代码是在Host App中注册的实例代码：
 
-{% highlight css %}
+{% highlight objective-c %}
 func registerSettingsAndCategories() {
     var categories = NSMutableSet()
  
@@ -254,18 +206,18 @@ func registerSettingsAndCategories() {
 > 1.前台动作会发送给WatchKit App 并且交付button的ID给界面的控制器    
 > 2.后台动作会发送给主程序(Host App)的后台，动作会被交付给:
 
-{% highlight css %}
+{% highlight objective-c %}
 application:handleActionWithIdentifier:forRemoteNotification:completionHandler:
 {% endhighlight %}
 或者
 
-{% highlight css %}
+{% highlight objective-c %}
 application:handleActionWithIdentifier:forLocalNotification:completionHandle:
 {% endhighlight %}
 
 值得注意的一点是` WKUserNotificationInterfaceController`子类是不会去处理动作的，选择前台动作会登陆watch app，然后装载主界面的控制器，所以主界面的控制器必须要实现
 
-{% highlight css %}
+{% highlight objective-c %}
 handleActionWithIdentifier:forRemoteNotification: 
 handleActionWithIdentifier:forLocalNotification: 
 {% endhighlight %}
@@ -284,11 +236,11 @@ handleActionWithIdentifier:forLocalNotification:
 
 静态的那个是需要保留的，但是动态的那个倒是可以删除掉的，他俩使用的是一个通知类型。当一个满足这个种类的通知到来之后，系统会优先去呈现动态的通知界面，如果没有才会去呈现静态的。或者使我们指定了就显示静态的通知界面的时候，系统也会忽视掉动态的界面来显示静态的，在下面这两个方法中设置：(采用默认的` WKUserNotificationInterfaceTypeDefault`)
 
-{% highlight css %}
+{% highlight objective-c %}
 - (void)didReceiveRemoteNotification:(NSDictionary *)remoteNotification withCompletion:(void (^)(WKUserNotificationInterfaceType interface))completionHandler
 {% endhighlight %}
 
-{% highlight css %}
+{% highlight objective-c %}
 - (void)didReceiveLocalNotification:(UILocalNotification *)localNotification  withCompletion:(void (^)(WKUserNotificationInterfaceType interface))completionHandler
 {% endhighlight %}
 
@@ -325,7 +277,7 @@ handleActionWithIdentifier:forLocalNotification:
 
 如下是` didReceiveRemoteNotification:withCompletion:`一个简单的实现，它是在一个日历APP发送了一个远程的通知（新的会议邀请）。方法会提取远程通知中payload的数据，并且使用这些数据来填充界面上的元素，例子中没有容错，自己的代码中尽量加上容错，确保payload是合法可用的，配置好标签之后，调用完成的block，来告诉WatchKit，动态的通知界面已经准备就绪，可以呈现了。
 
-{% highlight css %}
+{% highlight objective-c %}
 // 两个远程通知的payload 中的key.
 NSString* apsKeyString = @"aps";
 NSString* titleKeyString = @"title";
@@ -391,7 +343,7 @@ NSString* invitationNotesKey = @"note";
 
 `notificationcontroller`中的代码如下：
 
-{% highlight css %}
+{% highlight objective-c %}
 - (void)didReceiveRemoteNotification:(NSDictionary *)remoteNotification withCompletion:(void (^)(WKUserNotificationInterfaceType))completionHandler {
     NSDictionary *newsDic = [remoteNotification objectForKey:@"aps"];
     NSString *title = [newsDic objectForKey:@"title"];
@@ -406,7 +358,7 @@ NSString* invitationNotesKey = @"note";
 
 `notificationpayload.json`中的代码如下：
 
-{% highlight css %}
+{% highlight objective-c %}
 "aps": {
 "alert": "新闻",
 "title": "科比总得分超越乔丹",
