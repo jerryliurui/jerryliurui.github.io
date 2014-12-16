@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Apple Watch 开发调研三:Glances,Notifications"
+title: "Apple Watch 开发调研三: Glances,Notifications"
 description: "Developing for Apple Watch"
 category: iOS Programming
 tags: [AppleWatch]
