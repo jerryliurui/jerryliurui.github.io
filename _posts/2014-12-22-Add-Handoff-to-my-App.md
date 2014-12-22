@@ -22,7 +22,7 @@ share: true
 
 **说实话看完今年的发布会之后觉得`handoff`这个功能有些鸡肋，只能说自己目光实在是短浅。。。`handoff`极大的促进了苹果大生态圈的完成过程，在这之后，除了icloud或者itunes会让你觉得手中的iphone需要一个ipad、apple watch作伴，又会多了一个让你再次剁手购买另一个设备的理由：handoff。**
 
-**接触handoff是因为之前调研apple watch 的时候发现前台打开iphone上的app不是很可行，按照苹果工程师的推荐，handoff实在是再好不过了，试想一下，用户在手表上想要查看一篇新闻的详细报道，又或者在手表上看新闻图片不是很爽的时候，发现iphone、ipad的左下角有一个icon，滑动解锁之后就会继续阅读，获得更加良好的体验，进可攻，退可守，实在是将用户包围在这么一坨苹果设备之中的上上策。**
+接触handoff是因为之前调研apple watch 的时候发现前台打开iphone上的app不是很可行，按照苹果工程师的推荐，handoff实在是再好不过了，试想一下，用户在手表上想要查看一篇新闻的详细报道，又或者在手表上看新闻图片不是很爽的时候，发现iphone、ipad的左下角有一个icon，滑动解锁之后就会继续阅读，获得更加良好的体验，进可攻，退可守，实在是将用户包围在这么一坨苹果设备之中的上上策。
 
 话不多说，总结一下最近调研、应用handoff在自己应用中的一些体会以及大致领悟一下官方文档的精神报告。传送门：[Handoff官方文档](https://developer.apple.com/library/prerelease/ios/documentation/UserExperience/Conceptual/Handoff/HandoffFundamentals/HandoffFundamentals.html#//apple_ref/doc/uid/TP40014338-CH3-SW1)
 
