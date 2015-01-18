@@ -134,6 +134,7 @@ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 {% endhighlight %}
 
 `遇到了一些小问题，解决了，但是比较迷糊，这里大致记录一下。。。`
+
 #### `1.`首先是mac 上pathon 版本的问题。
 之前更换掉了mac里边自带的python2.7，额，我小白都白到了输入python无效果都不知道该怎么办的地步了。。。最后才发现要输入python3才好用。。。
 
@@ -194,9 +195,8 @@ Syntax Error: invalid syntax
 {% endhighlight %}
 
 #### `2`.找不到`mysql_config`命令。
-安装
 
-这个问题解决之后又出现了新的问题。。说是找不到`mysql_config`命令
+上一个问题解决之后又出现了新的问题。。说是找不到`mysql_config`命令
 
 {% highlight css %}
 sh: mysql_config: command not found
@@ -405,8 +405,11 @@ Running migrations:
 {% endhighlight %}
 
 总之现在要三步走了
+
 > 1.Change your models (in models.py).
+
 > 2.Run `python manage.py makemigrations` to create migrations for those changes
+
 > 3.Run `python manage.py migrate` to apply those changes to the database.
 
 #### PS :  python shell
