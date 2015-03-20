@@ -10,7 +10,18 @@ comments: true
 share: true
 ---
 
+<section id="table-of-contents" class="toc">
+<header>
+<h1>Features</h1>
+</header>
+<div id="drawer" markdown="1">
+*  Auto generated table of contents
+{:toc}
+</div>
+</section><!-- /#table-of-contents -->
+
 ##### 到今儿，接触`Apple watch`相关的开发工作已经差不多快三个月时间了，每天都去逛逛`WatchKit` 苹果的开发者论坛，看看最近都有哪些其他开发者po出来的问题，实在是找不到答案了也会自己去提个问题什么的，有意思的是有两次自己刚po出一个问题，当天摸索出答案之后就跑上去给自己回复。。。而后被标成了标准答案，感觉这不失为一个刷论坛正确答案数量的好方法 o(╯□╰)o
+
 
 Xcode6.2 正式版本随着10号凌晨的发布会也出来了，之前的beta版本每天不崩溃个四五回都不好意思说今儿我写代码了。昨儿的发布会，依旧是最近几次发布会的节奏，发布前该剧透的剧透，用一些剧透来降低预期，最后发布的时候赢得满堂喝彩，不过，那个土豪金`MacBook`还是亮瞎了，哪怕心里已有预期。`Apple Watch`终于出来了，不知道为啥，以前都是盼星星的盼着什么时候能用上，现在变成了盼星星的盼啥时候这个东西能买到当测试机。。。言归正传，说说可能会真正引领穿戴设备的`Apple Watch`。
 
@@ -24,8 +35,11 @@ Xcode6.2 正式版本随着10号凌晨的发布会也出来了，之前的beta�
 
 目前开发者网站上的这几部分我觉得是开发Watch 必须过几遍的东西，也会有不少的启发，还有论坛也是一个不错的地方。
 [1.WatchKit Framework Reference](https://developer.apple.com/library/prerelease/ios/documentation/WatchKit/Reference/WatchKit_framework/index.html#//apple_ref/doc/uid/TP40014968)
+
 [2.WatchKit Development Tips : Optimize your WatchKit apps with these tips and best practices.](https://developer.apple.com/watchkit/tips/)
+
 [3.Apple Watch Programming Guide](https://developer.apple.com/library/prerelease/ios/documentation/General/Conceptual/WatchKitProgrammingGuide/index.html)
+
 [4.Developer Forum](https://devforums.apple.com/community/ios/watchkit)
 
 ### 1.Watch Main App
@@ -199,9 +213,9 @@ HandOff在`iOS8`之后出现，着实是为了Apple Watch量身打造的好么�
 
 
 #### （7）其他一些Tips
-1.dynamic notification 中苹果是希望 用户在通知中就把所有的信息都看完的，而不希望用户点击内容本身（`实际上也是不能点击的`）再进入到watch app 内查看这个通知的内容的，`恰恰相反的是`，glance 的交互理念是相反的，也就是苹果估计用户点击glance页面本身（`实际上是可以点击的`）进入到watch app中进行继续深度阅读的。
+(1)dynamic notification 中苹果是希望 用户在通知中就把所有的信息都看完的，而不希望用户点击内容本身（`实际上也是不能点击的`）再进入到watch app 内查看这个通知的内容的，`恰恰相反的是`，glance 的交互理念是相反的，也就是苹果估计用户点击glance页面本身（`实际上是可以点击的`）进入到watch app中进行继续深度阅读的。
 
-2.关于这货WKTextInputMode，一开始选择的是WKTextInputModeAllowAnimatedEmoji，后来发现这个是动态的大表情，返回的是这个大表情的data，不太适合我们一一对应到iphone上的emoji表情，于是后来切换到了WKTextInputModeAllowEmoji。而WKTextInputModePlain只是显示了我们所“推荐的”那些回复文本选项。
+(2)关于这货WKTextInputMode，一开始选择的是WKTextInputModeAllowAnimatedEmoji，后来发现这个是动态的大表情，返回的是这个大表情的data，不太适合我们一一对应到iphone上的emoji表情，于是后来切换到了WKTextInputModeAllowEmoji。而WKTextInputModePlain只是显示了我们所“推荐的”那些回复文本选项。
 
 {% highlight css %}
 typedef NS_ENUM(NSInteger, WKTextInputMode)  {
@@ -211,7 +225,7 @@ typedef NS_ENUM(NSInteger, WKTextInputMode)  {
 };
 {% endhighlight %}
 
-3.- (void)becomeCurrentPage; 这个方法主要是在page based页面当中，如果第三页在启动的时候你想让他先出来，就要标识好，在awake里边获取到之后，调用这个方法，注意的是，这个第三页不是立马就出现在手表的表盘之上的，而是从第一页蹦到第二页，然后再第三页这样转的。
+(3)- (void)becomeCurrentPage; 这个方法主要是在page based页面当中，如果第三页在启动的时候你想让他先出来，就要标识好，在awake里边获取到之后，调用这个方法，注意的是，这个第三页不是立马就出现在手表的表盘之上的，而是从第一页蹦到第二页，然后再第三页这样转的。
 
 ### 2.Notification
 从目前来看，手表上出现push用该是随着手机一起来的，也就是同时去显示在这两个设备上，除非一切外力因素，比如手表关闭了抬手查看通知等。在之前的blog中提到过定义`category`来区分推送通知，如果没有定义category的故事板的话，就会在手表上显示一个系统默认的简短的通知。上边说道，苹果还是鼓励在notification中将该阅读的内容都阅读完，即使增加按钮也要是一些比较简单的操作，比如说一个日程安排的软件，来了一个push，一个done，一个delete，加上系统的cancel，就可以了。
