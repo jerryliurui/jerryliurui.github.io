@@ -5,7 +5,7 @@ description: "Developing for Apple Watch"
 category: iOS Programming
 tags: [AppleWatch]
 modified: 2015-03-20
-imagefeature: blog_bg_applewatch.png
+imagefeature: blog-bg-applewatch-development-summary.png
 comments: true
 share: true
 ---
