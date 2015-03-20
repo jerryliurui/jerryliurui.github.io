@@ -35,6 +35,7 @@ Xcode6.2 正式版本随着10号凌晨的发布会也出来了，之前的beta�
 闲话扯到这里吧，是时候总结一下这两个月的收获和掉坑了。
 
 目前开发者网站上的这几部分我觉得是开发Watch 必须过几遍的东西，也会有不少的启发，还有论坛也是一个不错的地方。
+
 [1.WatchKit Framework Reference](https://developer.apple.com/library/prerelease/ios/documentation/WatchKit/Reference/WatchKit_framework/index.html#//apple_ref/doc/uid/TP40014968)
 
 [2.WatchKit Development Tips : Optimize your WatchKit apps with these tips and best practices.](https://developer.apple.com/watchkit/tips/)
