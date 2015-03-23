@@ -60,7 +60,7 @@ Xcode6.2 正式版本随着10号凌晨的发布会也出来了，之前的beta�
 {% endhighlight %}
 在Watch上页面之间转换传值，很重要的一个纽带就是这个`context`，传递有用的信息和标识，这个方法中，我传递进入六个controller的`interface builder identifier`,以及事前拼好的六个context。
 
-因为Watch App 的打开可以是几种不同方式的，可以写一个统一的方法`[self controller]`，在这个方法中去选择启动哪一个具体的Controller。我在.h文件中定义了一个枚举来定义不同的启动方式：
+因为Watch App 的打开可以是几种不同方式的，可以写一个统一的方法`[self showController]`，在这个方法中去选择启动哪一个具体的Controller。我在.h文件中定义了一个枚举来定义不同的启动方式：
 {% highlight css %}
 typedef enum  {
     WKOpenForNormal,      //普通打开
@@ -148,11 +148,11 @@ typedef enum  {
 PS：`最后的最后，我们发现使用App Group来通信数据更加的有效率，因此一部分数据的请求采用了App Group来实现`。
 
 #### （4）TableView 在Watch 上的使用
-在SDK发布的初期，我天真的以为新控件之一`WKInterfaceGroup`可以点击，因为目前来看watch上是没有图层的概念的，复杂的UI布局是相当困难的，布局方式和之前有很大的区别，包括在故事板中的布局方法。当初为了实现产品给过来的UI布局也是脑洞大开啊，比如各种嵌套`Group`,为了要实现demo中主页的这种感觉，我很自然的想到了，放一个group，背景放图片，其他控件放在group上就好了，解决了无法实现控件在控件之上的问题。但是这就需要group可以点击，盼星星盼月亮之后，Xcode6.2正式版出来之后彻底断了我这个念头，没办法，只能通过另一个控件`WKInterfaceTable`来实现了，每一页只有一行不就可以了么。。。。只能这么干了。
+在SDK发布的初期，我天真的以为新控件之一`WKInterfaceGroup`可以点击，因为目前来看watch上是没有图层的概念的，复杂的UI布局是相当困难的，布局方式和之前有很大的区别，包括在故事板中的布局方法。当初为了实现产品给过来的UI布局也是脑洞大开啊，比如各种嵌套`Group`,为了要实现demo中主页的这种感觉，我很自然的想到了，放一个group，背景放图片，其他控件放在group上就好了，解决了无法实现控件在控件之上的问题。但是这就需要group可以点击，盼星星盼月亮之后，Xcode6.2正式版出来之后彻底断了我这个念头，没办法，于是我通过另一个控件`WKInterfaceTable`来实现了，每一页只有一行不就可以了么~
 
 `WKInterfaceTable`和`UITableView`使用上还是有一些不同的，也比`UITableView`的使用方便了很多。
 
-首先你需要去顶一个Row类，这个Row类相当于一个cell，在这个Row上去布局，如果你的表格中呈现数据的方式不一样，那就要定义不同的Row类。
+首先你需要去定义一个Row类，这个Row类相当于一个cell，在这个Row上去布局，如果你的表格中呈现数据的方式不一样，那就要定义不同的Row类。
 
 定义好之后，调用的时候需要使用如下方法：
 
@@ -230,7 +230,7 @@ typedef NS_ENUM(NSInteger, WKTextInputMode)  {
 (3)- (void)becomeCurrentPage; 这个方法主要是在page based页面当中，如果第三页在启动的时候你想让他先出来，就要标识好，在awake里边获取到之后，调用这个方法，注意的是，这个第三页不是立马就出现在手表的表盘之上的，而是从第一页蹦到第二页，然后再第三页这样转的。
 
 ### 2.Notification
-从目前来看，手表上出现push用该是随着手机一起来的，也就是同时去显示在这两个设备上，除非一切外力因素，比如手表关闭了抬手查看通知等。在之前的blog中提到过定义`category`来区分推送通知，如果没有定义category的故事板的话，就会在手表上显示一个系统默认的简短的通知。上边说道，苹果还是鼓励在notification中将该阅读的内容都阅读完，即使增加按钮也要是一些比较简单的操作，比如说一个日程安排的软件，来了一个push，一个done，一个delete，加上系统的cancel，就可以了。
+从目前来看，手表上出现push用该是随着手机一起来的，也就是同时去显示在这两个设备上，除非一些外力因素，比如手表关闭了抬手查看通知等。在之前的blog中提到过定义`category`来区分推送通知，如果没有定义category的故事板的话，就会在手表上显示一个系统默认的简短的通知。上边说道，苹果还是鼓励在notification中将该阅读的内容都阅读完，即使增加按钮也要是一些比较简单的操作，比如说一个日程安排的软件，来了一个push，一个done，一个delete，加上系统的cancel，就可以了。
 
 我尝试了在`Dynamic notification`中申请了一个图片资源，发现系统就选择去显示`Static notification`,因此在notification controller内进行的任务的能力有限，这个在开发的时候要慎重。
 
