@@ -75,7 +75,7 @@ share: true
 <figcaption>Editing Scheme</figcaption>
 </figure>
 
-苹果这次提供了一个JSON文件，就在supporting files里边叫做`RemoteNotificationPayload.json`,可以看到这是一个字典，可以在里边配置很多的东西，比如按钮的名字和身份标识。
+苹果这次提供了一个JSON文件，就在supporting files里边叫做`PushNotificationPayload.apns`,可以看到这是一个字典，可以在里边配置很多的东西，比如按钮的名字和身份标识。
 
 {% highlight css %}
 {
