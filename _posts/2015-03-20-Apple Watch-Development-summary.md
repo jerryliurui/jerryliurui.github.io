@@ -50,7 +50,7 @@ Xcode6.2 正式版本随着10号凌晨的发布会也出来了，之前的beta�
 #### （1）以Page-Based方式启动Watch App
 
 <figure>
-<img src="{{ site.url }}/images/Apple Watch Development summary/Bezel Snapshot Apple Watch Page Based" alt="Page-based-App">
+<img src="{{ site.url }}/images/Apple Watch Development summary/Bezel Snapshot Apple Watch Page Based.png" alt="Page-based-App">
 <figcaption>Page-Based Watch App</figcaption>
 </figure>
 
