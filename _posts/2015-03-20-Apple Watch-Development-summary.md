@@ -299,7 +299,8 @@ Glance 以及主App的通信是依靠`Handoff`来实现的，也就是说用户�
             break;
 {% endhighlight %}
 
-Glance 在demo中的表现形式，demo还在整理中，整理好会放在自己的github上。
+Glance 在demo中的表现形式，demo已经整理好，放在了自己的Github上。
+[AppleWatchDemo](https://github.com/jerryliurui/AppleWatchDemo)
 
 <figure>
 <img src="{{ site.url }}/images/Apple Watch Development summary/demo-glance.png" alt="Selectable row">
