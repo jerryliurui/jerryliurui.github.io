@@ -50,7 +50,7 @@ Xcode6.2 正式版本随着10号凌晨的发布会也出来了，之前的beta�
 #### （1）以Page-Based方式启动Watch App
 
 <figure>
-<img src="{{ site.url }}/images/Apple Watch Development summary/page-based.png" alt="Page-based-App">
+<img src="{{ site.url }}/images/Apple Watch Development summary/Bezel Snapshot Apple Watch Page Based.png" alt="Page-based-App">
 <figcaption>Page-Based Watch App</figcaption>
 </figure>
 
@@ -228,6 +228,16 @@ typedef NS_ENUM(NSInteger, WKTextInputMode)  {
 {% endhighlight %}
 
 (3)- (void)becomeCurrentPage; 这个方法主要是在page based页面当中，如果第三页在启动的时候你想让他先出来，就要标识好，在awake里边获取到之后，调用这个方法，注意的是，这个第三页不是立马就出现在手表的表盘之上的，而是从第一页蹦到第二页，然后再第三页这样转的。
+
+(4)推荐一个很好用的工具，叫做`Bezel`,它能够将模拟器中运行的watch app 映射到真实的手表里，表带的样式也分38mm以及42mm，有很多种，可以更好的查看自己的App在真实手表上的样子。更换表带也很方便，直接拖着下边的某一个样式到Bezel上就自动换了。举个例子，在开发的时候曾想左右留边，但是放在`Bezel`上就会发现手表自带黑边，于是留下的左右边就是很多余了。
+
+[Bezel 下载地址，页面内包含N多种表带](http://infinitapps.com/bezel/)
+
+<figure>
+<img src="{{ site.url }}/images/Apple Watch Development summary/bezel watch 38 and 42.png" alt="Selectable row">
+<figcaption>内置38mm以及42mm 的N多表带样式。</figcaption>
+</figure>
+
 
 ### 2.Notification
 从目前来看，手表上出现push用该是随着手机一起来的，也就是同时去显示在这两个设备上，除非一些外力因素，比如手表关闭了抬手查看通知等。在之前的blog中提到过定义`category`来区分推送通知，如果没有定义category的故事板的话，就会在手表上显示一个系统默认的简短的通知。上边说道，苹果还是鼓励在notification中将该阅读的内容都阅读完，即使增加按钮也要是一些比较简单的操作，比如说一个日程安排的软件，来了一个push，一个done，一个delete，加上系统的cancel，就可以了。
