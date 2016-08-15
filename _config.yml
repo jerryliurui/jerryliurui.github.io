@@ -26,7 +26,7 @@ owner:
   avatar:         Jerry_Profile.jpg
   email:          lr90719@163.com
   # Use the coder's toolbox at http://coderstoolbox.net/string/#!encoding=xml&action=encode&charset=us_ascii to encode your description into XML string
-  description:    1990年出生在大连旅顺，巨蟹座，主业踢足球、副业打篮球，喜欢科比、湖人，也喜欢西班牙国家队，硕士在读，实习中，主要方向是iOS开发。喜欢摄影和科技产品，不剁手不舒服斯基那种，会出新产品的开箱与使用体验。目前性取向依然正常。
+  description:    1990年出生在大连旅顺，巨蟹座，主业踢足球、副业打篮球，喜欢科比、湖人，也喜欢西班牙国家队。DOTA2、守望、炉石中毒玩家。毕业于中国科学技术大学苏州研究院，目前工作主要方向是iOS开发。喜欢摄影和科技产品，不剁手不舒服斯基那种，会出新产品的开箱与使用体验。目前性取向依然正常。
   # Social networking links used in footer. Update and remove as you like.
   SinaMicroBlog:       http://www.weibo.com/714530009?wvr=4&lf=reg
   facebook:       https://www.facebook.com/people/刘瑞/100006495068467
@@ -59,7 +59,7 @@ links:
 # http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 timezone:    America/New_York
 future:      true
-highlighter: pygments
+highlighter: rouge
 markdown:    kramdown
 paginate:    6
 paginate_path: "page:num"
