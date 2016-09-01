@@ -94,17 +94,17 @@ CGSize maxCompactSize = [self.extensionContext widgetMaximumSizeForDisplayMode:N
 ### 4.开发过程中遇到的一些小问题
 开发的时候遇到了大大小小的问题吧，其中有一些是和适配无关的。
 
-####(1)Cell上View 颜色，在点击时改变
+#### (1)Cell上View 颜色，在点击时改变
 这个处理方法还是很多的，最简单的就是在`setSelected`和`setHighlighted`这两个方法中将期望出现的颜色再赋值一遍就可以了。
 
 另一个方法是设置View 的`layer.background = XXX.CGColor`。
 
 最后一种方法是在自定义View中重写`setBackgroundColor`就可以了。
 
-####(2)展开、收缩出错
+#### (2)展开、收缩出错
 这个问题的解决，就是最好在伸缩、展开的那个代理方法中去处理所有的高度变化，在这个方法中去计算，在其他的方法中，尽量不要使用`self.preferredContentSize =`这养的方式去改变。
 
-####(3)启动样式的设定
+#### (3)启动样式的设定
 在`- (void)viewWillAppear:(BOOL)animated; `方法中设置一下就好：
 {% highlight css %}
 self.extensionContext.widgetLargestAvailableDisplayMode = NCWidgetDisplayModeExpanded;
