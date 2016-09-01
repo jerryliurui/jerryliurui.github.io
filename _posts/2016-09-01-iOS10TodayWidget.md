@@ -5,7 +5,7 @@ description: "iOS10 TodayWidget"
 category: iOS Programming
 tags: [iOS10, TodayWidget]
 modified: 2016-09-01
-imagefeature: picture-11.jpg
+imagefeature: bg/459_570b401a8a6f2.jpg
 comments: true
 share: true
 ---
@@ -53,10 +53,10 @@ typedef NS_ENUM(NSInteger, NCWidgetDisplayMode) {
 {% endhighlight %}
 
 <figure>
-<a href="{{ site.url }}/images/showless.jpg"><img src="{{ site.url }}/images/showless.jpg"></a>
+<a href="{{ site.url }}/images/showless.png"><img src="{{ site.url }}/images/showless.png"></a>
 </figure>
 <figure>
-<a href="{{ site.url }}/images/showmore.jpg"><img src="{{ site.url }}/images/showmore.jpg"></a>
+<a href="{{ site.url }}/images/showmore.png"><img src="{{ site.url }}/images/showmore.png"></a>
 </figure>
 
 如果我们想根据当前具体设备来适配的话，可以通过下边这个方法：
