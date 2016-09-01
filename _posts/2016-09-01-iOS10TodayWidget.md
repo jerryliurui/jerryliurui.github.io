@@ -10,6 +10,16 @@ comments: true
 share: true
 ---
 
+<section id="table-of-contents" class="toc">
+<header>
+<h1>Features</h1>
+</header>
+<div id="drawer" markdown="1">
+*  Auto generated table of contents
+{:toc}
+</div>
+</section><!-- /#table-of-contents -->
+
 ##### 更前先说点题外话，貌似有一年半没有更新博客了，讲道理有点太久了。2015年的大部分时间我都在和论文做着激烈的斗争，合肥、苏州、北京、大连四个地方来回跑，最后的结果是两个证儿，一件硕士毕业服，无数张毕业照，一篇90多页的论文，按照惯例，看自己的这个论文还是像翔一样好吧。当然了，还有场数蹭蹭涨的Dota2比赛场数。。。你懂得，劳逸结合嘛。
 
 不知道是不是曝光的太多了，这两年的发布会都很少会看完，基本上都是事后看看文档，看看都有哪些东西更新了。今年也差不多，因为去年没怎么关注`watchOS2`的变化，所以感觉watch 的改动对我来说很有挑战性。。。
