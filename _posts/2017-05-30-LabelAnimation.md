@@ -262,7 +262,7 @@ _animationIntervalTimer = [NSTimer scheduledTimerWithTimeInterval:ANIMATION_TIME
 <a href="{{ site.url }}/images/AnimationLabel/playAnimation.png"><img src="{{ site.url }}/images/AnimationLabel/playAnimation.png"></a>
 </figure>
 
-具体的代码在demo中都可以找到，DEMO的效果GIF是这样的：
+具体的代码在demo中都可以找到，DEMO的效果GIF是这样的：（GIF看上去会有卡顿。。动画不流畅和完整）
 <figure>
 <a href="{{ site.url }}/images/AnimationLabel/demoAnimation.gif"><img src="{{ site.url }}/images/AnimationLabel/demoAnimation.gif"></a>
 </figure>
