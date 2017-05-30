@@ -269,7 +269,10 @@ _animationIntervalTimer = [NSTimer scheduledTimerWithTimeInterval:ANIMATION_TIME
 
 具体的可以在代码中修改，例如初始值是66666，我给的参数是`十组增长值`，一共增幅`3333`~
 
-DEMO中代码大部分是从工程中摘出来的，作为一个例子应该是够了，欢迎大家完善给出好的建议~
+Demo中代码大部分是从工程中摘出来的，作为一个例子应该是够了，欢迎大家完善给出好的建议~
+
+Demo地址：
+[LabelAnimation Demo Github](https://github.com/jerryliurui/LabelAnimation)
 
 ### 3.End
 可以看出来一个简单的label动画实际内部的东西还是挺多的，容易出错的地方也很多，当时写的时候真是要验证各种情况，然后反复调试，都心里没底啊，实际还和业务需求有很大的关系，所以这里还是主要记录一些我在解决这个问题的时候的思路和方法，很多可能都不是最优解，还有可以简化的地方。但从最后的显示结果看已经可以满足需求了。好了，我去完善demo然后放在`GitHub`上，希望能够帮助到需要的人~~
