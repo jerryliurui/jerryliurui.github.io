@@ -5,7 +5,7 @@ description: "Label Animation"
 category: iOS Programming
 tags: [Label, Animation]
 modified: 2017-05-30
-imagefeature: bg/459_570b401a8a6f2.jpg
+imagefeature: bg/balibali001
 comments: true
 share: true
 ---
