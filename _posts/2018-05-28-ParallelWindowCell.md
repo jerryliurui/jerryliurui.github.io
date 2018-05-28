@@ -20,13 +20,9 @@ share: true
 </div>
 </section><!-- /#table-of-contents -->
 
-##### 年初的时候想着这一年一定要更新五篇以上的博客，看看之前的发现我的产出竟然变成了一年一篇的速度，不能忍不能忍。
+### 年初的时候想着这一年一定要更新五篇以上的博客，看看之前的发现我的产出竟然变成了一年一篇的速度，不能忍不能忍。
 
-<figure>
-<a href="{{ site.url }}/images/parallelWindow/parallelamazingdemo.gif"><img src="{{ site.url }}/images/parallelWindow/parallelamazingdemo.gif"></a>
-</figure>
-
-###1.大致需求
+### 1.大致需求
 这次所要记录的一个功能点大概是这样：列表中的某一行cell 在上下滑动的时候，能够看到`底部`的一张大图，效果就像这个列表的背景是一张大图，cell不断的滑动，可以看到这张图不同的位置，这么做的效果很棒，基本注意力都会被这个cell吸引了。。。要么说好的创意都留给广告了=。=
 
 因为这次需求产品给这东西起的名字叫平行视窗，所以这里也就这么叫吧，然后我很自然的命名为`ParallelWindow`了，搞得像自己加了一个虚拟机一样。不过确实不好定义这个东西的名字。。。就这样吧。
@@ -41,10 +37,10 @@ share: true
 
 如果那样的话cell的复用处理上可能会有一些麻烦，不知道，没有尝试过，可能也会遇到一些坑，其实都一样，后来用的做法，坑一样有一些，但是讲道理，能用数字计算出来的动画效果都不是问题。
 
-###2.KVO
-#####好吧，用的是KVO。
+### 2.KVO
+##### 好吧，用的是KVO。
 这个我之前只在书本上和其他人的技术博客里边看到过，知道它好用，没想到的是，真TM的好用啊，当时用完之后的心情就是这东西真简单。But,坑是有的，不过稍微多注意注意就好了，测试阶段遇到的更多的是，是和现在列表功能所冲突的部分，尽量解耦，但是功能上的限制和设计导致了，也是只能做到尽量二字了。
-#####具体的思路大概是，通过
+##### 具体的思路大概是，通过
 
 {% highlight css %}
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath;
@@ -60,8 +56,8 @@ share: true
 
 来实现新旧值的动态变化，相应的来调整我们的背景大图的`origin.y`值，恩，没错，其实就是一个假象，看着这张图完整的出现在了屏幕内铺满，实际上只存在在我们需要的cell上，并且这张图片只露出小窗口那么大的区域，我们要做的其实就是不断的改变图片的`origin.y`，来看上去，跟随着cell，背景的Image也在移动。这么做的好处是，每个cell只管好自己的就好，在一屏幕内出现两个这种cell的时候，就很方便了，也解决了看上去会存在的冲突问题。不好的点就是。。。计算上，有点复杂=。=
 
-###3.开始实现
-#####(1) `DemoVC`
+### 3.开始实现
+##### (1)  `DemoVC`
 
 demo目录结构如下，在viewcontroller里边简单了的写了一个所要使用的demoTableview。
 这里我还是推荐使用一个临时的数组：
@@ -94,7 +90,7 @@ if ([self.currentAddObserverIndexPathes containsObject:indexPath]) {
                     }
 {% endhighlight %}
 
-#####(2) `ParallelWindowCell+aboutParallel`
+##### (2) `ParallelWindowCell+aboutParallel`
 在这个类别之中，具体来处理观察到`tableView`的变化
 KVO提供的方法：
 >- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
@@ -176,7 +172,7 @@ CGFloat currentRectForSuperViewY = currentRectForSuperView.origin.y;
 CGFloat windowRealDistance = self.bottomLine - currentRectForSuperViewY;
 {% endhighlight %}
 
-#####(2.1)  实现和满足`规则1`
+##### (2.1)  实现和满足`规则1`
 
 {% highlight css %}
 if (currentRectForSuperViewY == self.bottomLine) {
@@ -188,7 +184,7 @@ if (currentRectForSuperViewY == self.bottomLine) {
 }
 {% endhighlight %}
 
-#####(2.2)  实现和满足`规则2`
+##### (2.2)  实现和满足`规则2`
 
 {% highlight css %}
 else if (currentRectForSuperViewY == -self.imageBoard.ustc_y) {
@@ -200,7 +196,7 @@ else if (currentRectForSuperViewY == -self.imageBoard.ustc_y) {
 }
 {% endhighlight %}
 
-#####(2.3)  实现和满足`规则3`（思考过程极其痛苦）
+##### (2.3)  实现和满足`规则3`（思考过程极其痛苦）
 
 <figure>
 <a href="{{ site.url }}/images/parallelWindow/superparallelwindow.png"><img src="{{ site.url }}/images/parallelWindow/superparallelwindow.png"></a>
@@ -259,12 +255,12 @@ self.parallelAdBG.ustc_y += totalDiff;
 demo的`github`地址：
 [Parallel Demo Github](https://github.com/jerryliurui/AmazingParallelWindow)
 
-###4.坑点
+### 4.坑点
 理想总是很美好，效果看上去也不错，但是在测试的时候，还是发现了很多问题，当然在这个demo中是没有遇到的，那是因为这个demo只有一个简单的list，没有其他额外的业务逻辑。
 举个例子，涉及下拉刷新=。=，像我们客户端中，在下拉刷新之后，会出现一个类似于`tips`一样的小横幅，被当做了整个tableView的headerview，在消失的时候，会改变`offset`来实现一个顺滑的动画，这个地方的问题就来了，图片会在用户滑动之后，抖动一下，这就需要在这个`headerview`出现和消失的时候做处理了，在消失的时候，消失动画在屏幕内，和不在屏幕内，也要区分处理了，这就体现出之前我们的那个临时观察者数组的必要性了。。。就是为了某些特殊的情况，要暂时的移除掉所有的已经加上去的观察者了，在触发或者满足了某些条件之后，再加回来。
 第二个坑点，就是发现某些时候，背景大图速率不对，会快，最后也是因为这个观察者数组解决掉了。一开始以为是cell复用的问题，导致一些计算上的参数不对，但是后来还是发现是没有很好的移除掉导致的关联性问题。
 
-###5.End
+### 5.End
 
 <figure>
 <a href="{{ site.url }}/images/parallelWindow/IMG_8505.jpg"><img src="{{ site.url }}/images/parallelWindow/IMG_8505.jpg"></a>
