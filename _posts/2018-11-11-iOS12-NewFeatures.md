@@ -259,7 +259,7 @@ completion(YES, parameters, CGSizeMake([self extensionContext].hostedViewMaximum
 }
 {% endhighlight %}
 
-###### (4.3)Bug Reporter 1：
+###### (4.4)Bug Reporter 1：
 这里顺带提到了一个已知的问题，已经提交了Radar，编号：44375523，问题描述:
 
 {% highlight css %}
