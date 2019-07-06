@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "iOS13 SignInWithApple适配"
+title: "iOS13 Sign In With Apple适配"
 description: "iOS13 Sign in with Apple"
 category: iOS Programming
 tags: [iOS13, Sign in, AppleID]
@@ -251,9 +251,17 @@ ASAuthorizationAppleIDProvider *provider = [ASAuthorizationAppleIDProvider new];
 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppleIdHasChanged) name:ASAuthorizationAppleIDProviderCredentialRevokedNotification object:nil];
 ```
 
-最后总结一些整个`Apple ID`登录的时序图，方便大家理解，从图上确实可以看出和第三方登录非常的相似，只是可以将`iOS`系统替换成第三方应用即可。
+最后总结一下整个`Apple ID`登录的时序图，方便大家理解，从图上确实可以看出和第三方登录非常的相似，只是可以将`iOS`系统替换成第三方应用即可。
 
 <figure>
 <a href="{{ site.url }}/images/SignInWithApple/AppleID登录时序图.png"><img src="{{ site.url }}/images/SignInWithApple/AppleID登录时序图.png"></a>
 </figure>
 
+写在最后:
+与去年适配`Siri Shortcut`相比，这次无论是iOS13beta版本，还是Xcode11 beta版本稳定了好多，bug也几乎没有找到=。=，看上去是真的下功夫在这个新特性上了，也是下定了决心要和第三方App分一杯羹的感觉。但是咱们国内的情况也许要更加复杂的多，手机号登录目前是大多数App所主推的登录方式了，而如何恰当的将`Sign in with apple`融入到自己的帐号体系内，就是一个很头疼的问题了。
+
+祝大家适配顺利~~~\(^o^)/~
+
+ps:具体的demo在我的GitHub上
+
+Thank You.
