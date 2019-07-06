@@ -5,7 +5,7 @@ description: "iOS13 Sign in with Apple"
 category: iOS Programming
 tags: [iOS13, Sign in, AppleID]
 modified: 2019-07-06
-imagefeature: bg/屏幕快照 2019-07-04 下午10.51.28.png
+imagefeature: bg/signinwithapple.png
 comments: true
 share: true
 ---
