@@ -5,7 +5,7 @@ description: "Create a Great Widget"
 category: WWDC
 tags: [iOS]
 modified: 2020-07-11
-imagefeature: bg/signinwithapple.png
+imagefeature: WidgetPart1/WidgetPart1.png
 comments: true
 share: true
 ---
