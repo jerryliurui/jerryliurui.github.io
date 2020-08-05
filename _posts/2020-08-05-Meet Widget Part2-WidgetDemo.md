@@ -449,14 +449,14 @@ widgetInfo.configuration //动态配置信息，比如用户选择的是北京�
 
 `SmallSize`对于小尺寸，我们不能切割视图，只有一个点击区域和事件，因此我们只需要在整个SmallView上使用`widgetURL`修饰即可
 
-```swift
+```
 WidgetSmallView(article: entry.smallArticle!,currentSize: entry.size)
                 .widgetURL(URL(string: entry.smallArticle?.clientUrl ?? ""))
 ```
 
 而对于中尺寸和大尺寸，我们就需要根据交互和视觉切割的视图来相应的给出跳转链接，使用的是LinkApi
 
-```swift
+```
 ForEach(articleList, id: \.self) { article in
     Link(destination: URL(string: article.clientUrl ?? "newsapp://")!) {
         MediumWidgetView(article: article, currentSize: CGSize(width: currentSize.width, height: currentSize.height/3))
@@ -468,7 +468,7 @@ ForEach(articleList, id: \.self) { article in
 
 对于Widget我们拿不到点击回调，但是可以通过另一个相对吹可的方式来解决，就是利用`ZStack`层叠视图，在显示的图片上方，加一个纯色的背景，link掉这个背景色即可
 
-```swift
+```
 ZStack(alignment: .top) {
   Link(destination: URL(string: topArticle.clientUrl ?? "newsapp://")!) {
       Color("background")
@@ -476,6 +476,22 @@ ZStack(alignment: .top) {
   LargeCoverCell(article: topArticle,currentSize: currentSize)
 }
 ```
+#### 3.10 第二个Widget
+
+App是可以支持多个Widget的，他们之间通过kindString来区别，这里需要使用到的是`WidgetBundle`
+
+```
+@main
+struct WidgetDemoBundle : WidgetBundle {
+    @WidgetBundleBuilder
+    var body: some Widget {
+        UserProfileWidget()
+        DiabloNews()
+    }
+}
+```
+
+需要注意的是只能有一个`Main`函数。
 
 ### 4.动态配置
 
