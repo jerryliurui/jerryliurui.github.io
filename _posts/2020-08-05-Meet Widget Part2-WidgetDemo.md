@@ -339,7 +339,7 @@ VStack(alignment: .leading, spacing:16) {
 .clipShape(ContainerRelativeShape())
 ```
 
-####3.3 取色逻辑
+#### 3.3 取色逻辑
 
 这里感谢一个第三方的取色pod [ImageColors](https://github.com/jathu/UIImageColors)
 
