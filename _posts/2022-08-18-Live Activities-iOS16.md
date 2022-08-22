@@ -32,6 +32,7 @@ share: true
 
 在此基础上实现了一个单Live 实例的Demo 希望能够帮助到大家
 
+>
 > 1.什么是Live Activities？
 >
 > 2.结合Demo聊聊如何实现一个2022年世界杯比赛Live Activities
@@ -46,6 +47,7 @@ share: true
 
 从官方给出的一些Demo截图尝试猜测这个功能非常适用于一些场景:
 
+>
 > 1.比赛直播类App，实时的更新用户关心的比赛
 >
 > 2.外卖、打车类App，实时的更新外卖骑手进度、食物制作进度、司机到达情况
@@ -64,6 +66,7 @@ share: true
 
 本来想着这一部分放在最后，但是感觉这些限制还是放在前边方便查找一些，方便大家在设计自己的实时小组件前就在脑海中有一些条条框框~ 这部分限制基于`iOS16 Beta6`
 
+>
 > 1. 开放版本:`Live Activities`和`ActivityKit`不会在初始的iOS16版本中更新，目前文档说的是2022年晚些时候，一旦放出，开发者可以提交响应分支的App~
 >
 > 2. 仅支持iPhone
@@ -259,7 +262,7 @@ BSServiceConnectionErrorDomain (3):
 activityBackgroundTint(_:)
 ```
 
-### 4.开启Live Activities
+### 4.实现Live Activities
 
 #### 4.1 检查是否可用
 
@@ -354,7 +357,7 @@ Demo当中使用系统默认的方式来等待结束，或者用户主动关闭~
 
  [Registering Your App with APNs](https://developer.apple.com/documentation/usernotifications/registering_your_app_with_apns)
 
-[`registerForRemoteNotifications()`](https://developer.apple.com/documentation/uikit/uiapplication/1623078-registerforremotenotifications)
+[registerForRemoteNotifications()](https://developer.apple.com/documentation/uikit/uiapplication/1623078-registerforremotenotifications)
 
 [User Notifications](https://developer.apple.com/documentation/usernotifications)
 
@@ -412,9 +415,9 @@ func listenForPushTokenChanged(activities:Activity<FIFAActivityAttributes>?) -> 
 
 每一个我们创建出来的Activities，都有一个唯一的ID，系统提供了关于它的三个状态更新的API
 
-- To observe the state of an ongoing Live Activity — for example, to determine whether it’s active or has ended — use [`activityStateUpdates`](https://developer.apple.com/documentation/activitykit/activity/activitystateupdates-swift.property).
-- To observe changes to the dynamic content of a Live Activity, use [`contentState`](https://developer.apple.com/documentation/activitykit/activity/contentstate-swift.property).
-- To observe changes to the push token of a Live Activity, use [`pushTokenUpdates`](https://developer.apple.com/documentation/activitykit/activity/pushtokenupdates-swift.property).
+- To observe the state of an ongoing Live Activity — for example, to determine whether it’s active or has ended — use [activityStateUpdates](https://developer.apple.com/documentation/activitykit/activity/activitystateupdates-swift.property).
+- To observe changes to the dynamic content of a Live Activity, use [contentState](https://developer.apple.com/documentation/activitykit/activity/contentstate-swift.property).
+- To observe changes to the push token of a Live Activity, use [pushTokenUpdates](https://developer.apple.com/documentation/activitykit/activity/pushtokenupdates-swift.property).
 
 ### 6.Demo+结束
 
