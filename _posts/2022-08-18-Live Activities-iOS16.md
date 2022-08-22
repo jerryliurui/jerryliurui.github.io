@@ -22,7 +22,7 @@ share: true
 
 ### 0.前言
 
-`Live Activities`这个新Feature 可以说是我在看完整个WWDC新功能预览中，觉得最香的一个功能了，当然其他的功能工作当中涉及的不多 =。= ，总的来说，这个功能对于已经适配了Widget的开发者来说很熟悉，上手会非常的快，甚至在看完文档之后就差不多可以写出一个可以运行的Demo了。
+`Live Activities`这个新Feature 可以说是我在看完整个WWDC新功能预览中，觉得最香的一个功能了，当然其他的功能工作当中涉及的不多 =。=，整个iOS16对于我们的App来说可以适配的点不是特别多。 总的来说，这个功能对于已经适配了Widget的开发者来说很熟悉，上手会非常的快，甚至在看完文档之后就差不多可以写出一个可以运行的Demo了。
 
 [iOS16官方预览](https://www.apple.com/ios/ios-16-preview/)
 
@@ -30,7 +30,7 @@ share: true
 
 [Live Activities官方文档](https://developer.apple.com/documentation/activitykit)
 
-在此基础上实现了一个单Live 实例的Demo 希望能够帮助到大家
+在此基础上实现了一个单Live 实例的Demo 希望能够帮助到大家~ 本文主要从下边四个方面来展开:
 
 >
 > 1.什么是Live Activities？
@@ -49,11 +49,8 @@ share: true
 
 >
 > 1.比赛直播类App，实时的更新用户关心的比赛
->
 > 2.外卖、打车类App，实时的更新外卖骑手进度、食物制作进度、司机到达情况
->
 > 3.上传、下载等任务的实时更新显示
->
 > 4.重大事件的持续跟踪报道，专题性质的新闻更新，24小时热点新闻轮播
 
 整体的运作如图，需要用到我们的老朋友WidgetKit:
@@ -67,14 +64,10 @@ share: true
 本来想着这一部分放在最后，但是感觉这些限制还是放在前边方便查找一些，方便大家在设计自己的实时小组件前就在脑海中有一些条条框框~ 这部分限制基于`iOS16 Beta6`
 
 >
-> 1. 开放版本:`Live Activities`和`ActivityKit`不会在初始的iOS16版本中更新，目前文档说的是2022年晚些时候，一旦放出，开发者可以提交响应分支的App~
->
+> 1. 开放版本:`Live Activities`和`ActivityKit`不会在初始的iOS16版本中更新，目前文档说的是2022年晚些时候，一旦放出，开发者可以提交相应分支的App~
 > 2. 仅支持iPhone
->
 > 3. 理论上我们的Live Activities小组件出现在锁屏之后 会存在8小时，除非用户主动结束它，而系统其实会额外延长最多4小时~因此一个Live Activities小组件最长可以在用户的锁屏上出现`12`小时。
->
 > 4. 每一个实时小组件都无法自主进行网络请求和位置更新
->
 > 5. 每一次更新的数据不能超过`4KB`
 > 6. 仅支持SwiftUI来构建Live Activities UI
 > 7. 最大高度160 Point，超过这部分会被系统裁切
@@ -173,7 +166,7 @@ struct DemoWidgets: WidgetBundle {
 
 #### 3.5 创建UI
 
-下边就是在UploadLiveActivitiesWidget 当中绘制我们的UI了，和传统意义上的Widget很类似，只不过之前我们是通过`IntentConfiguration`来定义WidgetUI， 而现在我们使用`ActivityConfiguration`来定义Live Activities的Widge
+下边就是在UploadLiveActivitiesWidget 当中绘制我们的UI了，和传统意义上的Widget很类似，只不过之前我们是通过`IntentConfiguration`来定义WidgetUI， 而现在我们使用`ActivityConfiguration`来定义Live Activities的Widget
 
 ```swift
 struct UploadLiveActivitiesWidget: Widget {
@@ -285,7 +278,7 @@ areActivitiesEnabled API 来同步获取当前功能是否可以使用，除此�
 activityEnablementUpdates 异步监听队列，监听功能是否可用
 ```
 
-这也是上文Apple的那个Tips，这里在列举一下:
+这也是上文Apple的那个Tips，这里再列举一下:
 
 > 每一个App可以开启多个Live Activities，每个设备可以同时开启多个App的Live Activities，一个用户同一时间可能会达到一个上限而开启失败我们的Live Activities，因此在开启、更新、结束每一个Activities时，检查功能是否可用非常的重要
 
@@ -310,7 +303,7 @@ activityEnablementUpdates 异步监听队列，监听功能是否可用
         }
 ```
 
-demo中创建了西班牙队和法国队，并使用我们之前定义好的自定义的`FIFAActivityAttributes`来标志正常比赛，而后我们通过创建`startState`来告诉系统具体我们动态的数据都有哪些，系统便可以知道后续更新所需要关注的内容字段了。
+demo中创建了西班牙队和法国队，并使用我们之前定义好的自定义的`FIFAActivityAttributes`来标志整场比赛，而后我们通过创建`startState`来告诉系统具体我们动态的数据都有哪些，系统便可以知道后续更新所需要关注的内容字段了。
 
 `request`Api 来开启实时小组件，这里注意的是PushType传递了一个nil，这告诉系统当前这个开启的Live Activity需要主App来获取数据来驱动更新，而不是远程推送，如果是远程推送的话，后边会说到哈，这里需要传入.token
 
@@ -388,7 +381,8 @@ func listenForPushTokenChanged(activities:Activity<FIFAActivityAttributes>?) -> 
     }
 ```
 
-具体的Payload格式存在一定的约束，还记得上面我们定义的动态数据的字段State模型么，推送载体的数据字段必须严格一样，系统才会响应的更新我们的Live Activities。
+具体的Payload格式存在一定的约束，还记得上面我们定义的动态数据的字段State模型么，推送载体的数据字段必须严格一样，系统才会相应的更新我们的Live Activities。
+这里我们使用的Event事件是end，相应的如果是更新数据，则需要填入`update`。
 
 ```
 {
