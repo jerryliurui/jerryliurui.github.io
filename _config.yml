@@ -46,7 +46,7 @@ bing_verify:
 # For external links add external: true
 links:
   - title: 主页Home
-    url: /home
+    url: 
     external: false
     icon: home
   - title: 分类Categories
