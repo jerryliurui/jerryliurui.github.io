@@ -63,6 +63,10 @@ image:
 
 > ### 我的联系方式： ###
 >
+> [Bilibili](https://space.bilibili.com/388693026)
+>
+> [小红书](id:小杰瑞)
+>
 > [JerryLiu on Youku](http://i.youku.com/u/UMTkxNDY1MTY4)
 >
 > [JerryLiu on SinaMicroBlog](http://www.weibo.com/714530009?wvr=4&lf=reg)
