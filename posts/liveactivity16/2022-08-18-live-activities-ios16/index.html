@@ -501,22 +501,22 @@ if (document.readyState === 'loading') {
 <li>To observe changes to the dynamic content of a Live Activity, use <a href="https://developer.apple.com/documentation/activitykit/activity/contentstate-swift.property">contentState</a>.</li>
 <li>To observe changes to the push token of a Live Activity, use <a href="https://developer.apple.com/documentation/activitykit/activity/pushtokenupdates-swift.property">pushTokenUpdates</a>.</li>
 </ul></section>
-<section><h3 id="6demo结束">6.Demo+结束<a class="anchor" href="#6demo结束"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h3><a id="GC9icmuh-card" class="card-github fetch-waiting no-styling" href="https://github.com/jerryliurui/Live-Activities-Demo" target="_blank" repo="jerryliurui/Live-Activities-Demo"><div class="gc-titlebar"><div class="gc-titlebar-left"><div class="gc-owner"><div id="GC9icmuh-avatar" class="gc-avatar"></div><div class="gc-user">jerryliurui</div></div><div class="gc-divider">/</div><div class="gc-repo">Live-Activities-Demo</div></div><div class="github-logo"></div></div><div id="GC9icmuh-description" class="gc-description">Waiting for api.github.com...</div><div class="gc-infobar"><div id="GC9icmuh-stars" class="gc-stars">00K</div><div id="GC9icmuh-forks" class="gc-forks">0K</div><div id="GC9icmuh-license" class="gc-license">0K</div><span id="GC9icmuh-language" class="gc-language">Waiting...</span></div><script id="GC9icmuh-script" type="text/javascript" defer>
+<section><h3 id="6demo结束">6.Demo+结束<a class="anchor" href="#6demo结束"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h3><a id="GCcj2pew-card" class="card-github fetch-waiting no-styling" href="https://github.com/jerryliurui/Live-Activities-Demo" target="_blank" repo="jerryliurui/Live-Activities-Demo"><div class="gc-titlebar"><div class="gc-titlebar-left"><div class="gc-owner"><div id="GCcj2pew-avatar" class="gc-avatar"></div><div class="gc-user">jerryliurui</div></div><div class="gc-divider">/</div><div class="gc-repo">Live-Activities-Demo</div></div><div class="github-logo"></div></div><div id="GCcj2pew-description" class="gc-description">Waiting for api.github.com...</div><div class="gc-infobar"><div id="GCcj2pew-stars" class="gc-stars">00K</div><div id="GCcj2pew-forks" class="gc-forks">0K</div><div id="GCcj2pew-license" class="gc-license">0K</div><span id="GCcj2pew-language" class="gc-language">Waiting...</span></div><script id="GCcj2pew-script" type="text/javascript" defer>
       fetch('https://api.github.com/repos/jerryliurui/Live-Activities-Demo', { referrerPolicy: "no-referrer" }).then(response => response.json()).then(data => {
-        document.getElementById('GC9icmuh-description').innerText = data.description?.replace(/:[a-zA-Z0-9_]+:/g, '') || "Description not set";
-        document.getElementById('GC9icmuh-language').innerText = data.language;
-        document.getElementById('GC9icmuh-forks').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.forks).replaceAll(" ", '');
-        document.getElementById('GC9icmuh-stars').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.stargazers_count).replaceAll(" ", '');
-        const avatarEl = document.getElementById('GC9icmuh-avatar');
+        document.getElementById('GCcj2pew-description').innerText = data.description?.replace(/:[a-zA-Z0-9_]+:/g, '') || "Description not set";
+        document.getElementById('GCcj2pew-language').innerText = data.language;
+        document.getElementById('GCcj2pew-forks').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.forks).replaceAll(" ", '');
+        document.getElementById('GCcj2pew-stars').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.stargazers_count).replaceAll(" ", '');
+        const avatarEl = document.getElementById('GCcj2pew-avatar');
         avatarEl.style.backgroundImage = 'url(' + data.owner.avatar_url + ')';
         avatarEl.style.backgroundColor = 'transparent';
-        document.getElementById('GC9icmuh-license').innerText = data.license?.spdx_id || "no-license";
-        document.getElementById('GC9icmuh-card').classList.remove("fetch-waiting");
-        console.log("[GITHUB-CARD] Loaded card for jerryliurui/Live-Activities-Demo | GC9icmuh.")
+        document.getElementById('GCcj2pew-license').innerText = data.license?.spdx_id || "no-license";
+        document.getElementById('GCcj2pew-card').classList.remove("fetch-waiting");
+        console.log("[GITHUB-CARD] Loaded card for jerryliurui/Live-Activities-Demo | GCcj2pew.")
       }).catch(err => {
-        const c = document.getElementById('GC9icmuh-card');
+        const c = document.getElementById('GCcj2pew-card');
         c?.classList.add("fetch-error");
-        console.warn("[GITHUB-CARD] (Error) Loading card for jerryliurui/Live-Activities-Demo | GC9icmuh.")
+        console.warn("[GITHUB-CARD] (Error) Loading card for jerryliurui/Live-Activities-Demo | GCcj2pew.")
       })
     </script></a><p>![Alt text](/public/images/LiveActivities/截屏2022-08-18 21.27.22.png)</p><p>demo上传了Github上，后续会有更新，希望对大家的开发适配有所帮助。</p><p>总的来说这个功能我觉得应该会真香的，尤其是马上就要到来的卡塔尔世界杯，虽然现在已经是视频直播满天飞的年代了，但是在锁屏即可看到自己心爱的球队的实时比分还是很让人心动的。从iOS14的Widget开始，到今年的Lock screen Widget和Live Activities，可以看到Apple在尝试放出越来越多的系统空间来给开发者施展施展拳脚，但还是能够明显的感受到他们的“克制”。希望这样的功能越来越多吧<del>感谢大家。下次见</del></p></section>  </div> <script type="module">document.addEventListener("click",function(i){const c=i.target;if(c&&c.classList.contains("copy-btn")){const l=c.closest("pre")?.querySelector("code");let s="";if(l){const t=l.querySelectorAll("span.line");if(t.length>0){const o=[];for(let e=0;e<t.length;e++){const r=t[e].textContent||"";o.push(r)}s=o.join(`
 `)}else{const o=l.querySelectorAll(".code:not(summary *)");if(o.length>0){const e=[];for(let n=0;n<o.length;n++){const a=o[n].textContent||"";e.push(a)}s=e.join(`
