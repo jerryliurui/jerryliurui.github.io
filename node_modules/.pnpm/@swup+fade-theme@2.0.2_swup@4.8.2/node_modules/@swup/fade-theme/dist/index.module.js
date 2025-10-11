@@ -1,0 +1,2 @@
+import t from"@swup/theme";class i extends t{constructor(t={}){super(),this.name="SwupFadeTheme",this.defaults={mainElement:"#swup"},this.options=void 0,this.options={...this.defaults,...t}}mount(){this.applyStyles("html{--swup-fade-theme-duration:0.4s}html.is-changing .swup-transition-main{opacity:1;transition:opacity var(--swup-fade-theme-duration)}html.is-animating .swup-transition-main{opacity:0}"),this.addClassName(this.options.mainElement,"main")}}export{i as default};
+//# sourceMappingURL=index.module.js.map

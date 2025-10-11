@@ -1,0 +1,53 @@
+{
+  "name": "@swup/slide-theme",
+  "amdName": "SwupSlideTheme",
+  "version": "2.0.2",
+  "description": "A swup theme for in/out slide animations",
+  "type": "module",
+  "source": "src/index.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.module.js",
+  "unpkg": "./dist/index.umd.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.modern.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "swup package:build",
+    "dev": "swup package:dev",
+    "lint": "swup package:lint",
+    "format": "swup package:format",
+    "prepublishOnly": "npm run build"
+  },
+  "author": {
+    "name": "Georgy Marchuk",
+    "email": "gmarcuk@gmail.com",
+    "url": "https://gmrchk.com/"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swup/slide-theme.git"
+  },
+  "dependencies": {
+    "@swup/theme": "^2.0.0"
+  },
+  "devDependencies": {
+    "@swup/cli": "^5.0.1"
+  },
+  "peerDependencies": {
+    "swup": "^4.0.0"
+  },
+  "browserslist": [
+    "extends @swup/browserslist-config"
+  ],
+  "prettier": "@swup/prettier-config"
+}
