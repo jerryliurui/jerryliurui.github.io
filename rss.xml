@@ -1,0 +1,1076 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>JerryLiu</title><description>小瑞的blog</description><link>https://jerryliu.org/</link><language>zh_CN</language><item><title>WWDC2023-iOS17 发布九个月后再来聊一聊Live Activities</title><link>https://jerryliu.org/posts/liveactivity/2023-07-10-live-activities-ios17/</link><guid isPermaLink="true">https://jerryliu.org/posts/liveactivity/2023-07-10-live-activities-ios17/</guid><description>An iOS17 Live Activities NBA Demo.</description><pubDate>Mon, 10 Jul 2023 00:00:00 GMT</pubDate><content:encoded>&lt;h3&gt;0.前言&lt;/h3&gt;
+&lt;p&gt;Hi 大家好，我是小杰瑞，这篇文章主要是对 WWDC2023 &lt;code&gt;Meet ActivityKit&lt;/code&gt; 这个 Session 做一个梳理和扩展，主要内容包含了两部分，第一部分主要是对这个 Session 所提到的核心内容进行一个总结，涉及什么是 ActivityKit 以及它的生命周期介绍，基于文档、Session 提取出了一些比较适合实时小组件的使用场景；第二部分则是一个实际的 Demo:用来实时展示球赛比分的实时小组件的实现，以此来实战相关的技术点，并在关键的一些步骤中稍加扩展(毕竟 Session 之间还是存在一定的联系的，而如果太割裂的来看效果不是很好)。&lt;/p&gt;
+&lt;p&gt;首先，先谈一下自己的一些感想。这期 Session 其实严格意义上不能算是全新的技术特性，锁屏实时小组件第一次出现是在 WWDC2022 中，但是碍于九月份才能发布灵动岛的 iPhone，Apple 也是藏到了九月份才发布了 ActivityKit 框架，开发者才开始能够进行全面的实时小组件的开发和设计。因此这篇 Session 更多的是对过去一年相关内容缺失的一个补充，正因为这个原因，去年的 Demo 其实用在今天的这篇文章中显得非常合适(摸鱼好理由)，但为了卷的更好看一点，硬生生的给去年的 Demo 加上了两个按钮，也算是有了一定的升级了。好了，废话到这里，开始我们的实时小组件之旅，希望对大家的适配和学习有一定的帮助。&lt;/p&gt;
+&lt;h2&gt;1. ActivityKit 它是什么&lt;/h2&gt;
+&lt;p&gt;在去年分享的一些文章或者视频的留言中，总会有小伙伴问我这个不就是一个通知么。说他是，锁屏里的它静静地在那里还确实很像通知，且文档中又明确的提到了它可以通过 Push 来驱动数据更新，但如果真的把它归为这个作用，又稍有违背 Apple 设计它的初衷。&lt;/p&gt;
+&lt;p&gt;首先来看一下 Apple 对于它的定义:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Live Activities 是一个可以在 iPhone 或者 iPad 锁屏以及灵动岛上展示我们 App 核心内容的功能，这个入口可以让用户直达他正在进行的一个任务或者活动，并清晰的看到它的内容变化。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;1.1 不仅仅是 iPhone，锁屏上的 Live Activities&lt;/h3&gt;
+&lt;p&gt;这段描述相较于去年 7 月 28 日第一版文档是发生了变化的。没错，去年实时小组件是&lt;code&gt;仅iPhone&lt;/code&gt;的，而在今年第一个变化就是支持了&lt;code&gt;iPad&lt;/code&gt;。而在 iOS 平台上，同时也支持了&lt;code&gt;StandBy&lt;/code&gt;模式。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jerryliu.org/public/images/LiveActivitiesiOS17/ipad_live.png&quot; alt=&quot;Alt text&quot; title=&quot;Optional title&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jerryliu.org/public/images/LiveActivitiesiOS17/standby.png&quot; alt=&quot;Alt text&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;而关于使用场景，举个例子，用户点了一杯咖啡的外卖，或者关注了一场自己喜欢球队的比赛，那外卖的进度、比赛的比分，这些关键的信息和用户的操作息息相关，那他们则将会是非常完美的呈现对象。如下图:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jerryliu.org/public/images/LiveActivitiesiOS17/live_demo_session.png&quot; alt=&quot;Alt text&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;而实时小组件我认为和灵动岛属于是互相成就了。在丝滑动画的加持下，用户会更加喜欢这种能带来小惊喜的上岛体验。下面我们来看看灵动岛上的实时小组件的样子。&lt;/p&gt;
+&lt;h3&gt;1.2 灵动岛上的 Live Activities&lt;/h3&gt;
+&lt;p&gt;相对于锁屏堆叠放置的各家实时小组件(包涵自家 App 的多个实时小组件)来说，在灵动岛上的展示要复杂的多了，背后自然有 Apple 关于多个 App 登岛的逻辑，我们所需要做的或者说必须要做的，就是适配好所有尺寸的灵动岛上的视图。而关于尺寸，Apple 甚至在你新建&lt;code&gt;Target&lt;/code&gt;时便为你搭好了所有代码，我们只需要在相应的代码块中塞进我们的视图就可以了。&lt;/p&gt;
+&lt;p&gt;单个 App 上岛，这一部分也叫做 &lt;code&gt;compact&lt;/code&gt; 紧凑型，分为前后两个 View 来组成。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jerryliu.org/public/images/LiveActivitiesiOS17/type-compact~dark@2x.png&quot; alt=&quot;Alt text&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;多个 App 上岛，也叫做 &lt;code&gt;minimal&lt;/code&gt; 型，一个紧贴摄像头，一个分离与摄像头，这里需要注意的是，看似这两个 View 长得不一样，但实质上都是一样的。我们也不要对多个 App 登岛时，我们自己 App 是前边的还是后边的做假设。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jerryliu.org/public/images/LiveActivitiesiOS17/type-minimal~dark@2x.png&quot; alt=&quot;Alt text&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;而长按灵动岛时，会变成展开模式，该模式下可以展示更多的内容，而当我们推送 Live Activity 为&lt;code&gt;Alert&lt;/code&gt;模式时，同样也会触发展开样式。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jerryliu.org/public/images/LiveActivitiesiOS17/expanded-layout~dark@2x.png&quot; alt=&quot;Alt text&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;基于上面实时小组件在不同平台上展示的图例，我们可以联想和脑洞一些能够上岛的功能点了。当然肯定不止下面我列举的这些，仅作为抛砖引玉之用:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;比赛直播类 App，实时的更新用户关心的比赛&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;外卖、打车类 App，实时的更新外卖骑手进度、食物制作进度、司机到达情况&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;上传、下载等任务的实时更新显示&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;重大事件的持续跟踪报道，专题性质的新闻更新，24 小时热点新闻轮播&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;而在这儿，则要引出今年第二个新特性，也是今年整个&lt;code&gt;Widget&lt;/code&gt;小组件主题最为让我惊喜的新特性了：添加更多的交互性，也就是我们可以在桌面小组件和实时小组件中增加按钮和切换键了(当然了仅有这俩组件可以，翻遍了 AppIntent 框架也搜不到第三了)，关于这个会在后边的 Demo 中稍有涉及，因为大部分的内容是在 &lt;a href=&quot;https://developer.apple.com/videos/play/wwdc2023/10028/&quot;&gt;Bring Widgets to life&lt;/a&gt; 这个 Session 中，感兴趣的小伙伴可以去看一下。&lt;/p&gt;
+&lt;p&gt;在第一章节的最后，还想提醒 2 个小 Tips，或者说再啰嗦 2 个小感想。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Live Activities 的实现依赖&lt;code&gt;SwiftUI&lt;/code&gt;和&lt;code&gt;WidgetKit&lt;/code&gt;，新特性用 SwiftUI，包括今年的 VisionOS，都可以看出 SwiftUI 的重要性，而结合我个人和一些同行的聊天，可以看出大厂在历史包袱的重压下或者快速迭代的压力下，也很难快速的转型 SwiftUI，甚至 Swift。小组件的出现和更迭便成为了一个很好的说服产品和领导们的理由，想适配么？那得先留点时间学 SwiftUI 丫！&lt;/li&gt;
+&lt;li&gt;实时小组件的开启，需要明确的和用户操作相对应，切忌什么都上岛，在过去一年的实际体验当中，还是看到了一些不当用法的，遇到这种我是直接设置-关闭走起了。因此还是那句话，适配是好事儿，但硬凑或许真的适得其反。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;2. Live Activities 的生命周期&lt;/h2&gt;
+&lt;p&gt;在开始动手实现或者适配一个实时小组件功能前，我们有必要对其整个的生命周期做一个了解。这也是本 Session 着重去展开的一个地方。开发者本质上需要做的主要有四件事儿，分别是:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;开启，开启前，比较好的做法是先 check 当前环境实时小组件功能是否可用&lt;/li&gt;
+&lt;li&gt;更新，可以开启后台任务更新，也可以通过 Push 更新&lt;/li&gt;
+&lt;li&gt;持续监听每一个开启的实时小组件的状态，并进行相应的逻辑处理&lt;/li&gt;
+&lt;li&gt;结束，当比赛结束时，又或者外卖送到时，我们有义务关闭掉一个没有后续的小组件任务，虽然用户可以手动关闭，或者系统自动关闭，但如果我们处理的非常优雅，会带给用户非常不错的使用体验&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;在这里也是画了一个简图，来更好的说明我们需要做的工作，在后边的 Demo 中也会有详尽的代码加以描述:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jerryliu.org/public/images/LiveActivitiesiOS17/widgetKit.png&quot; alt=&quot;Alt text&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;3. 展示球赛比分的完整 Live Activities 实现之旅&lt;/h2&gt;
+&lt;p&gt;在大致了解了实时小组件是什么以及它的生命周期之后，我也是在众多实时小组件的使用场景中找了一个自己比较感兴趣的实时比赛直播的 Case 来把它实现出来，也是想通过一个实际的开发案例深入上文所提到的一些理论知识，从实时小组件的创建、更新、到结束，来进行实战。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/activitykit/displaying-live-data-with-live-activities&quot;&gt;Live Activity 开发文档&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;本 Demo 基于&lt;code&gt;Xcode 15 Beta2&lt;/code&gt;。&lt;/p&gt;
+&lt;h3&gt;3.1 准备工作&lt;/h3&gt;
+&lt;p&gt;由于是拿着去年的 Demo 进行的演示，因此在用新的 Xcode15 打开之后，需要稍微调整一下工程代码的，也就是需要做一些准备工作，其实就是编不过-，-，这里稍微扩展一丢丢:&lt;/p&gt;
+&lt;p&gt;大家在打开之前的 Widget SwiftUI 工程后，&lt;code&gt;command+option+p&lt;/code&gt;激活 Xcode Preview 预览时，会遇到这个错误&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jerryliu.org/public/images/LiveActivitiesiOS17/errorforfirst.png&quot; alt=&quot;Alt text&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;原因是 Widget 今年支持了更多的平台，引入了&lt;code&gt;containerBackground&lt;/code&gt;，可移除的背景容器修饰符，解决办法是创建 View Extension，来兼容一下即可，在要展示在 Widget 中的 View 加上这个修饰符。由于 Demo 中会填充队伍的主色调，因此这里显示 Clear&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;extension View {
+     func widgetBackground() -&amp;gt; some View {
+         if #available(iOS 17.0, *) {
+             return containerBackground(for: .widget) {
+                 Color.clear
+             }
+         } else {
+             return background {
+                 Color.clear
+             }
+         }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;而在使用的地方，尤其是需要 Xcode Preview 的 View 上添加该修饰符&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jerryliu.org/public/images/LiveActivitiesiOS17/background.png&quot; alt=&quot;Alt text&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;3.2 创建 ActivityAttributes&lt;/h3&gt;
+&lt;p&gt;无论是主 App 还是推送更新，我们和 ActivityKit 传输数据的媒介叫做&lt;code&gt;ActivityAttributes&lt;/code&gt;。它由两部分组成，一部分是静态的数据，而另一部分则是我们定义的，用来告知 WidgetKit 数据发生了变化，需要重新绘制和存储 View。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct NBAWidgetAttributes: ActivityAttributes {
+    public struct ContentState: Codable, Hashable {
+        // Dynamic stateful properties about your activity go here!
+        var homeScore: Int
+        var guestScore: Int
+        var homeLike: Int
+        var guestLike: Int
+        var score: String?
+        var time: TimeInterval
+    }
+
+    // Fixed non-changing properties about your activity go here!
+    var home: NBATeam
+    var guest: NBATeam
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;ContentState&lt;/code&gt;记录了实时小组件中将会变更的动态数据，例如两个队的得分情况、两个队的助力情况，以及比赛时间。而外部则定义了不会发生变化的两个球队的基础信息，包涵球队的名称、ID 等。而在开启小组件之后，更新数据传输只负责不断地生成新的&lt;code&gt;ContentState&lt;/code&gt;，并告知 WidgetKit 即可更新我们的小组件视图。&lt;/p&gt;
+&lt;h3&gt;3.3 绘制实时小组件 UI&lt;/h3&gt;
+&lt;p&gt;下一步则是按照文档给出的需要适配的不同类型的 View，来定制业务 View，当我们新建 &lt;code&gt;Widget Extension&lt;/code&gt; 并勾选 &lt;code&gt;Live Activity&lt;/code&gt; 之后，Xcode 会非常贴心的给我们安排了一个完形填空，下图为 New -&amp;gt; Target -&amp;gt; 勾选 Include Live Activity&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jerryliu.org/public/images/LiveActivitiesiOS17/createLive.png&quot; alt=&quot;Alt text&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;大致长这个样子，实例代码中给出了详细的注释，然后耐心的完形填空即可。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct DemoWidgetLiveActivity: Widget {
+    var body: some WidgetConfiguration {
+        ActivityConfiguration(for: DemoWidgetAttributes.self) { context in
+            // 锁屏/banner UI goes here
+            VStack {
+                Text(&quot;Hello \(context.state.emoji)&quot;)
+            }
+            .activityBackgroundTint(Color.cyan)
+            .activitySystemActionForegroundColor(Color.black)
+
+        } dynamicIsland: { context in
+            DynamicIsland {
+                // 展开 UI goes here.  Compose the expanded UI through
+                // various regions, like leading/trailing/center/bottom
+                DynamicIslandExpandedRegion(.leading) {
+                    Text(&quot;Leading&quot;)
+                }
+                DynamicIslandExpandedRegion(.trailing) {
+                    Text(&quot;Trailing&quot;)
+                }
+                DynamicIslandExpandedRegion(.bottom) {
+                    Text(&quot;Bottom \(context.state.emoji)&quot;)
+                    // more content
+                }
+            } compactLeading: {
+                Text(&quot;L&quot;) //紧凑型前边View
+            } compactTrailing: {
+                Text(&quot;T \(context.state.emoji)&quot;) //紧凑型后边View
+            } minimal: {
+                Text(context.state.emoji) //多App上岛后的mini
+            }
+            .widgetURL(URL(string: &quot;http://www.apple.com&quot;))//点击跳转
+            .keylineTint(Color.red)
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里主要的工程 Demo 代码不再展开，感兴趣的小伙伴可以去我的 Github 上下载到 Demo。下图为 Demo UI 的一个拆分:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jerryliu.org/public/images/LiveActivitiesiOS17/demoUI.png&quot; alt=&quot;Alt text&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;首次出现时，会出现一个是否允许 XXX App 的实时活动的提醒的，用户可以像操作通知一样左滑删除掉我们创建好的 Live Activities。下图为 Demo 的一个 GIF 演示:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jerryliu.org/public/images/LiveActivitiesiOS17/demoGif.gif&quot; alt=&quot;Alt text&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;3.4 根据业务逻辑实现 Live Activities 的生命周期&lt;/h3&gt;
+&lt;p&gt;这里先补充一个细节，那就是我们的 App 不止可以激活一个实时小组件的，例如世界杯期间，同一时间可能同时进行 2 场比赛，而用户则是可以同时激活这两场比赛的实时小组件的。因此关于实时小组件的管理，个人建议是实现一个类似 Manager 一样的管理类，通过数组等方式来进行管理，而对应的 API，都会返回给我们相应的&lt;code&gt;Activity&amp;lt;Attributes&amp;gt;&lt;/code&gt;实例。注:本 Demo 为了演示，仅保存一个小组件实例。&lt;/p&gt;
+&lt;p&gt;首先的首先，我们要引入&lt;code&gt;ActivityKit&lt;/code&gt;，这是这篇文章的核心 -。-&lt;/p&gt;
+&lt;h4&gt;3.4.1 开启普通 Live Activities&lt;/h4&gt;
+&lt;p&gt;特别要注意一点的是，开启 Live Activities 需要我们的 App 保持在前台，其实这也和 Apple 推荐的 Live Activities 最佳实践是保持一致的，既实时小组件是用户非常主动的开启的一个任务或者事件。&lt;/p&gt;
+&lt;p&gt;实时小组件的更新方式有两种，一种是端内触发，一种是 Push 触发，其实还有一个，留个悬念后边说。我们先看端内触发的情况，此时开启 Live Activities 的方式如下:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;self.statusActivity = try Activity&amp;lt;NBAWidgetAttributes&amp;gt;.request(
+    attributes: attribute, 
+    contentState: startState, 
+    pushType: nil
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;此时&lt;code&gt;PushType&lt;/code&gt;参数传 nil。&lt;code&gt;attributes&lt;/code&gt;参数则为上面我们定义好的 ActivityAttributes，&lt;code&gt;contentState&lt;/code&gt; 参数则是我们定义好的一个初始状态。例如，初始是湖人对阵勇士的比赛，我们分别模拟两个球队的数据(Demo 使用，测试数据)，并模拟了一个主队 12:10 领先的开启状态。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let guestTeam = MatchDataManager.shared.teams.filter { $0.teamId == &quot;Lakers&quot; }.first!
+let homeTeam = MatchDataManager.shared.teams.filter { $0.teamId == &quot;Warriors&quot; }.first!
+let attribute = NBAWidgetAttributes(home: homeTeam, guest: guestTeam)
+let date = Calendar.current.date(byAdding: .minute, value: (11), to: Date())!.timeIntervalSince1970        
+let startState = NBAWidgetAttributes.ContentState(homeScore: 12, guestScore: 10,homeLike: homeTeam.likeNum,guestLike: guestTeam.likeNum, tips: &quot;Q1&quot;, score: nil, time: date)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;创建完成之后，便可以调用上面的&lt;code&gt;Request&lt;/code&gt;方法，来进行实时小组件的开启了。当然！我这么做是十分不严谨的，应该在开启前，先 check 当前环境功能是否开启，例如用户已经主动关闭了我们实时小组件的设置内的权限，则开启也是白开启。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;//check
+guard ActivityAuthorizationInfo().areActivitiesEnabled else {
+     print(&quot;当前设备不可用Live Activities，用户关闭或者设备无法使用&quot;)
+     return
+}   
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;3.4.2 开启 Push Live Activities&lt;/h4&gt;
+&lt;p&gt;与 3.4.1 几乎一致，只不过&lt;code&gt;PushType&lt;/code&gt;参数需要传进去&lt;code&gt;.token&lt;/code&gt;，并且在适当的时候拿到 Push Token，给到我们的后台，后台便可以拿着这个 Push Token 来发送通知。这里有几点需要额外注意:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;request API 不会立刻返回带有 Token 的 Activities 实例，我们需要起一个 Task 来监听 Push Token 的回调，来给到我们的后台。&lt;/li&gt;
+&lt;li&gt;此 Token 并不是我们 App 启动注册的 Token，需要区分，后台同学需要知晓他们之间的不同&lt;/li&gt;
+&lt;li&gt;实时小组件的 Push 和 App 正常的远程 Push 非常容易造成混淆，本质上其实是两种实现的方式；且实时小组件的开关并不依赖系统设置中自己 App 的 Push 推送开关，也就是说当用户关闭了主推送开关时，只要授权了实时小组件的功能权限，我们依然可以通过 Push 的方式来驱动实时小组件的更新&lt;/li&gt;
+&lt;li&gt;Token 会变化，客户端需要监听 Token 的变化来及时的通知后台&lt;/li&gt;
+&lt;li&gt;一定要是 Token-Base 链接形式的 Push 发送&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;下面代码为客户端开启 Activities 后，更新 Token 给到后台&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Task {
+    for await tokenData in activities.pushTokenUpdates {
+    let pushTokenString = String(deviceToken: tokenData)
+    print(&quot;\(activities.id)新Token:\(String(describing: pushTokenString))&quot;)
+                   
+    //发送这个ID和Token给后台服务器
+    UploadManager().uploadToken(tokenString: pushTokenString)
+    } 
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;具体的 Push 更新和结束实时小组件可以参考这篇文档：&lt;a href=&quot;https://developer.apple.com/documentation/ActivityKit/updating-and-ending-your-live-activity-with-activitykit-push-notifications&quot;&gt;利用 Push 来更新 Live Activities&lt;/a&gt; 以及&lt;a href=&quot;https://developer.apple.com/videos/play/wwdc2023/10184&quot;&gt;Session 10185: Update Live Activities with push notifications&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;这里简单的贴出一个测试的 APNS 数据，&lt;code&gt;event&lt;/code&gt; 字段用来标识此条是更新还是结束，&lt;code&gt;content-state&lt;/code&gt; 则和我们刚才定义的 ActivityAttributes 中的内容要一一对应，这一点往往会被忽视(下面 Json 仅为示意使用)，而 &lt;code&gt;timestamp&lt;/code&gt; 时间戳字段同样非常重要，在过去自己测试过程中发现，如果不改变时间戳的值(需要是一个未来的时间，并在每一次 Push 更新时 增加这个数)，会出现实时小组件不更新的问题。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+    &quot;aps&quot;: {
+        &quot;timestamp&quot;: 1660556374,
+        &quot;event&quot;: &quot;end&quot;,// or &quot;update&quot;
+        &quot;content-state&quot;: {
+            &quot;estimatedEndTime&quot;: 1660559974,
+            &quot;homeScore&quot;: 2,
+            &quot;guestScore&quot;: 2,
+            &quot;halfInfo&quot;: &quot;下半场&quot;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;3.4.3 更新 Live Activities&lt;/h4&gt;
+&lt;p&gt;当比分发生变化时，我们需要主动的更新实时小组件的 UI，调用 Update 方法，不再需要传递静态的球队数据，仅关心动态的一些数据。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let updateState = NBAWidgetAttributes.ContentState(homeScore: 22, guestScore: 10, homeLike: homeTeam.likeNum, guestLike: guestTeam.likeNum, tips: &quot;Q1&quot;, score: nil, time: date)
+Task {
+  await self.statusActivity?.update(using: updateState)
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在更新前，我们最好 check 一下本地存储的所有 Activities 实例的状态，如果已经是不可用了，则及时清除:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let activityState = activity.activityState
+if activityState == .dismissed {
+    self.cleanUpDismissedActivity()
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;3.4.4 关闭 Live Activities&lt;/h4&gt;
+&lt;p&gt;就像开篇所说，优雅的帮用户关闭无用的实时小组件，可以极大的提升用户的使用体验。因此在一场比赛结束后，我们可以主动的关闭我们开启过的 Live Activities:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public func endLiveActivities() -&amp;gt; Void {
+    Task {
+        let date = Calendar.current.date(byAdding: .minute, value: (12), to: Date())!.timeIntervalSince1970
+        let endState = NBAWidgetAttributes.ContentState(homeScore: 94, guestScore: 102, homeLike: 100 ,guestLike: 200 ,tips: &quot;Finished&quot;, score: nil, time: date)
+        await self.statusActivity?.end(using: endState,dismissalPolicy: .default)//+4h
+        //await self.statusActivity?.end(using: endState,dismissalPolicy: .immediate)//立刻结束
+        //await self.statusActivity?.end(using: endState,dismissalPolicy: .after(Date().addingTimeInterval(60 * 60)))//一小时之后结束
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在 Demo 当中，我们将最终的比分传递给 Activity 框架，以确保用户看到的是最后的比分状态，并清楚的在 UI 上显示 Finished。而关于 API 当中&lt;code&gt;dismissalPolicy&lt;/code&gt; 的含义，参考文档可以总结为:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;.default&lt;/code&gt; 系统对于实时小组件&lt;code&gt;默认&lt;/code&gt;的消失策略，当我们设置这个参数时，系统会继续保持我们的实时小组件最长 4 个小时的展示，或者被用户主动清除掉；而在文档中，我们可以看到一个实时小组件最长可以停留八个小时，也就是理论上，我们的小组件可以存在 8+4=12 个小时&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.immediate&lt;/code&gt; 会立即结束我们实时小组件的展示，使用这个可能会让用户失去瞥见最后信息的机会&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.after(someDate)&lt;/code&gt; 我们可以通过设置这个参数来制定消失实时小组件的时机，需要注意的是，这个策略也需要传入最长 4 个小时的窗口，如果大于这个时间，系统会在 4 小时时清除掉我们的小组件&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;当用户主动清除锁屏中的实时小组件时，我们又该做什么呢:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;首先，移除实时小组件不等于取消当前任务，例如外卖类的实时小组件，被移除不代表我们要&lt;code&gt;cancel&lt;/code&gt; 掉这份外卖(用户会被气疯的吧。。。)&lt;/li&gt;
+&lt;li&gt;端内可以通过&lt;code&gt;self.statusActivity?.activityState&lt;/code&gt; 来主动获取我们创建出的小组件实例的状态，当发现是&lt;code&gt;dismissed&lt;/code&gt;时，则意味着不需要再更新它了，可以在我们的数据管理 Manager 中做移除&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;3.5 给实时小组件增加一个按钮&lt;/h3&gt;
+&lt;p&gt;在 iOS17 之前，实时小组件通过&lt;code&gt;widgetURL&lt;/code&gt;来进入 App 指定的页面来进行后续的操作，略显繁琐，而在 iOS17 我们可以借助&lt;code&gt;AppIntent&lt;/code&gt;的力量来实现增加按钮和切换键 (Toggle) 这两个组件来丰富我们的功能。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct likeAppIntent: WidgetConfigurationIntent {
+    static var title: LocalizedStringResource = &quot;Configuration&quot;
+    static var description = IntentDescription(&quot;This is an example widget.&quot;)
+
+    // An example configurable parameter.
+    @Parameter(title: &quot;Like&quot;)
+    var teamId: String
+    
+    init() {
+        
+    }
+    
+    //to hold data
+    init(teamId: String) {
+        self.teamId = teamId
+    }
+    
+    func perform() async throws -&amp;gt; some IntentResult {
+        if let index = MatchDataManager.shared.teams.firstIndex(where: {
+            $0.teamId == teamId
+        }) {
+            let resultTeam = MatchDataManager.shared.teams[index];
+            resultTeam.likeNum += 10
+            NBALiveTrigger.shared.updateLiveActivitiesLAVSWA()
+        }
+        
+        return .result()
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们定义了一个&lt;code&gt;LikeAppIntent&lt;/code&gt;的助力 Intent，将球队 ID 进行保存，实现 Perform 协议方法，并找到模拟的球队数据，将他们的点赞数加 10，这里触发了上面 Live Activities 管理类中的更新方法，来更新我们的实时小组件。&lt;/p&gt;
+&lt;p&gt;而在我们的 Widget UI 中，加入按钮也是十分的简单，如下代码所示，Button 新增了一个构造方法，引入&lt;code&gt;AppIntents&lt;/code&gt;框架，即可传入我们定义好的&lt;code&gt;favorAppIntent&lt;/code&gt;，当该按钮被点击时，触发我们写好的 Perform 程序&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;if #available(iOS 17.0, *) {
+    HStack {
+        Text(likeNum.formatted())
+            .foregroundColor(.white)
+            .contentTransition(.numericText())
+        Button(intent: favorAppIntent(teamId: team.teamId)) {
+            Image(systemName: &quot;hand.thumbsup&quot;)
+                .foregroundColor(.white)
+        }
+        .buttonStyle(.plain)
+    }
+} else {
+    //展示其他UI
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里需要注意判断系统版本，这是一个仅 iOS17+ 的功能。&lt;/p&gt;
+&lt;h3&gt;3.6 息屏处理&lt;/h3&gt;
+&lt;p&gt;锁屏时，一段时间后，屏幕会进入到息屏状态，而此时，我们的 UI 表现可能会很糟糕，因此我们可以通过&lt;code&gt;isLuminanceReduced&lt;/code&gt;环境变量来拿到此时的机器状态，从而从容的来设置我们的 UI 表现。因此，我简单封装了一个 View Extension：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct LuminanceReducedColor: ViewModifier {
+    var foregroundColor: Color
+    @Environment(\.isLuminanceReduced) var isLuminanceReduced
+    func body(content: Content) -&amp;gt; some View {
+        if isLuminanceReduced {
+            content.foregroundColor(.white)
+        } else {
+            content.foregroundColor(foregroundColor)
+        }
+    }
+}
+
+extension View {
+    func luminanceReducedColor(color: Color) -&amp;gt; some View {
+        modifier(LuminanceReducedColor(foregroundColor: color))
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当息屏时，文字等颜色变为白色，更加便于辨认。&lt;/p&gt;
+&lt;h2&gt;4. 已有 Widget 工程如何加入 Live Activities&lt;/h2&gt;
+&lt;p&gt;对于已经拥有了 Widget Extension 的工程，我们同样也可以快速支持 Live Activities。&lt;/p&gt;
+&lt;p&gt;首先我们需要在 Widget Extension 中 新建一个 Swift 文件，并引入&lt;code&gt;ActivityKit&lt;/code&gt;框架、&lt;code&gt;WidgetKit&lt;/code&gt;框架以及&lt;code&gt;SwiftUI&lt;/code&gt;框架，然后需要创建&lt;code&gt;ActivityAttributes&lt;/code&gt; 来定义实时小组件的传输数据媒介。&lt;/p&gt;
+&lt;p&gt;在这之后我们需要创建一个 Widget Struct 来声明我们所要实现的实时小组件 Widget (代码进行了叠起，填充 View 部分用 ... 表示):&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    var body: some WidgetConfiguration {for: DemoWidgetAttributes.self} dynamicIsland: { context in
+            DynamicIsland {...} compactLeading: {...} compactTrailing: {...} minimal: {...}
+            .widgetURL(URL(string: &quot;http://www.apple.com&quot;))//点击跳转
+    }
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;最后我们需要使用&lt;code&gt;WidgetBundle&lt;/code&gt;来将刚才定义好的 Widget 加入进去，系统才会识别我们有一个实时小组件可用:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@main
+struct DemoWidgetBundle: WidgetBundle {
+    var body: some Widget {
+        DemoWidget()
+        DemoWidgetLiveActivity() //刚才定义好的新的实时小组件
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;5. 你可能还会需要了解的 TIPS&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;https://developer.apple.com/design/human-interface-guidelines/live-activities&quot;&gt;Live Activities 人机交互指南&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;无论你采用什么方式更新，数据量都不能大于 4KB&lt;/li&gt;
+&lt;li&gt;Live Activities 可以独立于 Widget 小组件，但 Apple 建议实时小组件都搞了，不差 Widget 了，再做一个&lt;/li&gt;
+&lt;li&gt;Info.plist 文件需要添加 NSSupportsLiveActivities == YES&lt;/li&gt;
+&lt;li&gt;锁屏中 UI、灵动岛展开 UI 如果超过 160points，系统有可能会裁切我们的 View&lt;/li&gt;
+&lt;li&gt;StandBy 模式，是采用我们的 Lock Screen 的 UI 来填充展示&lt;/li&gt;
+&lt;li&gt;一个 App 可以开启多个 Live Activities，而一台设备可以开启多个 App 的多个 Live Activities，不要对这个数量作出假设，也不要对岛上出现的时机和顺序或者位置做出假设&lt;/li&gt;
+&lt;li&gt;在开启、更新等重要时机前，我们应该处理当 Live Activities 不可用时的错误，给予用户友好的提示&lt;/li&gt;
+&lt;li&gt;Push 暂时是无法开启 Live Activities 的&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;6. 小结&lt;/h2&gt;
+&lt;p&gt;虽然实时小组件出现到现在的时间不长，但它可以快速拉进用户和 App 之间的距离，并能将用户最关心的任务和信息展示在锁屏和灵动岛等比较重要的系统 UI 中，这些优点会随着更多第三方应用的适配而无限放大。但与此同时，滥用它的特性也一定会被用户甚至 Apple 所嫌弃。因此如何精简出自己 App 适合上岛的功能点，我觉得要比如何适配如何实现更加的重要，毕竟总览 Live Activities 的实现，Apple 已经几乎做到手把手了，如果之前有过桌面小组件开发经验的同学，或者 SwiftUI 相关经验的同学，上手起来会非常的快。&lt;/p&gt;
+&lt;p&gt;那关于这期 Session 的梳理和 Demo 实战就到这里，希望对大家有所帮助。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/jerryliurui/Live-Activities-Demo-NBA-Score&quot;&gt;本篇 Demo 地址&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;::github{repo=&quot;jerryliurui/Live-Activities-Demo-NBA-Score&quot;}&lt;/p&gt;
+&lt;p&gt;相关 Session 汇总:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/wwdc23/10027&quot;&gt;Bring widgets to new places&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/wwdc23/10028&quot;&gt;Bring widgets to life&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/wwdc23/10184&quot;&gt;Meet ActivityKit&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/wwdc23/10185&quot;&gt;Update Live Activities with push notifications&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;相关文档汇总:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/widgetkit&quot;&gt;WidgetKit&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/activitykit&quot;&gt;ActivityKit&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/widgetkit/adding-interactivity-to-widgets-and-live-activities&quot;&gt;Adding interactivity to widgets and Live Activities&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/widgetkit/animating-data-updates-in-widgets-and-live-activities&quot;&gt;Animating data updates in widgets and Live Activities&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/cn/design/human-interface-guidelines/widgets&quot;&gt;人机交互指南中文(小组件)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/cn/design/human-interface-guidelines/live-activities/&quot;&gt;人机交互指南中文(实时活动)&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>WWDC2022-iOS16 Live Activities 锁屏常驻小组件</title><link>https://jerryliu.org/posts/liveactivity16/2022-08-18-live-activities-ios16/</link><guid isPermaLink="true">https://jerryliu.org/posts/liveactivity16/2022-08-18-live-activities-ios16/</guid><description>An iOS16 Live Activities Demo</description><pubDate>Thu, 18 Aug 2022 00:00:00 GMT</pubDate><content:encoded>&lt;h3&gt;0.前言&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;Live Activities&lt;/code&gt;这个新Feature 可以说是我在看完整个WWDC新功能预览中，觉得最香的一个功能了，当然其他的功能工作当中涉及的不多 =。=，整个iOS16对于我们的App来说可以适配的点不是特别多。 总的来说，这个功能对于已经适配了Widget的开发者来说很熟悉，上手会非常的快，甚至在看完文档之后就差不多可以写出一个可以运行的Demo了。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.apple.com/ios/ios-16-preview/&quot;&gt;iOS16官方预览&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;7.28号官方终于是发布了相关的文档，开发者终于可以在iOS16 beta4+开发和适配这个功能，本文大部分内容来源于官方的文档&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/activitykit&quot;&gt;Live Activities官方文档&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;在此基础上实现了一个单Live 实例的Demo 希望能够帮助到大家~ 本文主要从下边四个方面来展开:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;1.什么是Live Activities？&lt;/p&gt;
+&lt;p&gt;2.结合Demo聊聊如何实现一个2022年世界杯比赛Live Activities&lt;/p&gt;
+&lt;p&gt;3.Live Activities的一些限制&lt;/p&gt;
+&lt;p&gt;4.目前Beta遇到的一些问题&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;1.Live Activities 介绍&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;Live Activities&lt;/code&gt;使得用户在锁屏状态下即可看到你的App当前正在进行的某一项工作的进展，不需要解锁屏幕，不需要进入App，再一次的拉进了用户和App的距离。&lt;/p&gt;
+&lt;p&gt;从官方给出的一些Demo截图尝试猜测这个功能非常适用于一些场景:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;1.比赛直播类App，实时的更新用户关心的比赛&lt;/p&gt;
+&lt;p&gt;2.外卖、打车类App，实时的更新外卖骑手进度、食物制作进度、司机到达情况&lt;/p&gt;
+&lt;p&gt;3.上传、下载等任务的实时更新显示&lt;/p&gt;
+&lt;p&gt;4.重大事件的持续跟踪报道，专题性质的新闻更新，24小时热点新闻轮播&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;整体的运作如图，需要用到我们的老朋友WidgetKit:&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/LiveActivities/截屏2022-08-22 14.39.12.png)&lt;/p&gt;
+&lt;h3&gt;2.Live Activities的限制&lt;/h3&gt;
+&lt;p&gt;本来想着这一部分放在最后，但是感觉这些限制还是放在前边方便查找一些，方便大家在设计自己的实时小组件前就在脑海中有一些条条框框~ 这部分限制基于&lt;code&gt;iOS16 Beta6&lt;/code&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;开放版本:&lt;code&gt;Live Activities&lt;/code&gt;和&lt;code&gt;ActivityKit&lt;/code&gt;不会在初始的iOS16版本中更新，目前文档说的是2022年晚些时候，一旦放出，开发者可以提交相应分支的App~&lt;/li&gt;
+&lt;li&gt;仅支持iPhone&lt;/li&gt;
+&lt;li&gt;理论上我们的Live Activities小组件出现在锁屏之后 会存在8小时，除非用户主动结束它，而系统其实会额外延长最多4小时~因此一个Live Activities小组件最长可以在用户的锁屏上出现&lt;code&gt;12&lt;/code&gt;小时。&lt;/li&gt;
+&lt;li&gt;每一个实时小组件都无法自主进行网络请求和位置更新&lt;/li&gt;
+&lt;li&gt;每一次更新的数据不能超过&lt;code&gt;4KB&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;仅支持SwiftUI来构建Live Activities UI&lt;/li&gt;
+&lt;li&gt;最大高度160 Point，超过这部分会被系统裁切&lt;/li&gt;
+&lt;li&gt;动画会被系统过滤，例如&lt;code&gt;withAnimation(::)&lt;/code&gt;等Api是无法生效的&lt;/li&gt;
+&lt;li&gt;每一个App可以开启多个Live Activities，每个设备可以同时开启多个App的Live Activities，一个用户同一时间可能会达到一个上限而开启失败我们的Live Activities，因此在开启、更新、结束每一个Activities时，检查功能是否可用非常的重要&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;3.添加Live Activities&lt;/h3&gt;
+&lt;p&gt;如上边的整体运作图可以看出，描述整个锁屏Live小组件的代码需要写在WidgetKit中，尽管如此，整个Live Activities并不能享受到Widget的机制，比如时间线更新等，而代替时间线更新数据的是使用崭新的ActivityKit框架和远程推送来更新我们的数据。&lt;/p&gt;
+&lt;p&gt;官方这里是建议Live Activities 你都加上了，顺手把Widget也给加上呗，尤其是同为新出的锁屏小组件~&lt;/p&gt;
+&lt;h4&gt;3.1 添加Widget Extension&lt;/h4&gt;
+&lt;p&gt;![Alt text](/public/images/LiveActivities/截屏2022-08-22 11.48.37.png)&lt;/p&gt;
+&lt;h4&gt;3.2 Info Plist新增&lt;/h4&gt;
+&lt;p&gt;![Alt text](/public/images/LiveActivities/截屏2022-08-22 11.49.37.png)&lt;/p&gt;
+&lt;h4&gt;3.3 自定义活动参数&lt;/h4&gt;
+&lt;p&gt;对于我们的世界杯实时小组件，我们需要定义Activity活动属性集合，和每次更新的载体对象。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import SwiftUI
+import WidgetKit
+import ActivityKit
+
+struct FIFAActivityAttributes: ActivityAttributes {
+    public typealias FIFAGameStatus = ContentState
+  
+    public struct ContentState: Codable, Hashable {
+        var estimatedEndTime: Date
+        var homeScore: Int
+        var guestScore: Int
+        var halfInfo:String
+    }
+  
+    var buildId: String
+    var gameInfo: String
+    var gameTitle: String
+    var home: FIFATeam
+    var guest: FIFATeam
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;比如用户选择一场比赛，这里基础数据是两只球队(FIFATeam)，比赛的一些基本信息，而每次更新小组件的数据模型，则定义在&lt;code&gt;ContentSatte&lt;/code&gt;中，例如比赛结束时间、主队得分、客队得分、比赛实时信息(上半场还是下半场还是结束)。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class FIFATeam : Codable, Hashable {
+    public static func == (lhs: FIFATeam, rhs: FIFATeam) -&amp;gt; Bool {
+        return lhs.teamId == rhs.teamId
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(teamId)
+        hasher.combine(teamLogo)
+        hasher.combine(teamName)
+        hasher.combine(flag)
+    }
+    
+    public var teamName: String = &quot;&quot;
+    public var teamLogo: Data
+    public var teamId: String = &quot;&quot;
+    public var flag: String = &quot;&quot;
+    
+    init(teamName: String, teamLogo: Data, teamId: String, flag: String) {
+        self.teamName = teamName
+        self.teamLogo = teamLogo
+        self.teamId = teamId
+        self.flag = flag
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;球队基本信息本次demo暂时显示的是球队名字、国旗、队伍ID等，方便我们来展示和现实比赛~&lt;/p&gt;
+&lt;h4&gt;3.4 WidgetBundle&lt;/h4&gt;
+&lt;p&gt;如果本身我们的App已经实现了之前的Widget 桌面小组件或者锁屏小组件，我们使用&lt;code&gt;WidgetBundle&lt;/code&gt;来绑定&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@main
+struct DemoWidgets: WidgetBundle {
+   var body: some Widget {
+       WidgetDemo()
+       UploadLiveActivitiesWidget()//Live Activities 小组件
+   }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;3.5 创建UI&lt;/h4&gt;
+&lt;p&gt;下边就是在UploadLiveActivitiesWidget 当中绘制我们的UI了，和传统意义上的Widget很类似，只不过之前我们是通过&lt;code&gt;IntentConfiguration&lt;/code&gt;来定义WidgetUI， 而现在我们使用&lt;code&gt;ActivityConfiguration&lt;/code&gt;来定义Live Activities的Widget&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct UploadLiveActivitiesWidget: Widget {
+  let kind: String = &quot;UploadLiveActivitiesWidget&quot;
+  
+  var body: some WidgetConfiguration {
+    ActivityConfiguration(attributesType: FIFAActivityAttributes.self) { context in
+        FIFAGameView(attribute: context.attributes, state: context.state)
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;FIFAGameView&lt;/code&gt;则是一场比赛的SwiftUI View，这里我们需要承接系统的Attributes和state，来获取所需要的数据。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct FIFAGameView: View {
+    @State var attribute: FIFAActivityAttributes
+    @State var state: FIFAActivityAttributes.ContentState
+    
+    var body: some View {
+        VStack {
+            FIFAGameTopView(attribute: attribute, state: state)
+    
+            HStack(alignment: .bottom) {
+                VStack(alignment: .leading) {
+                    Text(attribute.gameTitle)
+                    Text(attribute.gameInfo)
+                }
+                
+                Spacer()
+                
+                Image(&quot;news&quot;)
+                    .resizable()
+                    .frame(width: 25, height: 25)
+            }
+        }
+        .padding(.all)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过Xcode Preview来看一下显示效果:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct FIFAGameView_Preview: PreviewProvider {
+    static var previews: some View {
+        let homeTeam = FIFATeam(teamName: &quot;Spain&quot;, teamLogo: Data(), teamId: &quot;spain&quot;, flag: &quot;spain&quot;)
+        let guestTeam = FIFATeam(teamName: &quot;France&quot;, teamLogo: Data(), teamId: &quot;france&quot;, flag: &quot;france&quot;)
+        let attribute = FIFAActivityAttributes(buildId: &quot;0001&quot;, gameInfo: &quot;小组赛第三轮，强强对话&quot;, gameTitle: &quot;世界杯F组&quot;, home:homeTeam, guest: guestTeam)
+        
+        let startState = FIFAActivityAttributes.ContentState(estimatedEndTime: Date().addingTimeInterval(90 * 60), homeScore: 0, guestScore: 0, halfInfo: &quot;上半场&quot;)
+        FIFAGameView(attribute: attribute, state: startState)
+            .previewContext(WidgetPreviewContext(family: .systemMedium))
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;![Alt text](/public/images/LiveActivities/截屏2022-08-22 13.55.21.png)&lt;/p&gt;
+&lt;p&gt;这里提一句我遇到的一个问题，就是Widget Extension中的Xcode Preview总是会Crash，或者报错:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;RemoteHumanReadableError: The operation couldn’t be completed. XPC error received on message reply handler
+
+BSServiceConnectionErrorDomain (3):
+==NSLocalizedFailureReason: XPC error received on message reply handler
+==BSErrorCodeDescription: OperationFailed
+
+==================================
+
+|  MessageSendFailure: Message send failure for &amp;lt;ServiceMessage 2: relaunch&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以尝试把Xcode的打开方式取消勾选使用Rosetta来试试，当然这个问题遇到人还挺多，但是解决方法都不太一样，这里暂时记录一下我这里遇到之后的方法(电脑是M1)&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/LiveActivities/截屏2022-08-22 14.01.51.png)&lt;/p&gt;
+&lt;p&gt;说回来，系统会使用默认的白色字体和一个最适合当前用户的锁屏页面的背景颜色来展示我们的Live Activities小组件，如果想要自定义一个颜色，可以使用下面这个修饰符&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;activityBackgroundTint(_:)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;4.实现Live Activities&lt;/h3&gt;
+&lt;h4&gt;4.1 检查是否可用&lt;/h4&gt;
+&lt;p&gt;在准备好UI之后，我们便可以尝试着通过我们的主App来开启实时小组件了。在开启之前，文档特别建议了开发者在开启之前首先需要检查一下该功能是否可用。因为当前实时小组件仅适用于iPhone，且用户是可以手动在你的App设置页面关闭该功能的&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/LiveActivities/截屏2022-08-22 14.15.38.png)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;guard ActivityAuthorizationInfo().areActivitiesEnabled else {
+            print(&quot;当前设备不可用Live Activities，用户关闭或者设备无法使用&quot;)
+            return
+        }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;areActivitiesEnabled API 来同步获取当前功能是否可以使用，除此之外还可以通过:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;activityEnablementUpdates 异步监听队列，监听功能是否可用
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这也是上文Apple的那个Tips，这里再列举一下:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;每一个App可以开启多个Live Activities，每个设备可以同时开启多个App的Live Activities，一个用户同一时间可能会达到一个上限而开启失败我们的Live Activities，因此在开启、更新、结束每一个Activities时，检查功能是否可用非常的重要&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4&gt;4.2 Start the Live Activity&lt;/h4&gt;
+&lt;p&gt;开启代码需要在主App内，且需要App在前台（说个题外话哦，这部分感觉Apple还是相对谨慎的开放他们的新特性的，本来看到这个新Feature的时候想着推送来开启就太棒了，但是文档确实没有提及推送来触发开启，这部分是否可以使用静默Push来实现还没有测试，如果有测试了的小伙伴可以提供一下思路~多谢~~~）&lt;/p&gt;
+&lt;p&gt;为了方便测试我们的功能，我这里是写了一个辅助类来管理ActivityKit来管理实时小组件的&lt;code&gt;LiveActivitiesTrigger&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;//模拟用户选择了西班牙VS法国的小组赛(纯属demo哈)
+        let homeTeam = FIFATeam(teamName: &quot;Spain&quot;, teamLogo: Data(), teamId: &quot;spain&quot;, flag: &quot;spain&quot;)
+        let guestTeam = FIFATeam(teamName: &quot;France&quot;, teamLogo: Data(), teamId: &quot;france&quot;, flag: &quot;france&quot;)
+        let attribute = FIFAActivityAttributes(buildId: &quot;0001&quot;, gameInfo: &quot;小组赛第三轮，强强对话&quot;, gameTitle: &quot;世界杯F组&quot;,home: homeTeam, guest: guestTeam)
+        
+        let startState = FIFAActivityAttributes.ContentState(estimatedEndTime: Date().addingTimeInterval(90 * 60), homeScore: 0, guestScore: 0, halfInfo: &quot;上半场&quot;)
+        
+        do {
+            self.statusActivity = try Activity&amp;lt;FIFAActivityAttributes&amp;gt;.request(attributes: attribute, contentState: startState, pushType: nil)
+        } catch let e {
+            print(&quot;开启Live Activities 失败，原因:\(e.localizedDescription)&quot;)
+        }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;demo中创建了西班牙队和法国队，并使用我们之前定义好的自定义的&lt;code&gt;FIFAActivityAttributes&lt;/code&gt;来标志整场比赛，而后我们通过创建&lt;code&gt;startState&lt;/code&gt;来告诉系统具体我们动态的数据都有哪些，系统便可以知道后续更新所需要关注的内容字段了。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;request&lt;/code&gt;Api 来开启实时小组件，这里注意的是PushType传递了一个nil，这告诉系统当前这个开启的Live Activity需要主App来获取数据来驱动更新，而不是远程推送，如果是远程推送的话，后边会说到哈，这里需要传入.token&lt;/p&gt;
+&lt;h4&gt;4.3 Update the Live Activity&lt;/h4&gt;
+&lt;p&gt;不同于Start部分，Update Live Activity和后边要说的End Live Activity都不需要App在前台，可以使用&lt;a href=&quot;https://developer.apple.com/documentation/backgroundtasks&quot;&gt;Background Tasks&lt;/a&gt;来驱动更新&lt;/p&gt;
+&lt;p&gt;之前我们开启Activity之后，会拿到一个唯一ID的实体，我们通过调用它的Update 方法即可对他进行更新:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;//模拟了主队1:0领先的情况
+let updateState = FIFAActivityAttributes.ContentState(estimatedEndTime: Date().addingTimeInterval(80 * 60), homeScore: 1, guestScore: 0, halfInfo: &quot;上半场&quot;)
+            
+await self.statusActivity?.update(using: updateState)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;4.4 End the Live Activity&lt;/h4&gt;
+&lt;p&gt;当我们定义的整个活动结束的时候，我们理应对其进行End操作，出现在锁屏中的实时小组件消失会有三种模式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;await self.statusActivity?.end(using: endState,dismissalPolicy: .default)//+4h
+await self.statusActivity?.end(using: endState,dismissalPolicy: .immediate)//立刻结束
+await self.statusActivity?.end(using: endState,dismissalPolicy: .after(Date().addingTimeInterval(60 * 60)))//一小时之后结束
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;系统默认的延长四小时模式，立即结束模式，自定义一段时间之后消失。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let endState = FIFAActivityAttributes.ContentState(estimatedEndTime: Date(), homeScore: 4, guestScore: 6, halfInfo: &quot;全场结束&quot;)
+            
+await self.statusActivity?.end(using: endState,dismissalPolicy: .default)//+4h
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Demo当中使用系统默认的方式来等待结束，或者用户主动关闭~&lt;/p&gt;
+&lt;p&gt;顺便一提，用户关闭我们的实时小组件，不是关闭了整个&quot;任务&quot;，比如送外卖实时小组件，用户关闭了它不代表用户取消了当前的外卖订单。&lt;/p&gt;
+&lt;h4&gt;4.5 Remote Push Notification&lt;/h4&gt;
+&lt;p&gt;除了通过主App来更新、结束Live Activity，我们还可以使用第二种方式来：远程推送通知。相对于第一个方式，个人认为推送来更新和结束更加的灵活，也更加符合实时和直播的这个特性~&lt;/p&gt;
+&lt;p&gt;这个方式需要应用已获得用户Push推送权限，具体的一些准备工作请参考Apple的这几个文档&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/usernotifications/registering_your_app_with_apns&quot;&gt;Registering Your App with APNs&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/uikit/uiapplication/1623078-registerforremotenotifications&quot;&gt;registerForRemoteNotifications()&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/usernotifications&quot;&gt;User Notifications&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;开启方式和端内开启几乎一模一样，只是参数需要传入.token&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;self.statusActivity = try Activity&amp;lt;FIFAActivityAttributes&amp;gt;.request(attributes: attribute, contentState: startState, pushType: .token)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;而开启成功之后，我们边可以拿到&lt;code&gt;self.statusActivity&lt;/code&gt;中的&lt;code&gt;pushToken&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;哦，对了，这个地方的PushToken并不是我们启动注册通知时拿到的那个Token，而是需要从开启后得到的Activity实例中获得的Token发给我们的Push 后台。&lt;/p&gt;
+&lt;p&gt;我们还需要监听Push Token的队列来看看Token 是否发生了变化，要将变化及时的告诉Push后台&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;func listenForPushTokenChanged(activities:Activity&amp;lt;FIFAActivityAttributes&amp;gt;?) -&amp;gt; Task&amp;lt;Void, Error&amp;gt;? {
+        guard let activities = activities else { return nil }
+        
+        return Task.detached {
+            for await tokenData in activities.pushTokenUpdates {
+                let pushTokenString = String(deviceToken: tokenData)
+                print(&quot;\(activities.id)新Token:\(String(describing: pushTokenString))&quot;)
+                
+                //发送这个ID和Token给后台服务器
+            }
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;具体的Payload格式存在一定的约束，还记得上面我们定义的动态数据的字段State模型么，推送载体的数据字段必须严格一样，系统才会相应的更新我们的Live Activities。
+这里我们使用的Event事件是end，相应的如果是更新数据，则需要填入&lt;code&gt;update&lt;/code&gt;。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+    &quot;aps&quot;: {
+        &quot;timestamp&quot;: 1660556374,
+        &quot;event&quot;: &quot;end&quot;,
+        &quot;content-state&quot;: {
+            &quot;estimatedEndTime&quot;: 1660559974,
+            &quot;homeScore&quot;: 2,
+            &quot;guestScore&quot;: 2,
+            &quot;halfInfo&quot;: &quot;下半场&quot;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试这里我是遇到了一些问题，我一直是使用PushHero来测试推送的。但是目前无法推送成功，会报出&lt;code&gt;Device Token not for Topic&lt;/code&gt;的错误，问了一下推上的好友，他们也遇到了类似的错误，怀疑是Push Type是不是新增了一种？但是却没有更新出来？这部分后边如果有更新我会第一时间更新一下进展。目前暂时搁置了。&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/LiveActivities/截屏2022-08-22 14.49.44.png)&lt;/p&gt;
+&lt;h3&gt;5.一些其他有用的API&lt;/h3&gt;
+&lt;p&gt;每一个我们创建出来的Activities，都有一个唯一的ID，系统提供了关于它的三个状态更新的API&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;To observe the state of an ongoing Live Activity — for example, to determine whether it’s active or has ended — use &lt;a href=&quot;https://developer.apple.com/documentation/activitykit/activity/activitystateupdates-swift.property&quot;&gt;activityStateUpdates&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;To observe changes to the dynamic content of a Live Activity, use &lt;a href=&quot;https://developer.apple.com/documentation/activitykit/activity/contentstate-swift.property&quot;&gt;contentState&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;To observe changes to the push token of a Live Activity, use &lt;a href=&quot;https://developer.apple.com/documentation/activitykit/activity/pushtokenupdates-swift.property&quot;&gt;pushTokenUpdates&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;6.Demo+结束&lt;/h3&gt;
+&lt;p&gt;::github{repo=&quot;jerryliurui/Live-Activities-Demo&quot;}&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/LiveActivities/截屏2022-08-18 21.27.22.png)&lt;/p&gt;
+&lt;p&gt;demo上传了Github上，后续会有更新，希望对大家的开发适配有所帮助。&lt;/p&gt;
+&lt;p&gt;总的来说这个功能我觉得应该会真香的，尤其是马上就要到来的卡塔尔世界杯，虽然现在已经是视频直播满天飞的年代了，但是在锁屏即可看到自己心爱的球队的实时比分还是很让人心动的。从iOS14的Widget开始，到今年的Lock screen Widget和Live Activities，可以看到Apple在尝试放出越来越多的系统空间来给开发者施展施展拳脚，但还是能够明显的感受到他们的“克制”。希望这样的功能越来越多吧~感谢大家。下次见~&lt;/p&gt;
+</content:encoded></item><item><title>WWDC2020-Meet Widget Part2-WidgetDemo</title><link>https://jerryliu.org/posts/meetwidget/2020-08-05-meet-widget-part2-widgetdemo/</link><guid isPermaLink="true">https://jerryliu.org/posts/meetwidget/2020-08-05-meet-widget-part2-widgetdemo/</guid><description>An iOS14 Widget Demo</description><pubDate>Wed, 05 Aug 2020 00:00:00 GMT</pubDate><content:encoded>&lt;h3&gt;0.前言&lt;/h3&gt;
+&lt;p&gt;接上一篇，时隔两周，期间在适配真实项目，也踩了不少的坑，是时候整理一波了。&lt;/p&gt;
+&lt;p&gt;上一部分主要是从设计层面上介绍了什么是&lt;code&gt;Widget&lt;/code&gt;和如何设计一个优秀的&lt;code&gt;Widget&lt;/code&gt;， 而这篇主要是从实现原理和真实适配例子来阐述如何从工程层面上去实现今年的新Feature-Widget。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;1.如何实现Widget？WidgetKit的工作原理是什么？(ppt)&lt;/p&gt;
+&lt;p&gt;2.结合Demo聊聊如何使用SwiftUI来创建我们的Widget页面 (ppt+code)&lt;/p&gt;
+&lt;p&gt;3.如何使得我们的Widget 变得更加的&lt;code&gt;聪明&lt;/code&gt; (ppt+code)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;1.SwiftUI&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;SwiftUI&lt;/code&gt;是苹果2019年推出的一个全新的UI框架，显然苹果是希望越来越多的开发者去使用这个新框架来实现功能的，于是干脆就在今年的新特性中尝试去硬性规定只能使用&lt;code&gt;SwiftUI&lt;/code&gt;来实现，&lt;code&gt;Widget&lt;/code&gt;就是，由于平时工作项目工程也有些岁数了(国内大部分祖传老项目)，因此平日工作依旧使用的&lt;code&gt;OC&lt;/code&gt;来实现，假如这次新特性没有要求只能用SwiftUI来实现的话，我们大概会本着效率优先的原则再次忽视掉新UI框架的，所以其实我觉得这是一个好事儿，学习新Feature的同时还能学习苹果较为前沿的新姿势。&lt;/p&gt;
+&lt;p&gt;于是开始恶补去年推出的一些列教学，和官方的教程，这里非常非常推荐官方的这个教程&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/tutorials/swiftui/&quot;&gt;SwiftUI Tutorials&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;其中会跟着一步一步的来使用SwiftUI来构建页面和App，而对于我这样急于快速上手来适配的开发者来说，学习完第一大章&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;SwiftUI Essentials&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;即可，其他的可以慢慢的后边继续学，总体来说SwiftUI需要在你拿到视觉稿之后，对于整体UI有一个空间拉扯的想象，把它立体化，然后拆解之后的小UI们，就可以两两组合甚至XX组合到各种组合中了，例如水平的&lt;code&gt;HStack&lt;/code&gt;,竖向UI&lt;code&gt;VStack&lt;/code&gt;，以及叠层UI&lt;code&gt;VStack&lt;/code&gt;。适配了两种，满脑子都是这些Stack，一开始会觉得这几个哥们能干啥? 会觉得不够用，但至少对于大部分Widget需求来说是足够的了。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Tips1：Widget 中不可以Use UIKit and SwiftUI Views Together，也就是Widget无法通过UIViewRepresentable协议来让地图控件这样的元素展示在Widget上&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;后边的Demo中会大量的使用各种Stack，所以这里就先不展开说了。总之SwiftUI使用下来，虽然跟进的深度还没有太深，但还是觉得和之前的IB比还是先进一大步了。尤其是在今年SwiftUI又有了很多新的更新，可以百分百创建一个独立App，终于兑现了那句&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;The shortest path to create a greate app&lt;/code&gt;&lt;/p&gt;
+&lt;h3&gt;2.WidgetKit&lt;/h3&gt;
+&lt;p&gt;恶补了一些SwiftUI的知识之后，我开始回头重新看了一下关于今年Widget的一些Session，这里我们一起来看看Widget的工作原理，这也有助于我们来设计一款优秀Widget的基础。&lt;/p&gt;
+&lt;p&gt;不知道大家在看完WidgetKit之后想起来另一个小伙伴&lt;code&gt;WatchKit&lt;/code&gt;,记不清楚是WatchOS多少了，我记得桌面小表盘上的工具，和Widget真的好像，无论是相关的Api，还是&lt;code&gt;Timeline时间线&lt;/code&gt;,&lt;code&gt;Entry实例&lt;/code&gt;,一度让我怀疑这是一个团队的产物 =.=&lt;/p&gt;
+&lt;h4&gt;2.1 Widget Kinds&lt;/h4&gt;
+&lt;p&gt;宏观上来说，Widget分为两种，一种是静态的，一种是动态可配置的，还是很好区分的，你只要长按一个桌面上的Widget，如果它能翻转过来编辑，就是&lt;code&gt;IntentConfiguration&lt;/code&gt;,如果不能，则为&lt;code&gt;StaticConfiguration&lt;/code&gt;。而让用户可以编辑这个特点，能让用户的桌面上同时存在多个类型的同一个尺寸的Widget。想一想现在你的产品在用户桌面上有三个Medium的样子，是不是增加了很多好好适配的动力？&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Tips2 Widget有很多限制，这一点虽然部分系统级别Widget看上去拥有一些特别的特权(例如动画等) 但我们还是要遵守我们的一些规则，例如没有滚动，不要有视频，只有点击交互。&lt;/p&gt;
+&lt;p&gt;Tips3 Widget 作为Extension，具备了使用App Group的能力，类似用户登录信息等依赖主App的信息可以使用这个方式来传递。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4&gt;2.2 How Widgetkit work&lt;/h4&gt;
+&lt;p&gt;在了解了Widget的种类之后，我们来看看WidgetKit是如何工作的。&lt;/p&gt;
+&lt;p&gt;我们以日历App为例，&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-07-29 下午3.44.46.png)&lt;/p&gt;
+&lt;p&gt;日历App会把关于个人的日历信息通过不断的输出，来让&lt;code&gt;Widgetkit&lt;/code&gt;不断的创建View来展示在我们的屏幕上，图中九点，九点半这些时间点上，我们提供给系统的实际上都是一个一个的&lt;code&gt;Entry&lt;/code&gt;,而这个线性的时间轴，名义上叫做&lt;code&gt;TimeLine&lt;/code&gt;时间线，每一个&lt;code&gt;Widget&lt;/code&gt;的背后其实都是有自己的时间线的，开发者负责管理时间线以及时间线上的一个一个的Entry&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-07-29 下午3.44.59.png)&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-07-29 下午3.45.10.png)&lt;/p&gt;
+&lt;p&gt;这三个图简单的描述了&lt;code&gt;WidgetKit&lt;/code&gt;的工作原理，后边会详细的跟踪每一步的具体实现，总得来说开发需要关心的东西其实非常的少，再加上&lt;code&gt;SwiftUI&lt;/code&gt;的加持，适配&lt;code&gt;Widget&lt;/code&gt;的工作显得轻松不少，可以让我们更加的关注在产品层面，可以更加关注把我们的App的什么信息来展示给用户，用户才会更好的买账把我们的Widget放在屏幕上。&lt;/p&gt;
+&lt;h3&gt;3.实现Widget&lt;/h3&gt;
+&lt;p&gt;了解了工作原理，正式进入到了实现环节，&lt;/p&gt;
+&lt;h4&gt;3.1 添加Widget&lt;/h4&gt;
+&lt;p&gt;Xcode -&amp;gt; File -&amp;gt; New -&amp;gt; Target -&amp;gt; 选择Widget Extension&lt;/p&gt;
+&lt;p&gt;这个地方我们已经可以看到老的&lt;code&gt;Today Widget&lt;/code&gt;已经不存在了，当然老项目中的老Extension还是可以并存的，具体并存的效果目前来看是互不影响，未来的共存效果未知。个人认为是老的Widget竞争力已经远远不如新的Widget了。&lt;/p&gt;
+&lt;p&gt;勾选 &lt;code&gt;Include Configuration Intent&lt;/code&gt; 这个随意，后边可以补，不勾选则默认是静态无法配置的Widget。&lt;/p&gt;
+&lt;p&gt;添加之后，我们可以看到一个空的Widget工程，我们大致过一下这些Api是干啥的&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct Provider: IntentTimelineProvider {
+    public func snapshot(for configuration: ConfigurationIntent, with context: Context, completion: @escaping (SimpleEntry) -&amp;gt; ()) {
+        let entry = SimpleEntry(date: Date(), configuration: configuration)
+        completion(entry)
+    }
+
+    public func timeline(for configuration: ConfigurationIntent, with context: Context, completion: @escaping (Timeline&amp;lt;Entry&amp;gt;) -&amp;gt; ()) {
+        var entries: [SimpleEntry] = []
+
+        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
+        let currentDate = Date()
+        for hourOffset in 0 ..&amp;lt; 5 {
+            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
+            let entry = SimpleEntry(date: entryDate, configuration: configuration)
+            entries.append(entry)
+        }
+
+        let timeline = Timeline(entries: entries, policy: .atEnd)
+        completion(timeline)
+    }
+  func placeholder(with: Context) -&amp;gt; FeedModelEntry {
+        return SimpleEntry(date: Date(), configuration: configuration)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;Provider&lt;/code&gt;结构体是系统询问我们的主入口&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;snapshot&lt;/code&gt;方法是当用户在&lt;code&gt;Widget Library&lt;/code&gt;中第一次预览时，我们快速提供Entry的地方，这个地方提供的实际上是一个真实的数据，所以需要我们一定要精简获取的数据，加快这个Entry的产生，对于不同的尺寸，我们可以区别对待，获取不同的数据。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;timeline&lt;/code&gt;方法则是我们组织时间线的主战场，我们在这个方法来持续的告诉系统我们要出现的Widget.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;placeholder&lt;/code&gt;这个方法实际上是&lt;code&gt;Xcode Beta3&lt;/code&gt;才出现的，这个地方我们可以提供一个默认Entry，也就是空数据Entry，系统会自动的帮我们渲染一个占位图一样的WidgetView&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;struct SimpleEntry: TimelineEntry {
+    public let date: Date
+    public let configuration: ConfigurationIntent
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;SimpleEntry&lt;/code&gt;是我们定义Entry的地方，我们可以将Widget View需要展示的信息都定义在这里，包括需要展示的图片Data&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct DiabloNewsEntryView : View {
+    var entry: Provider.Entry
+    var body: some View {
+        Text(entry.date, style: .time)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;EntryView&lt;/code&gt;则是我们展示View的主战场，这个地方我们可以根据不同的尺寸来告诉系统展示不同的Widget，毕竟苹果是推荐不同尺寸的Widget需要展示不一样的内容，而不是单单的等比例放大&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@main
+struct DiabloNews: Widget {
+    private let kind: String = &quot;DiabloNews&quot;
+    public var body: some WidgetConfiguration {
+        IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider(), placeholder: PlaceholderView()) { entry in
+            DiabloNewsEntryView(entry: entry)
+        }
+        .configurationDisplayName(&quot;My Widget&quot;)
+        .description(&quot;This is an example widget.&quot;)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们Widget的主体，这个地方可以定义我们展示的标题和描述以及支持的尺寸等配置信息，而我们这个widget的唯一标识也是在这里配置的，这里需要注意的是，Xcode Beta3开始这个Api有了变化，去掉了&lt;code&gt;placeholder&lt;/code&gt;参数，不去掉的话打&lt;code&gt;testflight&lt;/code&gt;会无法显示Widget(虽然Beta3打出来的包因为其Xcode本身的bug，无法在Widget Library内显示我们自己的Widget，但是官方的回复确实是无法使用老的Api，虽然能够编译过)&lt;/p&gt;
+&lt;p&gt;而通过&lt;code&gt;.supportedFamilies([.systemSmall, .systemMedium, .systemLarge])&lt;/code&gt;则可以告诉系统我们支持的尺寸都是什么。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct DiabloNews_Previews: PreviewProvider {
+    static var previews: some View {
+        DiabloNewsEntryView(entry: SimpleEntry(date: Date(), configuration: ConfigurationIntent()))
+            .previewContext(WidgetPreviewContext(family: .systemSmall))
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;SwiftUI&lt;/code&gt;自带属性，这一坨内容我们可以实时的预览我们的Widget组件，甚至是预览占位Widget(PlaceHolderView)&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;有趣的是，Session中提及的&lt;code&gt;isPlaceHolder(true)&lt;/code&gt;Api在Beta3中刚出来就被废弃掉了，使用&lt;code&gt;.redacted(reason: .placeholder)&lt;/code&gt;代替，而真实的渲染PlaceHolderView这个工作其实是交给了系统了，就像之前提到的TimeLineProvider中新增的placeholder方法，我们只需要提供一个 Default Entry即可。而新Api使得我们能够在预览区域看到我们的Widget被系统渲染成PlaceHolderView的样子&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4&gt;3.2创建UI&lt;/h4&gt;
+&lt;p&gt;这一部分主要会记录在开发过程当中所遇到的一些Tips，和一些Session中不曾提到的细节。&lt;/p&gt;
+&lt;h5&gt;3.2.1 DisplaySize&lt;/h5&gt;
+&lt;p&gt;如果我们希望拿到被渲染的Widget的确切大小的话，其实我们是可以拿到的:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public func snapshot
+public func timeline
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;上面两个方法中我们都可以拿到一个参数&lt;code&gt;context&lt;/code&gt;,通过这个Context我们可以拿到展示尺寸的大小&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;context.displaySize&lt;/code&gt; Widget 大小，拿到这个可以帮助我们精确布局&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;context.family&lt;/code&gt; Widget 的类型，拿到这个我们可以在创建网络请求的时候根据尺寸来进行不同的网络请求，以及更加精准的准备Entry&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;context.isPreview&lt;/code&gt; 是否是预览模式&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;context.environmentVariants&lt;/code&gt; 所有关于Widget显示的环境变量都在这里，如果有需要的可以debug看一下酌情取一下&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-08-03 下午2.32.34.png)&lt;/p&gt;
+&lt;h5&gt;3.2.2 EntryView&lt;/h5&gt;
+&lt;p&gt;入口处，我们可以通过环境变量&lt;code&gt;@Environment(\.widgetFamily)&lt;/code&gt;来拿到需要展示的尺寸类型，相应了展示对应的UI页面&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct DiabloNewsEntryView : View {
+    var entry: Provider.Entry
+    @Environment(\.widgetFamily) var family
+    @ViewBuilder
+    var body: some View {
+        switch family {
+        case .systemSmall:
+            WidgetSmallView()
+        case .systemMedium:
+            MediumWidgetView()
+        case .systemLarge:
+            WidgetLargeView()
+        default:
+            WidgetSmallView()
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5&gt;3.2.3 Preview for SwiftUI&lt;/h5&gt;
+&lt;p&gt;在预览状态下，我们可以设置各种状态来预览我们的Widget&lt;/p&gt;
+&lt;h6&gt;3.2.3.1 查看尺寸&lt;/h6&gt;
+&lt;p&gt;只需要在我们的View下使用&lt;code&gt;previewContext&lt;/code&gt;修饰符即可，例如我们预览中尺寸的样子，则可以添加&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.previewContext(WidgetPreviewContext(family: .systemMedium))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;对应展示的样子&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-08-03 下午5.55.28.png)&lt;/p&gt;
+&lt;h6&gt;3.2.3.2 查看夜间模式&lt;/h6&gt;
+&lt;p&gt;想要查看夜间模式，只需要添加下面这句修饰符&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.environment(\.colorScheme,.dark)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h6&gt;3.2.3.3 查看占位View&lt;/h6&gt;
+&lt;p&gt;想要预览Widget在加载数据时的样子，只需要添加下面这句即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.redacted(reason: .placeholder)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;文本会被绘制成毛玻璃一般的色块，图片则不会显示，因为我是用的是本地图片，所以不会被隐藏掉（感觉像是bug...看看后边会不会被处理，讲道理本地图片素材也应该被隐藏才对）&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-08-03 下午5.58.37.png)&lt;/p&gt;
+&lt;h5&gt;3.2.4 ColorScheme&lt;/h5&gt;
+&lt;p&gt;本地图片以及文字颜色等，可以通过在&lt;code&gt;Assets&lt;/code&gt;中的设置来达到一键暗夜模式的效果，但是如果是网络图片，则需要在渲染子View的时候来决定如何展示，我们可以在子View中添加这个环境变量来识别&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct WidgetMediumView: View {
+    @Environment(\.colorScheme) var colorScheme: ColorScheme
+    var body: some View {
+       if colorScheme == .dark {
+       } else {
+       }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5&gt;3.2.5 WidgetFamily&lt;/h5&gt;
+&lt;p&gt;这里说一个比较有意思的事情，其实在看Session的时候我就有一个小疑问，会不会有第四个尺寸 =。= 后来在开发的时候，意外的看到了这样一个警告&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-08-03 下午6.09.04.png)&lt;/p&gt;
+&lt;p&gt;Switch当我漏写了default的时候，警告说未来可能会有不同的值，虽然这也可能是这种枚举的一种正常警告⚠️，但还是期待一下未来会有超大啥的尺寸吧哈哈哈&lt;/p&gt;
+&lt;h5&gt;3.2.6 Spacer&lt;/h5&gt;
+&lt;p&gt;非常好用的View，有些时候我们需要把Logo放在有上角的时候，我们大可以通过一个&lt;code&gt;HStack&lt;/code&gt;加上一个Space()+Logo来实现&lt;/p&gt;
+&lt;h5&gt;3.2.7 Padding&lt;/h5&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-08-03 下午6.13.19.png)&lt;/p&gt;
+&lt;p&gt;Command + 左键一个View，可以直接呼出各种快捷菜单，其中就有这个SwiftUI面板，我们可以在这里勾选padding,我们不需要关心控件距离Widget的边界，只需要选择default即可。&lt;/p&gt;
+&lt;h5&gt;3.2.8 ForEach&lt;/h5&gt;
+&lt;p&gt;灵活使用ForEach可以快速实现类似于一个列表一样的UI样式&lt;/p&gt;
+&lt;p&gt;在demo中，大尺寸，竖向排列了三个新闻，则可以通过这个方式来布局&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;VStack(alignment: .leading, spacing:16) {
+     ForEach(articleList, id: \.self) { article in
+     Link(destination: URL(string: article.clientUrl ?? &quot;&quot;)!) {
+         NTESNBFeedWidgetLargeImageCell(article: article,currentSize: currentSize)
+     }
+   }
+}
+.padding(.all)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5&gt;3.2.9 ContainerRelativeShape&lt;/h5&gt;
+&lt;p&gt;同心圆角Api，我们可以不去单独计算圆角，或者让视觉来给，在View下使用clipShape修饰符即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.clipShape(ContainerRelativeShape())
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;3.3 取色逻辑&lt;/h4&gt;
+&lt;p&gt;这里感谢一个第三方的取色pod &lt;a href=&quot;https://github.com/jathu/UIImageColors&quot;&gt;ImageColors&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;可以取到四种主体颜色，demo中使用的是&lt;code&gt;backgroundColor&lt;/code&gt;&lt;/p&gt;
+&lt;h4&gt;3.4 标题颜色深浅判断&lt;/h4&gt;
+&lt;p&gt;由于demo中使用到了取色的逻辑，这就有一个问题，覆盖在底色上的标题文字颜色就不能和底色类似，会造成看不清的问题，所以我们需要简单的判断取出来的色是深色还是浅色，相应的给出一个文字的颜色&lt;/p&gt;
+&lt;p&gt;判断深浅颜色参考的公式是&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;((Red value X 299) + (Green value X 587) + (Blue value X 114)) / 1000&lt;/p&gt;
+&lt;p&gt;来源：&lt;a href=&quot;https://www.w3.org/WAI/ER/WD-AERT/#color-contrast&quot;&gt;深浅色判断公式&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4&gt;3.5 网络请求&lt;/h4&gt;
+&lt;h5&gt;3.5.1 关于Remote Image&lt;/h5&gt;
+&lt;p&gt;Widget如果想要显示图片的话，就需要提前下载好，曾经尝试给UIImage增加扩展来使Image控件来异步加载一个图片，但是失败了，后来看论坛，苹果工程师的推荐也是在创建Entry的时候就已经准备好了的&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-07-08 上午11.27.08.png)&lt;/p&gt;
+&lt;p&gt;另外，关于图片的大小其实在Widget中是有限制的，30MB&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-08-03 下午4.50.53.png)&lt;/p&gt;
+&lt;p&gt;所以相应的缩图策略也看上去必须的，创建Entry的时候也需要考虑更多，而在实际中，因为我们工程的图片需求比较大，所以我们每次其实只创建一个Entry，无论是数据还是图片，尽量不给太大的负担。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let refreshDate = Calendar.current.date(byAdding: .minute, value: 15, to: currentDate)!
+let timeLine = Timeline(entries: entries, policy:.after(refreshDate))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;每次请求之后schedule时间线15分钟之后再请求。&lt;/p&gt;
+&lt;h5&gt;3.5.2 关于数据&lt;/h5&gt;
+&lt;p&gt;其实官方推荐了后台请求，backgroundtask，但是适配的时候(Beta2)，后台请求回调很不稳定，所以采用了正常的网络请求，看上去还是很work的。数据model解析推荐使用官方的方式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let resultFeedModel = try JSONDecoder().decode(NetworkResult.self, from: data)
+return resultFeedModel
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;3.6关于Score&lt;/h4&gt;
+&lt;p&gt;每一个Entry都会有一个&quot;得分&quot;，每个App的Widget互不影响，这个Score是会直接的告诉系统当前你的Entry对于用户的相关性有多大，在&lt;code&gt;Smart stack&lt;/code&gt;中，如果分数高的话，大概率会被自动翻滚出来显示在最上面。当然如果都写1.0的话貌似也没问题，但是也失去了这个参数的意义了。&lt;/p&gt;
+&lt;p&gt;这个Score策略不是固定的，每个Widget都需要根据自身的情况来决定如何定义Score&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-08-04 上午10.29.51.png)&lt;/p&gt;
+&lt;h4&gt;3.7 关于时间线&lt;/h4&gt;
+&lt;p&gt;关于时间线策略的安排有三种Api:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;.atEnd 在最后一个Entry被消耗掉之后，开始请求新的时间线&lt;/p&gt;
+&lt;p&gt;.never 会不在主动创建时间线，等待被动的唤起刷新。&lt;/p&gt;
+&lt;p&gt;.after 则可以指定某一个特定的时间来更新我们的时间线&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;用一张图来展示三种的区别&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-08-04 上午10.29.34.png)&lt;/p&gt;
+&lt;p&gt;除了这三种刷新机制之外，我们同样可以使用通知和客户端内主动刷新来让widget刷新&lt;/p&gt;
+&lt;p&gt;其中第一种是push notification，静默推送来更新widget，另一种则是客户端内用户产生某个行为后，我们主动的reload&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;WidgetCenter.shared.reloadAllTimelines()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;3.8 关于统计&lt;/h4&gt;
+&lt;p&gt;由于用户使用自己桌面的行为我认为是比较隐私的，所以关于曝光我们是拿不到的，但是点击是可以的，因为只要有点击行为，就会进入到端内，后边的统计就容易很多。&lt;/p&gt;
+&lt;p&gt;而如果想要统计用户添加了哪种尺寸的Widget，以及相关的动态配置是什么，其实我们也是可以做到的&lt;/p&gt;
+&lt;p&gt;方法有很多，比如在TimeLine 提供Entry的时候保存一下属性，因为走了Timeline获取数据，则一定是用户添加了相关的Widget了。第二种比较正统的做法，是在我们的主App内去获取，同样是使用&lt;code&gt;WidgetKit&lt;/code&gt;相关的Api&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;WidgetCenter.shared.getCurrentConfigurations { result in }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;result&lt;/code&gt;内我们可以拿到所有用户添加到桌面上的我们的widget信息(自己的Widget别人的是拿不到的)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;widgetInfo.family //我们可以拿到family
+widgetInfo.kind //Widget的唯一标识
+widgetInfo.configuration //动态配置信息，比如用户选择的是北京的天气还是大连的天气
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;3.9 关于唯一允许的交互-点击&lt;/h4&gt;
+&lt;p&gt;苹果对于Widget上的交互其实是规定了只允许点击了，那如何实现Widget上面的点击呢&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;SmallSize&lt;/code&gt;对于小尺寸，我们不能切割视图，只有一个点击区域和事件，因此我们只需要在整个SmallView上使用&lt;code&gt;widgetURL&lt;/code&gt;修饰即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;WidgetSmallView(article: entry.smallArticle!,currentSize: entry.size)
+                .widgetURL(URL(string: entry.smallArticle?.clientUrl ?? &quot;&quot;))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;而对于中尺寸和大尺寸，我们就需要根据交互和视觉切割的视图来相应的给出跳转链接，使用的是LinkApi&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ForEach(articleList, id: \.self) { article in
+    Link(destination: URL(string: article.clientUrl ?? &quot;newsapp://&quot;)!) {
+        MediumWidgetView(article: article, currentSize: CGSize(width: currentSize.width, height: currentSize.height/3))
+     }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里说一个题外话，因为Widget点击动画效果是系统行为，对于大部分情况下是非常友好和实用的，但是对于某些情况下，例如我们都遇到过的在列表中点击某个Cell，Cell中的某个纯色视图会在点击的时候变成透明或者无色，这就需要我们在Cell点击的时候主动着色，来规避。&lt;/p&gt;
+&lt;p&gt;对于Widget我们拿不到点击回调，但是可以通过另一个相对吹可的方式来解决，就是利用&lt;code&gt;ZStack&lt;/code&gt;层叠视图，在显示的图片上方，加一个纯色的背景，link掉这个背景色即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ZStack(alignment: .top) {
+  Link(destination: URL(string: topArticle.clientUrl ?? &quot;newsapp://&quot;)!) {
+      Color(&quot;background&quot;)
+  }
+  LargeCoverCell(article: topArticle,currentSize: currentSize)
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;3.10 第二个Widget&lt;/h4&gt;
+&lt;p&gt;App是可以支持多个Widget的，他们之间通过kindString来区别，这里需要使用到的是&lt;code&gt;WidgetBundle&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@main
+struct WidgetDemoBundle : WidgetBundle {
+    @WidgetBundleBuilder
+    var body: some Widget {
+        UserProfileWidget()
+        DiabloNews()
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;需要注意的是只能有一个&lt;code&gt;Main&lt;/code&gt;函数。&lt;/p&gt;
+&lt;h3&gt;4.动态配置&lt;/h3&gt;
+&lt;p&gt;之前介绍的时候我们知道Widget可以允许用户编辑的，只需要长按Widget，支持Intent的Widget就会翻转过来，用户可以选择查看选项，来定制这个Widget，这也使得用户实际上可以在桌面上添加多个同一种尺寸的Widget来展示不同的内容，可以同屏查看到北京或者大连的天气，可以同时查看湖人和皇马的比赛进程。&lt;/p&gt;
+&lt;p&gt;而如何实现动态配置，这就要请出一个老朋友了，其实也不算老吧，两年前登场的&lt;code&gt;Siri Shortcut&lt;/code&gt;。内联智能是苹果这两年一直在推的事情，这次的动态配置同样借助了&lt;code&gt;Intent&lt;/code&gt;来实现，达到了一定程度上的统一。&lt;/p&gt;
+&lt;h4&gt;4.1 Custom Intent&lt;/h4&gt;
+&lt;p&gt;首先我们要像创建Shortcut那样创建一个Intent定义文件，来定义我们的Widget可以配置的内容。Demo中新建一个&lt;code&gt;HeroIntent&lt;/code&gt;,定义一个type:&lt;code&gt;Hero&lt;/code&gt;，模拟背后凯恩之角论坛对应的英雄论坛版块。&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-08-05 下午2.43.37.png)&lt;/p&gt;
+&lt;p&gt;这个时候一定要看一下右边面板是否系统已经自动生成了相应的Intent文件，下图蓝色箭头出现这个小箭头证明生成好了&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-08-05 下午2.43.43.png)&lt;/p&gt;
+&lt;p&gt;如果迟迟无法生成，则推荐使用重启Xcode大法，我的Mac有些岁数了，每次都要这么搞。还有一个坑就是，当你的项目是很古老的OC工程的话，建议自动生成Intent的语言切换成Swift，我在这几个beta版本的Xcode中几乎都遇到了迟迟无法自动生成Intent文件这种事，所以干脆直接改成Swift了，一劳永逸。具体修改地点在下图蓝色箭头处&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-08-05 下午2.50.47.png)&lt;/p&gt;
+&lt;p&gt;配置好了用户可以选择的内容，我们就要在配置的时候拉取可选项了，建议走网络，更加灵活，不用发版，只需要后台修改即可&lt;/p&gt;
+&lt;h4&gt;4.2 IntentHandling&lt;/h4&gt;
+&lt;p&gt;我们需要新创建一个Intent Extension，来处理这个请求事件。实现刚才自动创建的IntentHandling协议&lt;code&gt;DiabloHeroIntentHandling&lt;/code&gt;中系统自动为我们创建的方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;func provideYourHeroOptionsCollection(for intent: DiabloHeroIntent, with completion: @escaping (INObjectCollection&amp;lt;Hero&amp;gt;?, Error?) -&amp;gt; Void) {
+        DataManager.fetchHeroList { (heros, error) in
+            
+            let defaultHero = Hero(identifier: &quot;1&quot;, display: &quot;天空寺院&quot;)
+            
+            let collection = INObjectCollection(items: heros ?? [defaultHero])
+            completion(collection, nil)
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;DataManager.fetchHeroList&lt;/code&gt;方法则是异步加载可选项的地方，demo中直接用的本地数据，实际项目中可以使用正式URL来做请求。&lt;/p&gt;
+&lt;p&gt;实现这两步，编译一下，长按Widget，我们就可以看到用户的配置了&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-08-05 下午2.59.35.png)&lt;/p&gt;
+&lt;p&gt;当选择其中的一个版块之后，我们在提供新的时间线的时候则可以拿到用户选择的Hero信息，请求数据的时候就可以相应的请求对应的版块的帖子来进行展示，整个配置非常简单，这样用户可以在同一个屏幕内看到武僧和猎魔人两个英雄的帖子Widget了。&lt;/p&gt;
+&lt;p&gt;这一部分也可以自定义一些样式，如果你的App主色鲜明且柔和，可以自定义Widget的主题颜色，在WidgetExtension中的build settings中搜索Color，可以指定下面两个key中的颜色值，具体修改的是什么地方的颜色，可以看一下效果图，就一目了然了&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-08-05 下午3.05.00.png)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;AccentColor -&amp;gt; red
+BackGroundColor -&amp;gt; yellow
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-08-05 下午3.05.53.png)&lt;/p&gt;
+&lt;p&gt;在&lt;code&gt;public func snapshot&lt;/code&gt;以及&lt;code&gt;public func snapshot&lt;/code&gt;我们可以拿到&lt;code&gt;configuration.YourHero?.identifier&lt;/code&gt;&lt;/p&gt;
+&lt;h3&gt;5.其他&lt;/h3&gt;
+&lt;h4&gt;5.1 开发者论坛&lt;/h4&gt;
+&lt;p&gt;开发阶段尤其是新功能的开发阶段勤看开发者论坛是及其Very非常有用的，没有的话也可以自己问，不止一次我有一个非常疑惑的问题的时候，就可以在上面找到答案。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/forums/tags/widgetkit&quot;&gt;苹果开发者论坛-Widget&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;比如&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-07-08 上午11.27.44.png)
+![Alt text](/public/images/WidgetPart2/截屏2020-07-08 上午11.40.55.png)
+![Alt text](/public/images/WidgetPart2/截屏2020-07-08 上午11.31.51.png)&lt;/p&gt;
+&lt;p&gt;很多回复带有 icon的信息一般都比较有用&lt;/p&gt;
+&lt;h4&gt;5.2 Build System&lt;/h4&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart2/截屏2020-08-05 下午4.26.40.png)&lt;/p&gt;
+&lt;p&gt;传统的&lt;code&gt;legace build system&lt;/code&gt;在Xcode release note中被点名要被废弃了，所以趁着适配就干脆直接使用新的:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;New Build System&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;前提是切换到这个之后可以顺利打包，如果遇到很棘手的问题，还是要切换回去&lt;/p&gt;
+&lt;p&gt;切成新的还有一个原因就是如果不是&lt;code&gt;New Build System&lt;/code&gt;的话Widget 无法真机编译，这个不知道后边会不会修复&lt;/p&gt;
+&lt;h4&gt;5.3 Demo&lt;/h4&gt;
+&lt;p&gt;demo工程可以在我的github上找到，希望对你的适配工作有所帮助&lt;/p&gt;
+&lt;p&gt;::github{repo=&quot;jerryliurui/iOS14-Widget-Demo&quot;}&lt;/p&gt;
+&lt;h3&gt;End&lt;/h3&gt;
+&lt;p&gt;适配工作暂时告一段落，每一年的这个时候都是在充满激情的学习中艰难前行，有坑其实并不可怕，当效果如愿的那一刻出现的时候，那份开心还是相当溢出的。当然Widget仅仅是适配iOS14中的一小步，像&lt;code&gt;Clips&lt;/code&gt;、&lt;code&gt;Siri shortcut&lt;/code&gt;、&lt;code&gt;隐私&lt;/code&gt;等还有很多东西值得看一遍Session然后落地到项目中去。&lt;/p&gt;
+&lt;p&gt;最后祝大家适配顺利~&lt;/p&gt;
+</content:encoded></item><item><title>WWDC2020-Meet Widget Part1</title><link>https://jerryliu.org/posts/meetwidget/2020-07-11-meet-widget-part1/</link><guid isPermaLink="true">https://jerryliu.org/posts/meetwidget/2020-07-11-meet-widget-part1/</guid><description>Create a Great Widget</description><pubDate>Sat, 11 Jul 2020 00:00:00 GMT</pubDate><content:encoded>&lt;h4&gt;0.前言&lt;/h4&gt;
+&lt;p&gt;这个系列博客的主题是Meet Widget，&lt;code&gt;Widget&lt;/code&gt;是苹果在WWDC2020中推出的新特性，也是&lt;code&gt;iOS14&lt;/code&gt;主要新功能之一，它可以运行在各个苹果平台之中，尤其是在&lt;code&gt;iPhone&lt;/code&gt;上，方便的使用方式加上在用户手机中醒目的呈现位置，都使得&lt;code&gt;Widget&lt;/code&gt;这个新功能成为了兵家必争之地，有幸被用户添加到移动App之中，成为了今年各大移动应用适配的重中之重。&lt;/p&gt;
+&lt;p&gt;主题分为以下几个方面来阐述:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;1.什么是Widget? (ppt)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;2.结合WWDC Session来谈谈如何设计一款优秀的Widget (ppt)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;3.如何实现Widget？WidgetKit的工作原理是什么？(ppt)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;4.结合Demo聊聊如何使用SwiftUI来创建我们的Widget页面 (ppt+code)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;5.如何使得我们的Widget 变得更加的&lt;code&gt;聪明&lt;/code&gt; (ppt+code)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;而第一部分Part1 主要是前两小部分的内容，什么是Widget以及如何设计一款优秀的Widget。&lt;/p&gt;
+&lt;p&gt;本文目前基于Xcode12 beta1，目前无论是从实现角度，还是debug环节，都存在各种各样的小问题。文章也会有提及，会随着时间推移而做出更新。如果你也遇到了同样的问题，先别慌，等待苹果爹爹的修复=。=&lt;/p&gt;
+&lt;h4&gt;1.什么是Widget&lt;/h4&gt;
+&lt;p&gt;其实第一次从苹果开发者App当中看到的时候，以为这是一个曾经功能的pro版本，这个曾经的功能叫做Today Widget，2014年苹果在iOS8中推出的新特性，随着不断的了解，会发现今天的Widget所具备的气质和能力，是Today widget远远所不及的。&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/Simulator Screen Shot - iPhone Xs Max - 2020-07-04 at 16.50.48.png)&lt;/p&gt;
+&lt;p&gt;Today Widget的弊端其实有挺多的，虽然负一屏的位置很方便，但是其实就是这一划，感觉就像是一个无法逾越的鸿沟，阻碍着用户看到这个页面，所以Today Widget的成绩并不好。更新时机也只有在用户进到这个页面的时候，reload一下。内容无法编辑，用户添加到屏幕上之后，看久了，想看看别的分类，则无法改变。而对于移动端的App来说，迭代速度越来越快，新功能越来越多，每一个新功能都加入一个Widget 的代价看上去费力不讨好，所以其实这个负一屏的Today Widget现在有点尴尬。&lt;/p&gt;
+&lt;p&gt;而崭新的Widget则不同，它有着优质的展示位置，用户可以肆无忌惮的添加到他的任何一个主屏幕上；它有着优质的编辑特性，用户可以看北京的天气，当去了大连之后，则可以修改为看大连的天气；它有着更优秀的时间线，方便我们的App更新更精准的内容。而对于开发者最重要的，是他的实现成本，以SwiftUI来承载所有的工作，这其实也是苹果在引导开发者逐渐的学习并使用Swift战略的重要一步吧，我相信未来的新功能越来越的是必须用纯粹的Swift来实现，这也方便了我们国内大部分的祖传项目，在无法转变OC的基础上，更好的学习和使用Swift。&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/Simulator Screen Shot - iPhone SE (2nd generation) - 2020-07-04 at 17.00.29.png)&lt;/p&gt;
+&lt;p&gt;2.如何设计一款优秀的Widget&lt;/p&gt;
+&lt;p&gt;相关Session-Design Great Widgets&lt;/p&gt;
+&lt;p&gt;动手之前，需要了解如何设计一款优秀的Widget，在各个今年关于Widget的Session中，提及到的最多的一句话就是:&lt;/p&gt;
+&lt;p&gt;Widgets are not mini-apps
+它是我们App主要功能的一个缩影，给用户提供在短时间内即可理解并掌握的关键信息。它需要和用户有着密切的联系，有着紧密的上下文，Session中举了很多系统App的例子来说明设计Widget的一些原则。&lt;/p&gt;
+&lt;p&gt;2.1Principles&lt;/p&gt;
+&lt;p&gt;系统日历Widget为例:&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.06.22.png)&lt;/p&gt;
+&lt;p&gt;最大的元素是日期，和用户最紧密的是未来时刻的一些事件，用户可以在一瞬间知晓未来将要去做的事情，而在某些特性的时间，例如生日的时候，给出一个生日的小icon来增强个性化，都是一个优秀Widget所需要具备的。&lt;/p&gt;
+&lt;p&gt;2.2Editing&lt;/p&gt;
+&lt;p&gt;长按我们的Widget，可以激活编辑态，用户可以自由选择想在这个Widget上所看到的内容，丰富了用户的选择，用户才会更喜欢我们的Widget，天气App为例，我可以选择当前位置北京的天气，同样的我也可以查看我老家大连的天气。&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.06.36.png)&lt;/p&gt;
+&lt;p&gt;关于可编辑性，系统提供了统一的UI，我们可以定义不同的页面参数来让系统帮我们把页面呈现出来，而参数的类型的不同，系统会给出不同的展示样式，例如数字的编辑&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.06.42.png)&lt;/p&gt;
+&lt;p&gt;这部分灵活度不高，我们只能定制这个面板的背景颜色，和控件的小背景颜色，下边我修改成了红色和小灰色&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.06.49.png)&lt;/p&gt;
+&lt;p&gt;而多亏了可编辑性，用户可以同时在一个屏幕内看到两个同样的Widget，来展示不同的信息，最大化满足用户的需求&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.06.58.png)&lt;/p&gt;
+&lt;p&gt;2.3Multiples&lt;/p&gt;
+&lt;p&gt;多样性，我们的App可以同时提供多种功能的Widget给用户来选择，极大了方便了我们的App把更多的核心功能呈现在用户的桌面上&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.07.10.png)&lt;/p&gt;
+&lt;p&gt;2.4大小和交互意见&lt;/p&gt;
+&lt;p&gt;Widget分为小，中，大，如图所示，分别占用了4、8、16个icon的大小&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.07.17.png)&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.07.22.png)&lt;/p&gt;
+&lt;p&gt;Small仅仅支持整个区域的点击，而中和大则可以提供更加丰富的点击，来进入到我们的主App来展示更细化的内容&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.07.29.png)&lt;/p&gt;
+&lt;p&gt;2.5Content&lt;/p&gt;
+&lt;p&gt;我们不能大中小的Widget内容等比放大来处理，我们要充分利用面积来展示更多有用的信息&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.07.43.png)&lt;/p&gt;
+&lt;p&gt;2.6Patterns&lt;/p&gt;
+&lt;p&gt;三种尺寸的大小，苹果都给出了一定的模板，但是其实这只是一个参考，尽量贴合即可。&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.07.49.png)&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.07.54.png)&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.07.58.png)&lt;/p&gt;
+&lt;p&gt;2.7 其他Tips&lt;/p&gt;
+&lt;p&gt;剩下的一些都是设计Widget的一些红线，整理如下&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.08.04.png)&lt;/p&gt;
+&lt;p&gt;关于整个容器，padding.all 需要保持在16pt，而在代码层面，我们使用default padding即可展示正确&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.08.08.png)&lt;/p&gt;
+&lt;p&gt;关于圆形内容，我们的最小边距是11pt&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.08.13.png)&lt;/p&gt;
+&lt;p&gt;圆角处理使用的是同心圆圆角，这一部分我不是很专业哈，不是很理解，对于开发者来说我们也不需要专业，苹果爸爸给我们提供了非常牛皮的Api，使用这个Api之后，无论这个图片(或者Background) 在Widget哪里，都会展示成同心圆角，这个在后边的demo里边会有提及&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.08.19.png)&lt;/p&gt;
+&lt;p&gt;在我们的Widget还没有被添加的时候，或者在Widget Library中，或者在刚被添加的时候，我们需要提供一个默认的站位View，来给用户一个好的体验，大概了解到Widget的样子，苹果爸爸同样很贴心的提供了isPlaceHolder(true) Api来给开发者来使用，自动生成相应的站位View，非常的方便，很遗憾在Xcode beta1中，这个Api还无法被使用到。&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.08.26.png)&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.08.30.png)&lt;/p&gt;
+&lt;p&gt;苹果推荐内容源很杂的App来放一个logo在Widget上，但是切记不能直接放原生App的icon，可以是一个简易的Logo，且只能放在右上角&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.08.35.png)&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.08.42.png)&lt;/p&gt;
+&lt;p&gt;另外我们不能把App名称放在Widget上，也不能有任何暗示性的语言，仿佛在说快来点我啊快来点我啊这样的文案都是不被推荐的&lt;/p&gt;
+&lt;p&gt;最后提一嘴WidgetKit的限制，也是设计Widget需要考虑的点&lt;/p&gt;
+&lt;p&gt;![Alt text](/public/images/WidgetPart1/截屏2020-07-04 下午5.37.29.png)&lt;/p&gt;
+&lt;p&gt;不能滚动，不能有视频或者动图，交互上只支持点击~&lt;/p&gt;
+&lt;p&gt;3 结语&lt;/p&gt;
+&lt;p&gt;预知后事...&lt;/p&gt;
+&lt;p&gt;Part 2 会走进WidgetKit，解析WidgetKit的工作原理，只有真正了解了工作原理，才能更好的设计我们的Widget。&lt;/p&gt;
+</content:encoded></item></channel></rss>
