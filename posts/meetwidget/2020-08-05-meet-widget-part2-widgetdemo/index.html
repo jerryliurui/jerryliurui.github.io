@@ -483,22 +483,22 @@ if (document.readyState === 'loading') {
 ![Alt text](/public/images/WidgetPart2/截屏2020-07-08 上午11.40.55.png)
 ![Alt text](/public/images/WidgetPart2/截屏2020-07-08 上午11.31.51.png)</p><p>很多回复带有 icon的信息一般都比较有用</p></section><section><h4 id="52-build-system">5.2 Build System<a class="anchor" href="#52-build-system"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h4><p>![Alt text](/public/images/WidgetPart2/截屏2020-08-05 下午4.26.40.png)</p><p>传统的<code>legace build system</code>在Xcode release note中被点名要被废弃了，所以趁着适配就干脆直接使用新的:</p><blockquote>
 <p>New Build System</p>
-</blockquote><p>前提是切换到这个之后可以顺利打包，如果遇到很棘手的问题，还是要切换回去</p><p>切成新的还有一个原因就是如果不是<code>New Build System</code>的话Widget 无法真机编译，这个不知道后边会不会修复</p></section><section><h4 id="53-demo">5.3 Demo<a class="anchor" href="#53-demo"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h4><p>demo工程可以在我的github上找到，希望对你的适配工作有所帮助</p><a id="GCbdnm34-card" class="card-github fetch-waiting no-styling" href="https://github.com/jerryliurui/iOS14-Widget-Demo" target="_blank" repo="jerryliurui/iOS14-Widget-Demo"><div class="gc-titlebar"><div class="gc-titlebar-left"><div class="gc-owner"><div id="GCbdnm34-avatar" class="gc-avatar"></div><div class="gc-user">jerryliurui</div></div><div class="gc-divider">/</div><div class="gc-repo">iOS14-Widget-Demo</div></div><div class="github-logo"></div></div><div id="GCbdnm34-description" class="gc-description">Waiting for api.github.com...</div><div class="gc-infobar"><div id="GCbdnm34-stars" class="gc-stars">00K</div><div id="GCbdnm34-forks" class="gc-forks">0K</div><div id="GCbdnm34-license" class="gc-license">0K</div><span id="GCbdnm34-language" class="gc-language">Waiting...</span></div><script id="GCbdnm34-script" type="text/javascript" defer>
+</blockquote><p>前提是切换到这个之后可以顺利打包，如果遇到很棘手的问题，还是要切换回去</p><p>切成新的还有一个原因就是如果不是<code>New Build System</code>的话Widget 无法真机编译，这个不知道后边会不会修复</p></section><section><h4 id="53-demo">5.3 Demo<a class="anchor" href="#53-demo"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h4><p>demo工程可以在我的github上找到，希望对你的适配工作有所帮助</p><a id="GCidmyb8-card" class="card-github fetch-waiting no-styling" href="https://github.com/jerryliurui/iOS14-Widget-Demo" target="_blank" repo="jerryliurui/iOS14-Widget-Demo"><div class="gc-titlebar"><div class="gc-titlebar-left"><div class="gc-owner"><div id="GCidmyb8-avatar" class="gc-avatar"></div><div class="gc-user">jerryliurui</div></div><div class="gc-divider">/</div><div class="gc-repo">iOS14-Widget-Demo</div></div><div class="github-logo"></div></div><div id="GCidmyb8-description" class="gc-description">Waiting for api.github.com...</div><div class="gc-infobar"><div id="GCidmyb8-stars" class="gc-stars">00K</div><div id="GCidmyb8-forks" class="gc-forks">0K</div><div id="GCidmyb8-license" class="gc-license">0K</div><span id="GCidmyb8-language" class="gc-language">Waiting...</span></div><script id="GCidmyb8-script" type="text/javascript" defer>
       fetch('https://api.github.com/repos/jerryliurui/iOS14-Widget-Demo', { referrerPolicy: "no-referrer" }).then(response => response.json()).then(data => {
-        document.getElementById('GCbdnm34-description').innerText = data.description?.replace(/:[a-zA-Z0-9_]+:/g, '') || "Description not set";
-        document.getElementById('GCbdnm34-language').innerText = data.language;
-        document.getElementById('GCbdnm34-forks').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.forks).replaceAll(" ", '');
-        document.getElementById('GCbdnm34-stars').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.stargazers_count).replaceAll(" ", '');
-        const avatarEl = document.getElementById('GCbdnm34-avatar');
+        document.getElementById('GCidmyb8-description').innerText = data.description?.replace(/:[a-zA-Z0-9_]+:/g, '') || "Description not set";
+        document.getElementById('GCidmyb8-language').innerText = data.language;
+        document.getElementById('GCidmyb8-forks').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.forks).replaceAll(" ", '');
+        document.getElementById('GCidmyb8-stars').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.stargazers_count).replaceAll(" ", '');
+        const avatarEl = document.getElementById('GCidmyb8-avatar');
         avatarEl.style.backgroundImage = 'url(' + data.owner.avatar_url + ')';
         avatarEl.style.backgroundColor = 'transparent';
-        document.getElementById('GCbdnm34-license').innerText = data.license?.spdx_id || "no-license";
-        document.getElementById('GCbdnm34-card').classList.remove("fetch-waiting");
-        console.log("[GITHUB-CARD] Loaded card for jerryliurui/iOS14-Widget-Demo | GCbdnm34.")
+        document.getElementById('GCidmyb8-license').innerText = data.license?.spdx_id || "no-license";
+        document.getElementById('GCidmyb8-card').classList.remove("fetch-waiting");
+        console.log("[GITHUB-CARD] Loaded card for jerryliurui/iOS14-Widget-Demo | GCidmyb8.")
       }).catch(err => {
-        const c = document.getElementById('GCbdnm34-card');
+        const c = document.getElementById('GCidmyb8-card');
         c?.classList.add("fetch-error");
-        console.warn("[GITHUB-CARD] (Error) Loading card for jerryliurui/iOS14-Widget-Demo | GCbdnm34.")
+        console.warn("[GITHUB-CARD] (Error) Loading card for jerryliurui/iOS14-Widget-Demo | GCidmyb8.")
       })
     </script></a></section></section>
 <section><h3 id="end">End<a class="anchor" href="#end"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h3><p>适配工作暂时告一段落，每一年的这个时候都是在充满激情的学习中艰难前行，有坑其实并不可怕，当效果如愿的那一刻出现的时候，那份开心还是相当溢出的。当然Widget仅仅是适配iOS14中的一小步，像<code>Clips</code>、<code>Siri shortcut</code>、<code>隐私</code>等还有很多东西值得看一遍Session然后落地到项目中去。</p><p>最后祝大家适配顺利~</p></section>  </div> <script type="module">document.addEventListener("click",function(i){const c=i.target;if(c&&c.classList.contains("copy-btn")){const l=c.closest("pre")?.querySelector("code");let s="";if(l){const t=l.querySelectorAll("span.line");if(t.length>0){const o=[];for(let e=0;e<t.length;e++){const r=t[e].textContent||"";o.push(r)}s=o.join(`
