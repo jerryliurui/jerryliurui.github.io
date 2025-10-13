@@ -61,13 +61,13 @@ author: JerryLiu
 
 我们以日历App为例，
 
-![Alt text](/public/images/WidgetPart2/截屏2020-07-29 下午3.44.46.png)
+![Alt text](/images/WidgetPart2/截屏2020-07-29 下午3.44.46.png)
 
 日历App会把关于个人的日历信息通过不断的输出，来让`Widgetkit`不断的创建View来展示在我们的屏幕上，图中九点，九点半这些时间点上，我们提供给系统的实际上都是一个一个的`Entry`,而这个线性的时间轴，名义上叫做`TimeLine`时间线，每一个`Widget`的背后其实都是有自己的时间线的，开发者负责管理时间线以及时间线上的一个一个的Entry
 
-![Alt text](/public/images/WidgetPart2/截屏2020-07-29 下午3.44.59.png)
+![Alt text](/images/WidgetPart2/截屏2020-07-29 下午3.44.59.png)
 
-![Alt text](/public/images/WidgetPart2/截屏2020-07-29 下午3.45.10.png)
+![Alt text](/images/WidgetPart2/截屏2020-07-29 下午3.45.10.png)
 
 这三个图简单的描述了`WidgetKit`的工作原理，后边会详细的跟踪每一步的具体实现，总得来说开发需要关心的东西其实非常的少，再加上`SwiftUI`的加持，适配`Widget`的工作显得轻松不少，可以让我们更加的关注在产品层面，可以更加关注把我们的App的什么信息来展示给用户，用户才会更好的买账把我们的Widget放在屏幕上。
 
@@ -192,7 +192,7 @@ public func timeline
 
 `context.environmentVariants` 所有关于Widget显示的环境变量都在这里，如果有需要的可以debug看一下酌情取一下
 
-![Alt text](/public/images/WidgetPart2/截屏2020-08-03 下午2.32.34.png)
+![Alt text](/images/WidgetPart2/截屏2020-08-03 下午2.32.34.png)
 
 ##### 3.2.2 EntryView
 
@@ -232,7 +232,7 @@ struct DiabloNewsEntryView : View {
 
 对应展示的样子
 
-![Alt text](/public/images/WidgetPart2/截屏2020-08-03 下午5.55.28.png)
+![Alt text](/images/WidgetPart2/截屏2020-08-03 下午5.55.28.png)
 
 ###### 3.2.3.2 查看夜间模式
 
@@ -252,7 +252,7 @@ struct DiabloNewsEntryView : View {
 
 文本会被绘制成毛玻璃一般的色块，图片则不会显示，因为我是用的是本地图片，所以不会被隐藏掉（感觉像是bug...看看后边会不会被处理，讲道理本地图片素材也应该被隐藏才对）
 
-![Alt text](/public/images/WidgetPart2/截屏2020-08-03 下午5.58.37.png)
+![Alt text](/images/WidgetPart2/截屏2020-08-03 下午5.58.37.png)
 
 ##### 3.2.4 ColorScheme
 
@@ -273,7 +273,7 @@ struct WidgetMediumView: View {
 
 这里说一个比较有意思的事情，其实在看Session的时候我就有一个小疑问，会不会有第四个尺寸 =。= 后来在开发的时候，意外的看到了这样一个警告
 
-![Alt text](/public/images/WidgetPart2/截屏2020-08-03 下午6.09.04.png)
+![Alt text](/images/WidgetPart2/截屏2020-08-03 下午6.09.04.png)
 
 Switch当我漏写了default的时候，警告说未来可能会有不同的值，虽然这也可能是这种枚举的一种正常警告⚠️，但还是期待一下未来会有超大啥的尺寸吧哈哈哈
 
@@ -283,7 +283,7 @@ Switch当我漏写了default的时候，警告说未来可能会有不同的值�
 
 ##### 3.2.7 Padding
 
-![Alt text](/public/images/WidgetPart2/截屏2020-08-03 下午6.13.19.png)
+![Alt text](/images/WidgetPart2/截屏2020-08-03 下午6.13.19.png)
 
 Command + 左键一个View，可以直接呼出各种快捷菜单，其中就有这个SwiftUI面板，我们可以在这里勾选padding,我们不需要关心控件距离Widget的边界，只需要选择default即可。
 
@@ -334,11 +334,11 @@ VStack(alignment: .leading, spacing:16) {
 
 Widget如果想要显示图片的话，就需要提前下载好，曾经尝试给UIImage增加扩展来使Image控件来异步加载一个图片，但是失败了，后来看论坛，苹果工程师的推荐也是在创建Entry的时候就已经准备好了的
 
-![Alt text](/public/images/WidgetPart2/截屏2020-07-08 上午11.27.08.png)
+![Alt text](/images/WidgetPart2/截屏2020-07-08 上午11.27.08.png)
 
 另外，关于图片的大小其实在Widget中是有限制的，30MB
 
-![Alt text](/public/images/WidgetPart2/截屏2020-08-03 下午4.50.53.png)
+![Alt text](/images/WidgetPart2/截屏2020-08-03 下午4.50.53.png)
 
 所以相应的缩图策略也看上去必须的，创建Entry的时候也需要考虑更多，而在实际中，因为我们工程的图片需求比较大，所以我们每次其实只创建一个Entry，无论是数据还是图片，尽量不给太大的负担。
 
@@ -364,7 +364,7 @@ return resultFeedModel
 
 这个Score策略不是固定的，每个Widget都需要根据自身的情况来决定如何定义Score
 
-![Alt text](/public/images/WidgetPart2/截屏2020-08-04 上午10.29.51.png)
+![Alt text](/images/WidgetPart2/截屏2020-08-04 上午10.29.51.png)
 
 #### 3.7 关于时间线
 
@@ -378,7 +378,7 @@ return resultFeedModel
 
 用一张图来展示三种的区别
 
-![Alt text](/public/images/WidgetPart2/截屏2020-08-04 上午10.29.34.png)
+![Alt text](/images/WidgetPart2/截屏2020-08-04 上午10.29.34.png)
 
 除了这三种刷新机制之外，我们同样可以使用通知和客户端内主动刷新来让widget刷新
 
@@ -468,15 +468,15 @@ struct WidgetDemoBundle : WidgetBundle {
 
 首先我们要像创建Shortcut那样创建一个Intent定义文件，来定义我们的Widget可以配置的内容。Demo中新建一个`HeroIntent`,定义一个type:`Hero`，模拟背后凯恩之角论坛对应的英雄论坛版块。
 
-![Alt text](/public/images/WidgetPart2/截屏2020-08-05 下午2.43.37.png)
+![Alt text](/images/WidgetPart2/截屏2020-08-05 下午2.43.37.png)
 
 这个时候一定要看一下右边面板是否系统已经自动生成了相应的Intent文件，下图蓝色箭头出现这个小箭头证明生成好了
 
-![Alt text](/public/images/WidgetPart2/截屏2020-08-05 下午2.43.43.png)
+![Alt text](/images/WidgetPart2/截屏2020-08-05 下午2.43.43.png)
 
 如果迟迟无法生成，则推荐使用重启Xcode大法，我的Mac有些岁数了，每次都要这么搞。还有一个坑就是，当你的项目是很古老的OC工程的话，建议自动生成Intent的语言切换成Swift，我在这几个beta版本的Xcode中几乎都遇到了迟迟无法自动生成Intent文件这种事，所以干脆直接改成Swift了，一劳永逸。具体修改地点在下图蓝色箭头处
 
-![Alt text](/public/images/WidgetPart2/截屏2020-08-05 下午2.50.47.png)
+![Alt text](/images/WidgetPart2/截屏2020-08-05 下午2.50.47.png)
 
 配置好了用户可以选择的内容，我们就要在配置的时候拉取可选项了，建议走网络，更加灵活，不用发版，只需要后台修改即可
 
@@ -500,20 +500,20 @@ func provideYourHeroOptionsCollection(for intent: DiabloHeroIntent, with complet
 
 实现这两步，编译一下，长按Widget，我们就可以看到用户的配置了
 
-![Alt text](/public/images/WidgetPart2/截屏2020-08-05 下午2.59.35.png)
+![Alt text](/images/WidgetPart2/截屏2020-08-05 下午2.59.35.png)
 
 当选择其中的一个版块之后，我们在提供新的时间线的时候则可以拿到用户选择的Hero信息，请求数据的时候就可以相应的请求对应的版块的帖子来进行展示，整个配置非常简单，这样用户可以在同一个屏幕内看到武僧和猎魔人两个英雄的帖子Widget了。
 
 这一部分也可以自定义一些样式，如果你的App主色鲜明且柔和，可以自定义Widget的主题颜色，在WidgetExtension中的build settings中搜索Color，可以指定下面两个key中的颜色值，具体修改的是什么地方的颜色，可以看一下效果图，就一目了然了
 
-![Alt text](/public/images/WidgetPart2/截屏2020-08-05 下午3.05.00.png)
+![Alt text](/images/WidgetPart2/截屏2020-08-05 下午3.05.00.png)
 
 ```
 AccentColor -> red
 BackGroundColor -> yellow
 ```
 
-![Alt text](/public/images/WidgetPart2/截屏2020-08-05 下午3.05.53.png)
+![Alt text](/images/WidgetPart2/截屏2020-08-05 下午3.05.53.png)
 
 在`public func snapshot`以及`public func snapshot`我们可以拿到`configuration.YourHero?.identifier`
 
@@ -527,15 +527,15 @@ BackGroundColor -> yellow
 
 比如
 
-![Alt text](/public/images/WidgetPart2/截屏2020-07-08 上午11.27.44.png)
-![Alt text](/public/images/WidgetPart2/截屏2020-07-08 上午11.40.55.png)
-![Alt text](/public/images/WidgetPart2/截屏2020-07-08 上午11.31.51.png)
+![Alt text](/images/WidgetPart2/截屏2020-07-08 上午11.27.44.png)
+![Alt text](/images/WidgetPart2/截屏2020-07-08 上午11.40.55.png)
+![Alt text](/images/WidgetPart2/截屏2020-07-08 上午11.31.51.png)
 
 很多回复带有 icon的信息一般都比较有用
 
 #### 5.2 Build System
 
-![Alt text](/public/images/WidgetPart2/截屏2020-08-05 下午4.26.40.png)
+![Alt text](/images/WidgetPart2/截屏2020-08-05 下午4.26.40.png)
 
 传统的`legace build system`在Xcode release note中被点名要被废弃了，所以趁着适配就干脆直接使用新的:
 
