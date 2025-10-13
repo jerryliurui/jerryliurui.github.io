@@ -47,7 +47,7 @@ author: JerryLiu
 
 整体的运作如图，需要用到我们的老朋友WidgetKit:
 
-![Alt text](/images/LiveActivities/截屏2022-08-22 14.39.12.png)
+![Alt text](/images/LiveActivities/截屏2022-08-2214.39.12.png)
 
 ### 2.Live Activities的限制
 
@@ -72,11 +72,11 @@ author: JerryLiu
 
 #### 3.1 添加Widget Extension
 
-![Alt text](/images/LiveActivities/截屏2022-08-22 11.48.37.png)
+![Alt text](/images/LiveActivities/截屏2022-08-2211.48.37.png)
 
 #### 3.2 Info Plist新增
 
-![Alt text](/images/LiveActivities/截屏2022-08-22 11.49.37.png)
+![Alt text](/images/LiveActivities/截屏2022-08-2211.49.37.png)
 
 #### 3.3 自定义活动参数
 
@@ -211,7 +211,7 @@ struct FIFAGameView_Preview: PreviewProvider {
 }
 ```
 
-![Alt text](/images/LiveActivities/截屏2022-08-22 13.55.21.png)
+![Alt text](/images/LiveActivities/截屏2022-08-2213.55.21.png)
 
 这里提一句我遇到的一个问题，就是Widget Extension中的Xcode Preview总是会Crash，或者报错:
 
@@ -229,7 +229,7 @@ BSServiceConnectionErrorDomain (3):
 
 可以尝试把Xcode的打开方式取消勾选使用Rosetta来试试，当然这个问题遇到人还挺多，但是解决方法都不太一样，这里暂时记录一下我这里遇到之后的方法(电脑是M1)
 
-![Alt text](/images/LiveActivities/截屏2022-08-22 14.01.51.png)
+![Alt text](/images/LiveActivities/截屏2022-08-2214.01.51.png)
 
 说回来，系统会使用默认的白色字体和一个最适合当前用户的锁屏页面的背景颜色来展示我们的Live Activities小组件，如果想要自定义一个颜色，可以使用下面这个修饰符
 
@@ -243,7 +243,7 @@ activityBackgroundTint(_:)
 
 在准备好UI之后，我们便可以尝试着通过我们的主App来开启实时小组件了。在开启之前，文档特别建议了开发者在开启之前首先需要检查一下该功能是否可用。因为当前实时小组件仅适用于iPhone，且用户是可以手动在你的App设置页面关闭该功能的
 
-![Alt text](/images/LiveActivities/截屏2022-08-22 14.15.38.png)
+![Alt text](/images/LiveActivities/截屏2022-08-2214.15.38.png)
 
 ```swift
 guard ActivityAuthorizationInfo().areActivitiesEnabled else {
@@ -381,7 +381,7 @@ func listenForPushTokenChanged(activities:Activity<FIFAActivityAttributes>?) -> 
 
 测试这里我是遇到了一些问题，我一直是使用PushHero来测试推送的。但是目前无法推送成功，会报出`Device Token not for Topic`的错误，问了一下推上的好友，他们也遇到了类似的错误，怀疑是Push Type是不是新增了一种？但是却没有更新出来？这部分后边如果有更新我会第一时间更新一下进展。目前暂时搁置了。
 
-![Alt text](/images/LiveActivities/截屏2022-08-22 14.49.44.png)
+![Alt text](/images/LiveActivities/截屏2022-08-2214.49.44.png)
 
 ### 5.一些其他有用的API
 
@@ -395,7 +395,7 @@ func listenForPushTokenChanged(activities:Activity<FIFAActivityAttributes>?) -> 
 
 ::github{repo="jerryliurui/Live-Activities-Demo"}
 
-![Alt text](/images/LiveActivities/截屏2022-08-18 21.27.22.png)
+![Alt text](/images/LiveActivities/截屏2022-08-1821.27.22.png)
 
 demo上传了Github上，后续会有更新，希望对大家的开发适配有所帮助。
 
