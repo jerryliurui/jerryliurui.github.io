@@ -2,7 +2,7 @@
 title: WWDC2020-Meet Widget Part2-WidgetDemo
 published: 2020-08-05
 pinned: false
-image: "./截屏2020-08-04 上午10.29.51..png"
+image: "./截屏2020-08-04上午10.29.51.png"
 description: "An iOS14 Widget Demo"
 tags: ["iOS", "WWDC", "Widget"]
 category: WWDC
