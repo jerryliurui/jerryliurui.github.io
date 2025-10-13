@@ -28,9 +28,9 @@ Hi 大家好，我是小杰瑞，这篇文章主要是对 WWDC2023 `Meet Activit
 这段描述相较于去年 7 月 28 日第一版文档是发生了变化的。没错，去年实时小组件是`仅iPhone`的，而在今年第一个变化就是支持了`iPad`。而在 iOS 平台上，同时也支持了`StandBy`模式。
 
 
-![Alt text](../assets/LiveActivitiesiOS17/ipad_live.png "Optional title")
+![Alt text](./src/assets/LiveActivitiesiOS17/ipad_live.png "Optional title")
 
-![Alt text](../assets/LiveActivitiesiOS17/standby.png)
+![Alt text](./src/assets/LiveActivitiesiOS17/standby.png)
 
 而关于使用场景，举个例子，用户点了一杯咖啡的外卖，或者关注了一场自己喜欢球队的比赛，那外卖的进度、比赛的比分，这些关键的信息和用户的操作息息相关，那他们则将会是非常完美的呈现对象。如下图:
 
