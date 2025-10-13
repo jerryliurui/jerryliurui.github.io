@@ -34,7 +34,7 @@ Hi 大家好，我是小杰瑞，这篇文章主要是对 WWDC2023 `Meet Activit
 
 而关于使用场景，举个例子，用户点了一杯咖啡的外卖，或者关注了一场自己喜欢球队的比赛，那外卖的进度、比赛的比分，这些关键的信息和用户的操作息息相关，那他们则将会是非常完美的呈现对象。如下图:
 
-![Alt text](/public/images/LiveActivitiesiOS17/live_demo_session.png)
+![Alt text](/images/LiveActivitiesiOS17/live_demo_session.png)
 
 而实时小组件我认为和灵动岛属于是互相成就了。在丝滑动画的加持下，用户会更加喜欢这种能带来小惊喜的上岛体验。下面我们来看看灵动岛上的实时小组件的样子。
 
@@ -44,15 +44,15 @@ Hi 大家好，我是小杰瑞，这篇文章主要是对 WWDC2023 `Meet Activit
 
 单个 App 上岛，这一部分也叫做 `compact` 紧凑型，分为前后两个 View 来组成。
 
-![Alt text](/public/images/LiveActivitiesiOS17/type-compact~dark@2x.png)
+![Alt text](/images/LiveActivitiesiOS17/type-compact~dark@2x.png)
 
 多个 App 上岛，也叫做 `minimal` 型，一个紧贴摄像头，一个分离与摄像头，这里需要注意的是，看似这两个 View 长得不一样，但实质上都是一样的。我们也不要对多个 App 登岛时，我们自己 App 是前边的还是后边的做假设。
 
-![Alt text](/public/images/LiveActivitiesiOS17/type-minimal~dark@2x.png)
+![Alt text](/images/LiveActivitiesiOS17/type-minimal~dark@2x.png)
 
 而长按灵动岛时，会变成展开模式，该模式下可以展示更多的内容，而当我们推送 Live Activity 为`Alert`模式时，同样也会触发展开样式。
 
-![Alt text](/public/images/LiveActivitiesiOS17/expanded-layout~dark@2x.png)
+![Alt text](/images/LiveActivitiesiOS17/expanded-layout~dark@2x.png)
 
 基于上面实时小组件在不同平台上展示的图例，我们可以联想和脑洞一些能够上岛的功能点了。当然肯定不止下面我列举的这些，仅作为抛砖引玉之用:
 
@@ -82,7 +82,7 @@ Hi 大家好，我是小杰瑞，这篇文章主要是对 WWDC2023 `Meet Activit
 
 在这里也是画了一个简图，来更好的说明我们需要做的工作，在后边的 Demo 中也会有详尽的代码加以描述:
 
-![Alt text](/public/images/LiveActivitiesiOS17/widgetKit.png)
+![Alt text](/images/LiveActivitiesiOS17/widgetKit.png)
 
 ## 3. 展示球赛比分的完整 Live Activities 实现之旅
 
@@ -98,7 +98,7 @@ Hi 大家好，我是小杰瑞，这篇文章主要是对 WWDC2023 `Meet Activit
 
 大家在打开之前的 Widget SwiftUI 工程后，`command+option+p`激活 Xcode Preview 预览时，会遇到这个错误
 
-![Alt text](/public/images/LiveActivitiesiOS17/errorforfirst.png)
+![Alt text](/images/LiveActivitiesiOS17/errorforfirst.png)
 
 原因是 Widget 今年支持了更多的平台，引入了`containerBackground`，可移除的背景容器修饰符，解决办法是创建 View Extension，来兼容一下即可，在要展示在 Widget 中的 View 加上这个修饰符。由于 Demo 中会填充队伍的主色调，因此这里显示 Clear
 
@@ -120,7 +120,7 @@ extension View {
 
 而在使用的地方，尤其是需要 Xcode Preview 的 View 上添加该修饰符
 
-![Alt text](/public/images/LiveActivitiesiOS17/background.png)
+![Alt text](/images/LiveActivitiesiOS17/background.png)
 
 ### 3.2 创建 ActivityAttributes
 
@@ -150,7 +150,7 @@ struct NBAWidgetAttributes: ActivityAttributes {
 
 下一步则是按照文档给出的需要适配的不同类型的 View，来定制业务 View，当我们新建 `Widget Extension` 并勾选 `Live Activity` 之后，Xcode 会非常贴心的给我们安排了一个完形填空，下图为 New -> Target -> 勾选 Include Live Activity
 
-![Alt text](/public/images/LiveActivitiesiOS17/createLive.png)
+![Alt text](/images/LiveActivitiesiOS17/createLive.png)
 
 大致长这个样子，实例代码中给出了详细的注释，然后耐心的完形填空即可。
 
@@ -195,11 +195,11 @@ struct DemoWidgetLiveActivity: Widget {
 
 这里主要的工程 Demo 代码不再展开，感兴趣的小伙伴可以去我的 Github 上下载到 Demo。下图为 Demo UI 的一个拆分:
 
-![Alt text](/public/images/LiveActivitiesiOS17/demoUI.png)
+![Alt text](/images/LiveActivitiesiOS17/demoUI.png)
 
 首次出现时，会出现一个是否允许 XXX App 的实时活动的提醒的，用户可以像操作通知一样左滑删除掉我们创建好的 Live Activities。下图为 Demo 的一个 GIF 演示:
 
-![Alt text](/public/images/LiveActivitiesiOS17/demoGif.gif)
+![Alt text](/images/LiveActivitiesiOS17/demoGif.gif)
 
 ### 3.4 根据业务逻辑实现 Live Activities 的生命周期
 
