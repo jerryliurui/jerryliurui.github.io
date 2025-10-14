@@ -1,5 +1,5 @@
 ---
-title: 了线上Bug之后的思考
+title: 安静的制造了线上Bug之后的思考
 published: 2014-12-05
 pinned: false
 image: "./blog_bg_1.jpg"
