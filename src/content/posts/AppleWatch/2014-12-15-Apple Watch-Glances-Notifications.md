@@ -1,5 +1,5 @@
 ---
-title: Apple Watch 开发调研三: Glances,Notifications
+title: Apple Watch 开发调研三 Glances,Notifications
 published: 2014-12-15
 pinned: false
 description: "Developing for Apple Watch"
