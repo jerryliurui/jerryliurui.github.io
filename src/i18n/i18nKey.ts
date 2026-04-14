@@ -16,6 +16,7 @@ enum I18nKey {
 	announcementClose = "announcementClose",
 
 	comments = "comments",
+	noData = "noData",
 
 	untitled = "untitled",
 	uncategorized = "uncategorized",
@@ -213,6 +214,10 @@ enum I18nKey {
 	hour = "hour",
 	minute = "minute",
 	second = "second",
+	relatedPosts = "relatedPosts",
+	randomPosts = "randomPosts",
+	smartRecommend = "smartRecommend",
+	randomRecommend = "randomRecommend",
 }
 
 export default I18nKey;

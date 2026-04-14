@@ -1,0 +1,67 @@
+---
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import { getPostUrlBySlug } from "@utils/url-utils";
+import type { PostForList } from "@utils/content-utils";
+
+interface Props {
+	relatedPosts?: PostForList[];
+	randomPosts?: PostForList[];
+}
+
+const { relatedPosts = [], randomPosts = [] } = Astro.props;
+
+type RecommendationSection = {
+	title: string;
+	badge: string;
+	posts: PostForList[];
+};
+
+const sections: RecommendationSection[] = [
+	{
+		title: i18n(I18nKey.relatedPosts),
+		badge: i18n(I18nKey.smartRecommend),
+		posts: relatedPosts,
+	},
+	{
+		title: i18n(I18nKey.randomPosts),
+		badge: i18n(I18nKey.randomRecommend),
+		posts: randomPosts,
+	},
+].filter((section) => section.posts.length > 0);
+---
+
+{
+	sections.length > 0 && (
+		<div class="grid gap-4 lg:grid-cols-2 mb-4">
+			{sections.map((section) => (
+				<section class="card-base p-5">
+					<div class="flex items-center justify-between gap-3 mb-4">
+						<h2 class="text-base font-bold text-black/85 dark:text-white/85">
+							{section.title}
+						</h2>
+						<span class="rounded-full px-2.5 py-1 text-xs font-semibold bg-[oklch(0.95_0.025_var(--hue))] text-[var(--btn-content)] dark:bg-[var(--primary)] dark:text-[var(--deep-text)]">
+							{section.badge}
+						</span>
+					</div>
+
+					<div class="flex flex-col divide-y divide-black/5 dark:divide-white/10">
+						{section.posts.map((post) => (
+							<a
+								href={getPostUrlBySlug(post.slug)}
+								class="group block py-3 first:pt-0 last:pb-0"
+							>
+								<div class="transition text-sm font-semibold text-black/80 group-hover:text-[var(--primary)] dark:text-white/80">
+									{post.data.title}
+								</div>
+								<div class="mt-1 text-xs text-black/45 dark:text-white/45">
+									{post.data.description || i18n(I18nKey.noData)}
+								</div>
+							</a>
+						))}
+					</div>
+				</section>
+			))}
+		</div>
+	)
+}

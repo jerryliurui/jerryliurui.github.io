@@ -19,6 +19,7 @@ export const ja: Translation = {
 	[Key.announcementClose]: "閉じる",
 
 	[Key.comments]: "コメント",
+	[Key.noData]: "データなし",
 	[Key.friends]: "友達",
 	[Key.untitled]: "無題",
 	[Key.uncategorized]: "未分類",
@@ -225,4 +226,8 @@ export const ja: Translation = {
 	[Key.hour]: "時間",
 	[Key.minute]: "分",
 	[Key.second]: "秒",
+	[Key.relatedPosts]: "関連記事",
+	[Key.randomPosts]: "ランダム記事",
+	[Key.smartRecommend]: "おすすめ",
+	[Key.randomRecommend]: "ランダム",
 };

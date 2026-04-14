@@ -51,6 +51,98 @@ export async function getSortedPostsList(): Promise<PostForList[]> {
 
 	return sortedPostsList;
 }
+
+function tokenizeTitle(title: string): Set<string> {
+	const loweredTitle = title.toLowerCase();
+	const tokens = new Set<string>();
+
+	for (const token of loweredTitle.split(/[\s\p{P}]+/gu).filter(Boolean)) {
+		tokens.add(token);
+	}
+
+	for (const char of loweredTitle.replace(/[\s\p{P}]+/gu, "")) {
+		if (/[\u4e00-\u9fff]/u.test(char)) {
+			tokens.add(char);
+		}
+	}
+
+	return tokens;
+}
+
+function jaccardSimilarity(a: Set<string>, b: Set<string>): number {
+	if (a.size === 0 && b.size === 0) return 0;
+
+	let intersection = 0;
+	for (const item of a) {
+		if (b.has(item)) intersection++;
+	}
+
+	const union = a.size + b.size - intersection;
+	return union === 0 ? 0 : intersection / union;
+}
+
+export async function getRelatedPosts(
+	currentPost: CollectionEntry<"posts">,
+	maxCount = 5,
+): Promise<PostForList[]> {
+	const allPosts = await getCollection<"posts">("posts", ({ data }) => {
+		return import.meta.env.PROD ? data.draft !== true : true;
+	});
+
+	const currentTags = new Set<string>(currentPost.data.tags || []);
+	const currentTitleTokens = tokenizeTitle(currentPost.data.title);
+	const currentCategory = currentPost.data.category || "";
+	const now = Date.now();
+
+	return allPosts
+		.filter((post) => post.slug !== currentPost.slug && !post.data.password)
+		.map((post) => {
+			const postTags = new Set<string>(post.data.tags || []);
+			const postTitleTokens = tokenizeTitle(post.data.title);
+			const postCategory = post.data.category || "";
+			const daysSincePublished =
+				(now - new Date(post.data.published).getTime()) /
+				(1000 * 60 * 60 * 24);
+
+			const score =
+				jaccardSimilarity(currentTags, postTags) * 100 +
+				jaccardSimilarity(currentTitleTokens, postTitleTokens) * 100 +
+				30 * Math.exp((-Math.LN2 * daysSincePublished) / 180) +
+				(currentCategory &&
+				postCategory &&
+				currentCategory === postCategory
+					? 10
+					: 0);
+
+			return {
+				slug: post.slug,
+				data: post.data,
+				score,
+			};
+		})
+		.sort((a, b) => b.score - a.score)
+		.slice(0, maxCount)
+		.map(({ slug, data }) => ({ slug, data }));
+}
+
+export async function getRandomPosts(
+	excludeSlugs: string[] = [],
+	maxCount = 5,
+): Promise<PostForList[]> {
+	const allPosts = await getSortedPostsList();
+
+	const candidates = allPosts.filter(
+		(post) => !excludeSlugs.includes(post.slug) && !post.data.password,
+	);
+
+	const shuffled = [...candidates];
+	for (let i = shuffled.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+	}
+
+	return shuffled.slice(0, maxCount);
+}
 export type Tag = {
 	name: string;
 	count: number;

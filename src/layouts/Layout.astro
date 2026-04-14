@@ -4,6 +4,7 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/700.css";
 
 import ConfigCarrier from "@components/ConfigCarrier.astro";
+import PageProgressBar from "@components/control/PageProgressBar.astro";
 import MusicPlayer from "@components/widget/MusicPlayer.svelte";
 import Pio from "@components/widget/Pio.svelte"; // 使用 Svelte 版本的 Pio 组件
 import { profileConfig, siteConfig } from "@/config";
@@ -237,6 +238,11 @@ const umamiScripts = umamiConfig.scripts || ""; // 获取Umami scripts配置
 		<!-- 页面顶部渐变高光效果 - 只在full和semifull模式下显示 -->
 		{shouldShowTopHighlight && <div class="top-gradient-highlight"></div>}
 		<ConfigCarrier></ConfigCarrier>
+		<PageProgressBar
+			enable={siteConfig.pageProgressBar?.enable ?? false}
+			height={siteConfig.pageProgressBar?.height ?? 3}
+			duration={siteConfig.pageProgressBar?.duration ?? 8000}
+		/>
 		<slot />
 		
 		<!-- Music Player -->
@@ -1444,4 +1450,3 @@ if (window.swup) {
   }
 }
 </script>
-

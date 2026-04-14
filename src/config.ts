@@ -1,5 +1,5 @@
 import type {
-	//AnnouncementConfig,
+	AnnouncementConfig,
 	CommentConfig,
 	ExpressiveCodeConfig,
 	FooterConfig,
@@ -8,6 +8,8 @@ import type {
 	MusicPlayerConfig,
 	NavBarConfig,
 	ProfileConfig,
+	RandomPostsConfig,
+	RelatedPostsConfig,
 	SakuraConfig,
 	SidebarLayoutConfig,
 	SiteConfig,
@@ -136,6 +138,11 @@ export const siteConfig: SiteConfig = {
 		},
 	},
 	showLastModified: true, // 控制“上次编辑”卡片显示的开关
+	pageProgressBar: {
+		enable: true,
+		height: 3,
+		duration: 6000,
+	},
 };
 export const fullscreenWallpaperConfig: FullscreenWallpaperConfig = {
 	enable: false, // 启用全屏壁纸功能,非Banner模式下生效
@@ -285,10 +292,35 @@ export const expressiveCodeConfig: ExpressiveCodeConfig = {
 
 export const commentConfig: CommentConfig = {
 	enable: true, // 启用评论功能。当设置为 false 时，评论组件将不会显示在文章区域。
+	system: "twikoo", // 评论系统选择: "twikoo" | "giscus"
 	twikoo: {
 		envId: "https://twikoo.vercel.app",
 		lang: "en", // 设置 Twikoo 评论系统语言为英文
 	},
+	giscus: {
+		repo: "jerryliurui/jerryliurui.github.io",
+		repoId: "",
+		category: "Announcements",
+		categoryId: "",
+		mapping: "pathname",
+		strict: "0",
+		reactionsEnabled: "1",
+		emitMetadata: "0",
+		inputPosition: "top",
+		theme: "preferred_color_scheme",
+		lang: SITE_LANG,
+		loading: "lazy",
+	},
+};
+
+export const relatedPostsConfig: RelatedPostsConfig = {
+	enable: true,
+	maxCount: 4,
+};
+
+export const randomPostsConfig: RandomPostsConfig = {
+	enable: true,
+	maxCount: 4,
 };
 
 export const announcementConfig: AnnouncementConfig = {
@@ -483,6 +515,8 @@ export const widgetConfigs = {
 	sakura: sakuraConfig,
 	fullscreenWallpaper: fullscreenWallpaperConfig,
 	pio: pioConfig, // 添加 pio 配置
+	relatedPosts: relatedPostsConfig,
+	randomPosts: randomPostsConfig,
 } as const;
 
 export const umamiConfig = {

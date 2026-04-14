@@ -4,17 +4,26 @@ import Comment from "@components/comment/index.astro";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
 import PasswordProtection from "@components/PasswordProtection.astro";
+import PostRecommendations from "@components/post/PostRecommendations.astro";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
-import { getSortedPosts } from "@utils/content-utils";
+import {
+	getRandomPosts,
+	getRelatedPosts,
+	getSortedPosts,
+} from "@utils/content-utils";
 import { getDir, getPostUrlBySlug } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
 import bcryptjs from "bcryptjs";
 import CryptoJS from "crypto-js";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { licenseConfig } from "src/config";
+import {
+	licenseConfig,
+	randomPostsConfig,
+	relatedPostsConfig,
+} from "src/config";
 import ImageWrapper from "../../components/misc/ImageWrapper.astro";
 import PostMetadata from "../../components/PostMeta.astro";
 import { profileConfig, siteConfig } from "../../config";
@@ -29,6 +38,12 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content, headings } = await entry.render();
+const relatedPosts = relatedPostsConfig.enable
+	? await getRelatedPosts(entry, relatedPostsConfig.maxCount)
+	: [];
+const randomPosts = randomPostsConfig.enable
+	? await getRandomPosts([entry.slug, ...relatedPosts.map((post) => post.slug)], randomPostsConfig.maxCount)
+	: [];
 
 const { remarkPluginFrontmatter } = await entry.render();
 
@@ -213,6 +228,12 @@ const jsonLd = {
             }
         </div>
     </div>
+
+    <!-- 评论 -->
+    <PostRecommendations
+        relatedPosts={relatedPosts}
+        randomPosts={randomPosts}
+    />
 
     <!-- 评论 -->
     <Comment post={entry} />

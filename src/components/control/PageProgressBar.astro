@@ -1,0 +1,111 @@
+---
+interface Props {
+	enable: boolean;
+	height: number;
+	duration: number;
+}
+
+const { enable, height, duration } = Astro.props;
+---
+
+{enable && (
+	<>
+		<div
+			id="page-progress-bar"
+			style={`--page-progress-bar-height: ${height}px; --page-progress-bar-duration: ${duration}ms;`}
+		/>
+
+		<script is:inline define:vars={{ enable }}>
+			if (!enable) {
+				const el = document.getElementById("page-progress-bar");
+				if (el) {
+					el.remove();
+				}
+			}
+
+			function setupProgressBar() {
+				if (!window.swup?.hooks) {
+					return;
+				}
+
+				window.swup.hooks.on("visit:start", () => {
+					const bar = document.getElementById("page-progress-bar");
+					if (!bar) {
+						return;
+					}
+					bar.classList.remove("finishing", "done");
+					void bar.offsetWidth;
+					bar.classList.add("loading");
+				});
+
+				window.swup.hooks.on("visit:end", () => {
+					const bar = document.getElementById("page-progress-bar");
+					if (!bar) {
+						return;
+					}
+					bar.classList.remove("loading");
+					bar.classList.add("finishing");
+					setTimeout(() => {
+						bar.classList.remove("finishing");
+						bar.classList.add("done");
+						setTimeout(() => bar.classList.remove("done"), 300);
+					}, 200);
+				});
+			}
+
+			if (window.swup) {
+				setupProgressBar();
+			} else {
+				document.addEventListener("swup:enable", setupProgressBar, {
+					once: true,
+				});
+			}
+		</script>
+
+		<style is:inline>
+			#page-progress-bar {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: var(--page-progress-bar-height, 3px);
+				transform-origin: left center;
+				transform: scaleX(0);
+				opacity: 0;
+				pointer-events: none;
+				z-index: 9999;
+				background: linear-gradient(
+					90deg,
+					oklch(0.72 0.16 var(--hue)),
+					oklch(0.8 0.18 calc(var(--hue) + 24)),
+					oklch(0.74 0.17 calc(var(--hue) - 20))
+				);
+				box-shadow: 0 0 12px oklch(0.72 0.16 var(--hue) / 0.35);
+				transition:
+					transform var(--page-progress-bar-duration, 6000ms) linear,
+					opacity 180ms ease;
+			}
+
+			#page-progress-bar.loading {
+				opacity: 1;
+				transform: scaleX(0.82);
+			}
+
+			#page-progress-bar.finishing {
+				opacity: 1;
+				transition:
+					transform 220ms ease-out,
+					opacity 180ms ease;
+				transform: scaleX(1);
+			}
+
+			#page-progress-bar.done {
+				opacity: 0;
+				transform: scaleX(1);
+				transition:
+					transform 220ms ease-out,
+					opacity 220ms ease;
+			}
+		</style>
+	</>
+)}

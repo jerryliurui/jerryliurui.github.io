@@ -19,6 +19,7 @@ export const zh_CN: Translation = {
 	[Key.announcementClose]: "关闭",
 
 	[Key.comments]: "评论",
+	[Key.noData]: "暂无数据",
 	[Key.friends]: "友链",
 	[Key.untitled]: "无标题",
 	[Key.uncategorized]: "未分类",
@@ -216,4 +217,8 @@ export const zh_CN: Translation = {
 	[Key.hour]: "小时",
 	[Key.minute]: "分",
 	[Key.second]: "秒",
+	[Key.relatedPosts]: "相关文章",
+	[Key.randomPosts]: "随机文章",
+	[Key.smartRecommend]: "智能推荐",
+	[Key.randomRecommend]: "随机推荐",
 };

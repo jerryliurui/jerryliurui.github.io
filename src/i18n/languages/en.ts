@@ -19,6 +19,7 @@ export const en: Translation = {
 	[Key.announcementClose]: "Close",
 
 	[Key.comments]: "Comments",
+	[Key.noData]: "No data",
 	[Key.friends]: "Friends",
 	[Key.untitled]: "Untitled",
 	[Key.uncategorized]: "Uncategorized",
@@ -231,4 +232,8 @@ export const en: Translation = {
 	[Key.hour]: "h",
 	[Key.minute]: "min",
 	[Key.second]: "s",
+	[Key.relatedPosts]: "Related Posts",
+	[Key.randomPosts]: "Random Posts",
+	[Key.smartRecommend]: "Smart",
+	[Key.randomRecommend]: "Random",
 };

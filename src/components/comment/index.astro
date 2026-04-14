@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { commentConfig } from "@/config";
+import Giscus from "./Giscus.astro";
 import Twikoo from "./Twikoo.astro";
 
 interface Props {
@@ -13,13 +14,18 @@ const path = `/posts/${slug}`;
 const url = `${Astro.site?.href}${path}`;
 
 let commentService = "";
-if (commentConfig?.enable && commentConfig?.twikoo) {
-	commentService = "twikoo";
+if (commentConfig?.enable) {
+	if (commentConfig.system) {
+		commentService = commentConfig.system;
+	} else if (commentConfig.twikoo) {
+		commentService = "twikoo";
+	}
 }
 ---
 {commentConfig?.enable && (
   <div class="card-base p-6 mb-4">
     {commentService === 'twikoo' && <Twikoo path={path} />}
+    {commentService === 'giscus' && <Giscus path={path} />}
     {commentService === '' && null}
   </div>
 )}
