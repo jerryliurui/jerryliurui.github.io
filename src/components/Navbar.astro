@@ -125,15 +125,16 @@ function initSemifullScrollDetection() {
     navbar.classList.remove('scrolled');
     
     let ticking = false;
+    let lastScrolledState: boolean | null = null;
     
     function updateNavbarState() {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const threshold = 50; // 滚动阈值，可以根据需要调整
-        
-        if (scrollTop > threshold) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
+
+        const nextScrolledState = scrollTop > threshold;
+        if (lastScrolledState !== nextScrolledState) {
+            lastScrolledState = nextScrolledState;
+            navbar.classList.toggle('scrolled', nextScrolledState);
         }
         
         ticking = false;

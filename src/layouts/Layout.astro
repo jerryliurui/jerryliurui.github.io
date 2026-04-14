@@ -7,7 +7,12 @@ import ConfigCarrier from "@components/ConfigCarrier.astro";
 import PageProgressBar from "@components/control/PageProgressBar.astro";
 import MusicPlayer from "@components/widget/MusicPlayer.svelte";
 import Pio from "@components/widget/Pio.svelte"; // 使用 Svelte 版本的 Pio 组件
-import { profileConfig, siteConfig } from "@/config";
+import {
+	musicPlayerConfig,
+	pioConfig,
+	profileConfig,
+	siteConfig,
+} from "@/config";
 import { widgetConfigs } from "../config";
 import { umamiConfig } from "../config.ts";
 import {
@@ -246,12 +251,12 @@ const umamiScripts = umamiConfig.scripts || ""; // 获取Umami scripts配置
 		<slot />
 		
 		<!-- Music Player -->
-		<MusicPlayer client:load />
+		{musicPlayerConfig.enable && <MusicPlayer client:load />}
 		
 		<!-- Pio 看板娘组件 -->
 		<!-- 注意：Pio 组件需要放在 body 标签内，但要在其他内容之前 -->
 		<!-- 如果启用了侧边栏，可能需要调整 z-index -->
-		<Pio client:load />
+		{pioConfig.enable && <Pio client:load />}
 		
 		<!-- increase the page height during page transition to prevent the scrolling animation from jumping -->
 		<div id="page-height-extend" class="hidden h-[300vh]"></div>
@@ -1172,41 +1177,38 @@ if (window?.swup?.hooks) {
 
 let backToTopBtn = document.getElementById('back-to-top-btn');
 let toc = document.getElementById('toc-wrapper');
-let navbar = document.getElementById('navbar-wrapper')
+let navbar = document.getElementById('navbar-wrapper');
+let scrollTicking = false;
+let backToTopVisible: boolean | null = null;
+let tocVisible: boolean | null = null;
+let navbarHidden: boolean | null = null;
 
-// 节流函数
-function throttle(func: Function, limit: number) {
-	let inThrottle: boolean;
-	return function(this: any) {
-		const args = arguments;
-		const context = this;
-		if (!inThrottle) {
-			func.apply(context, args);
-			inThrottle = true;
-			setTimeout(() => inThrottle = false, limit);
-		}
-	}
+function syncScrollTargets() {
+	backToTopBtn = document.getElementById('back-to-top-btn');
+	toc = document.getElementById('toc-wrapper');
+	navbar = document.getElementById('navbar-wrapper');
 }
 
 function scrollFunction() {
+	syncScrollTargets();
 	const scrollTop = document.documentElement.scrollTop;
 	const bannerHeight = window.innerHeight * (BANNER_HEIGHT / 100);
 
 	// 批量处理DOM操作
 	requestAnimationFrame(() => {
 		if (backToTopBtn) {
-			if (scrollTop > bannerHeight) {
-				backToTopBtn.classList.remove('hide')
-			} else {
-				backToTopBtn.classList.add('hide')
+			const shouldShowBackToTop = scrollTop > bannerHeight;
+			if (backToTopVisible !== shouldShowBackToTop) {
+				backToTopVisible = shouldShowBackToTop;
+				backToTopBtn.classList.toggle('hide', !shouldShowBackToTop);
 			}
 		}
 
 		if (bannerEnabled && toc) {
-			if (scrollTop > bannerHeight) {
-				toc.classList.remove('toc-hide')
-			} else {
-				toc.classList.add('toc-hide')
+			const shouldShowToc = scrollTop > bannerHeight;
+			if (tocVisible !== shouldShowToc) {
+				tocVisible = shouldShowToc;
+				toc.classList.toggle('toc-hide', !shouldShowToc);
 			}
 		}
 
@@ -1214,25 +1216,35 @@ function scrollFunction() {
 			const isHome = document.body.classList.contains('lg:is-home') && window.innerWidth >= 1024;
 			const currentBannerHeight = isHome ? BANNER_HEIGHT_HOME : BANNER_HEIGHT;
 			const threshold = window.innerHeight * (currentBannerHeight / 100) - 88;
+			const shouldHideNavbar = scrollTop >= threshold;
 			
-			if (scrollTop >= threshold) {
-				navbar.classList.add('navbar-hidden')
-			} else {
-				navbar.classList.remove('navbar-hidden')
+			if (navbarHidden !== shouldHideNavbar) {
+				navbarHidden = shouldHideNavbar;
+				navbar.classList.toggle('navbar-hidden', shouldHideNavbar);
 			}
 		}
+
+		scrollTicking = false;
 	});
 }
 
-// 使用节流优化滚动性能
-window.onscroll = throttle(scrollFunction, 16); // 约60fps
+function onScroll() {
+	if (scrollTicking) return;
+	scrollTicking = true;
+	scrollFunction();
+}
 
-window.onresize = () => {
+window.addEventListener('scroll', onScroll, { passive: true });
+scrollFunction();
+
+window.addEventListener('resize', () => {
 	// calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text
 	let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
 	offset = offset - offset % 4;
 	document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
-}
+	syncScrollTargets();
+	scrollFunction();
+});
 
 // 页面加载完成后初始化banner和轮播图
 if (document.readyState === 'loading') {
