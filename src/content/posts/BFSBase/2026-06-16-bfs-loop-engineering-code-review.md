@@ -220,7 +220,3 @@ codemaker debug agent bfs-code-reviewer | jq '{name, model}'
 014 这个样本里，代码能编译、能跑、自评完成，逐条审下来却处处是「看着对、其实不对」。这些缺口，编译器拦不住、单测大概率也拦不住，但一道拿着需求逐行对照 diff 的审查门拦住了。模型还会继续变强，但再强的模型写完代码，也需要一个能告诉它"这里和需求对不上"的结构。
 
 至此，BFS 自定义工作流的两个翻译点都装上了审查循环。
-
----
-
-> 相关材料：计划审查门设计见 `BFSDesign/bfs-plan-review-gate.md`；代码审查者契约见 `.codemaker/agents/bfs-code-reviewer.md`；014 代码审查结论（含跨模型两轮对比）见 `BeeFullStack_Public/specs/ios/014-voicetotext/code-review.md`；第一篇《从 Prompt Engineering 到 Loop Engineering》见 `BFSLearning/2026-06-10-bfs-loop-engineering-plan-review.md`。
