@@ -296,6 +296,18 @@ export const skillsData: Skill[] = [
 		color: "#003B57",
 	},
 	{
+		id: "ai-agent-development",
+		name: "AI Agent 开发",
+		description:
+			"面向真实研发流程搭建 AI Agent 编排、工作流 runtime、知识回流和人机协作闭环。",
+		icon: "material-symbols:smart-toy-outline-rounded",
+		category: "frontend",
+		level: "advanced",
+		experience: { years: 1, months: 0 },
+		projects: ["全栈开发工作平台"],
+		color: "#7C3AED",
+	},
+	{
 		id: "git",
 		name: "Git",
 		description:
@@ -460,6 +472,30 @@ export const skillsData: Skill[] = [
 		level: "expert",
 		experience: { years: 11, months: 0 },
 		color: "#00CDD7",
+	},
+	{
+		id: "claude-code",
+		name: "Claude Code",
+		description:
+			"1 年前开始高强度使用，用于代码生成、重构、审查和工作流驱动的全栈开发。",
+		icon: "simple-icons:anthropic",
+		category: "tools",
+		level: "advanced",
+		experience: { years: 1, months: 0 },
+		projects: ["全栈开发工作平台"],
+		color: "#D97757",
+	},
+	{
+		id: "codex",
+		name: "Codex",
+		description:
+			"1 年前开始高强度使用，用于仓库改造、自动化、调试和 Agent 辅助产品开发。",
+		icon: "simple-icons:openai",
+		category: "tools",
+		level: "advanced",
+		experience: { years: 1, months: 0 },
+		projects: ["全栈开发工作平台"],
+		color: "#10A37F",
 	},
 	{
 		id: "notion",

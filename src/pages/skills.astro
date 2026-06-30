@@ -255,7 +255,7 @@ const allIcons = skillsData.map((skill) => skill.icon).filter(Boolean);
                         </div>
                         {skill.projects && skill.projects.length > 0 && (
                           <div class="text-xs text-black/60 dark:text-white/60">
-                            {i18n(I18nKey.skillsProjects)}: {skill.projects.length}
+                            {i18n(I18nKey.skillsProjects)}: {skill.projects.join("、")}
                           </div>
                         )}
                       </div>
