@@ -25,6 +25,31 @@ export interface TimelineItem {
 
 export const timelineData: TimelineItem[] = [
 	{
+		id: "bfs-fullstack-ai-workbench-app",
+		title: "BFS 全栈 AI 开发工作台 App",
+		description:
+			"从 2026 年 4 月开始立项并持续迭代的全栈 AI 开发工作台，把需求拆解、Agent 编排、多端开发、运行调试、知识回流和归档收进一个桌面应用。",
+		type: "project",
+		startDate: "2026-04-01",
+		skills: [
+			"AI Agent",
+			"Swift",
+			"SwiftUI",
+			"Claude Code",
+			"Codex",
+			"CodeMaker",
+			"Workflow",
+		],
+		achievements: [
+			"搭建面向全栈需求开发的桌面工作台",
+			"将五段式 SDD 流程、子代理编排和审批卡片化收敛到统一入口",
+			"支持多端任务管理、运行调试、日志查看和知识沉淀闭环",
+		],
+		icon: "material-symbols:smart-toy-outline-rounded",
+		color: "#7C3AED",
+		featured: true,
+	},
+	{
 		id: "AppleVisionPro",
 		title: "Apple Vision Pro",
 		description:
